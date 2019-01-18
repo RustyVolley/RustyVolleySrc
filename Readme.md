@@ -2,24 +2,24 @@
 
 Need Rust nightly
 
-```console
+```sh
 rustup default nightly
 ```
 
-```console
+```sh
 rustup update
 ```
 
 
 Also need cargo-web
 
-```console
+```sh
 cargo install cargo-web
 ```
 
 ## 2. Run the game
 
-```console
+```sh
 cargo web start
 ```
 
