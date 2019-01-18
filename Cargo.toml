@@ -1,0 +1,7 @@
+[package]
+name = "rustyvolley"
+version = "0.1.0"
+authors = ["cviot <viot.camille@outlook.com>"]
+
+[dependencies]
+quicksilver = "*"
