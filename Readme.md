@@ -23,4 +23,4 @@ cargo install cargo-web
 cargo web start
 ```
 
-Then go to [http://[::1]:8000]()
+Then go to [http://[::1]:8000](http://[::1]:8000)
