@@ -24,3 +24,9 @@ cargo web start
 ```
 
 Then go to [http://[::1]:8000](http://[::1]:8000)
+
+## 3. Libraries used
+
+[nalgebra](https://github.com/rustsim/nalgebra)
+
+[Quicksilver](https://github.com/ryanisaacg/quicksilver)

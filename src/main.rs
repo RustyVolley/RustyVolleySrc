@@ -1,5 +1,12 @@
 extern crate quicksilver;
 
+mod player;
+mod local_game_state;
+mod duel_match;
+mod game_logic;
+mod physic_world;
+
+
 use quicksilver::{
     Result,
     geom::{Circle, Line, Vector},
