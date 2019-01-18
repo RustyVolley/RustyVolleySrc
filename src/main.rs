@@ -5,6 +5,8 @@ mod local_game_state;
 mod duel_match;
 mod game_logic;
 mod physic_world;
+mod game_constants;
+mod vector;
 
 
 use quicksilver::{

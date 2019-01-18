@@ -11,8 +11,15 @@ trait State {
     fn step(&mut self);
 }
 
+impl LocalGameState {
+    fn present_game(&self) {
+        panic!("Not implemented yet!");
+    }
+}
+
 impl State for LocalGameState {
     fn step(&mut self) {
         self.rusty_match.step();
+        self.present_game();
     }
 }

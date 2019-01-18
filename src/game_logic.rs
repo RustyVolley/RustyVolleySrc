@@ -17,7 +17,7 @@ pub struct GameLogic {
 
 impl GameLogic {
     pub fn step(&mut self) {
-        panic!("not implemented yet");
+        //panic!("not implemented yet");
     }
 }
 

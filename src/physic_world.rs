@@ -1,5 +1,8 @@
 extern crate nalgebra;
+
 use physic_world::nalgebra::base::Vector2;
+use game_constants::*;
+use vector::VectorOP;
 
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
@@ -21,6 +24,17 @@ pub struct PhysicWorld {
 
 impl PhysicWorld {
     pub fn step(&mut self) {
-        panic!("not implemented yet");
+        self.ball_velocity.y += BALL_GRAVITATION;
+        self.ball_position += self.ball_velocity;
+
+        if self.is_ball_valid {
+            // checkBlobbyBallCollision(LEFT_PLAYER);
+            // checkBlobbyBallCollision(RIGHT_PLAYER);
+        }
+        else if self.ball_position.y + BALL_RADIUS > 500.0f32 {
+            self.ball_velocity = self.ball_velocity.reflect_y().scale_y(0.5f32);
+            // self.ball_velocity = self.ball_velocity.scaleX(0.55f32);
+            self.ball_position.y = 500.0f32 - BALL_RADIUS;
+        }
     }
 }
