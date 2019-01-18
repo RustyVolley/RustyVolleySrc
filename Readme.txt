@@ -16,6 +16,9 @@ cargo install cargo-web
 ```
 
 2. Run the game
+
 ```
-http://[::1]:8000
+cargo web start
 ```
+
+Then go to [http://[::1]:8000](http://[::1]:8000)
