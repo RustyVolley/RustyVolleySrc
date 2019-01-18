@@ -6,3 +6,4 @@ authors = ["cviot <viot.camille@outlook.com>"]
 [dependencies]
 quicksilver = "*"
 nalgebra = "*"
+num-traits = "*"

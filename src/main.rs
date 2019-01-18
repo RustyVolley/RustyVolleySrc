@@ -7,6 +7,7 @@ mod game_logic;
 mod physic_world;
 mod game_constants;
 mod vector;
+mod global;
 
 
 use quicksilver::{

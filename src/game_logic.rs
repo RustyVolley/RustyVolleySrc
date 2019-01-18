@@ -1,3 +1,5 @@
+use global::PlayerSide;
+
 pub struct GameLogic {
     /// this array contains the scores
     scores: [i32; 2],
@@ -19,11 +21,4 @@ impl GameLogic {
     pub fn step(&mut self) {
         //panic!("not implemented yet");
     }
-}
-
-enum PlayerSide {
-	NoPlayer = -1,
-	LeftPlayer = 0,
-	RightPlayer = 1,
-	MaxPlayers, // This is always one more than the highest player enum
 }
