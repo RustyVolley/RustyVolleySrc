@@ -1,4 +1,4 @@
-1. Getting the tools
+## 1. Getting the tools
 
 Need Rust nightly
 
@@ -17,7 +17,7 @@ Also need cargo-web
 cargo install cargo-web
 ```
 
-2. Run the game
+## 2. Run the game
 
 ```console
 cargo web start
