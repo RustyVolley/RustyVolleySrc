@@ -26,7 +26,7 @@ pub struct PhysicWorld {
 
     ball_rotation : f32,
     ball_angular_velocity : f32,
-    //blobs_states : [f32; 2],
+    blobs_animation_states : [f32; 2],
     blobs_animation_speed : [f32; 2],
 
     is_game_running : bool,
@@ -47,7 +47,7 @@ impl PhysicWorld {
 
             ball_rotation : 0.0f32,
             ball_angular_velocity : 0.0f32,
-            //blobs_states : [0.0f32; 2],
+            blobs_animation_states : [0.0f32; 2],
             blobs_animation_speed : [0.0f32; 2],
 
             is_game_running : false,
@@ -61,6 +61,14 @@ impl PhysicWorld {
         physic_world.blobs_animation_speed[RightPlayer as usize] = 0.0f32;
 
         physic_world
+    }
+
+    pub fn get_blob(&self, player: PlayerSide) -> Vector2<f32> {
+        self.blob_positions[player as usize]
+    }
+
+    pub fn get_blob_state(&self, player: PlayerSide) -> f32 {
+        self.blobs_animation_states[player as usize]
     }
 
     pub fn reset_player(&mut self) {
