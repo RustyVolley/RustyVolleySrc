@@ -9,9 +9,9 @@ pub const ROUND_START_SOUND_VOLUME : f32 = 0.2f32;
 pub const BALL_HIT_PLAYER_SOUND_VOLUME : f32 = 0.4f32;
 
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum PlayerSide {
-    NO_PLAYER = -1isize,
-    LEFT_PLAYER = 0isize,
-    RIGHT_PLAYER = 1isize
+    NoPlayer = -1isize,
+    LeftPlayer = 0isize,
+    RightPlayer = 1isize
 }

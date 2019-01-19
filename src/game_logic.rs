@@ -1,4 +1,7 @@
 use global::PlayerSide;
+use global::PlayerSide::NoPlayer;
+
+pub const SQUISH_TOLERANCE : i32 = 10;
 
 pub struct GameLogic {
     /// this array contains the scores
@@ -19,6 +22,38 @@ pub struct GameLogic {
 
 impl GameLogic {
     pub fn step(&mut self) {
-        //panic!("not implemented yet");
+        self.squish[0] = self.squish[0] - 1;
+        self.squish[1] = self.squish[1] - 1;
+    }
+
+    pub fn new() -> GameLogic {
+        let mut game_logic = GameLogic {
+            scores: [0i32; 2],
+            touches_ball_count : [0i32; 2],
+            squish: [0i32; 2],
+            last_error: NoPlayer,
+            serving_player: NoPlayer,
+            winning_player: NoPlayer,
+            score_to_win : 15,
+        };
+
+
+        game_logic.reset();
+        game_logic
+    }
+
+    pub fn is_collision_valid(&self, side : PlayerSide) -> bool {
+        self.squish[side as usize] < 0
+    }
+
+    pub fn reset(&mut self) {
+        self.scores[0] = 0;
+        self.scores[1] = 0;
+
+        self.touches_ball_count[0] = 0;
+        self.touches_ball_count[1] = 0;
+
+        self.squish[0] = 0;
+        self.squish[1] = 0;
     }
 }

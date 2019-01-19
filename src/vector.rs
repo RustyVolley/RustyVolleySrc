@@ -24,6 +24,7 @@ pub trait VectorOP<N : 'static>
     fn scale_x(&self, scale_x : N) -> Vector2<N>;
     fn scale_y(&self, scale_y : N) -> Vector2<N>;
     fn length(&self) -> N;
+    fn clear(&mut self);
 }
 
 impl<N : 'static> VectorOP<N> for Vector2<N> 
@@ -52,7 +53,7 @@ impl<N : 'static> VectorOP<N> for Vector2<N>
     }
 
     fn reflect(&self, normal: &Vector2<N>) -> Vector2<N> {
-        let delta = self.dot_product(normal) *  FromPrimitive::from_f32(2.0f32).unwrap();
+        let delta = self.dot_product(normal) * FromPrimitive::from_f32(2.0f32).unwrap();
         let diff : Vector2<N> = Vector2::new(normal.x * delta, normal.y * delta);
         Vector2::new(self.x - diff.x, self.y - diff.y)
     }
@@ -79,5 +80,10 @@ impl<N : 'static> VectorOP<N> for Vector2<N>
 
     fn length(&self) -> N {
         self.x * self.x + self.y * self.y
+    }
+
+    fn clear(&mut self) {
+        self.x = FromPrimitive::from_f32(0.0f32).unwrap();
+        self.y = FromPrimitive::from_f32(0.0f32).unwrap();
     }
 }
