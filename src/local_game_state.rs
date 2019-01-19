@@ -4,7 +4,7 @@ use global::PlayerSide::*;
 
 use quicksilver::{
     Result,
-    geom::{Shape},
+    geom::{Shape, Transform},
     graphics::{Background::Img, Font, FontStyle, Color, Image},
     input::{*},
     lifecycle::{Asset, Window, Event},
@@ -68,7 +68,7 @@ impl LocalGameState {
 
         // draw background
         self.background_image.execute(|image| {
-            window.draw(&image.area().with_center((400, 300)), Img(&image));
+            window.draw_ex(&image.area().with_center((400, 300)), Img(&image), Transform::IDENTITY, 0.0f32);
             Ok(())
         })?;
 
@@ -78,7 +78,7 @@ impl LocalGameState {
             let blob_state = (self.duel_match.get_world().get_blob_state(LeftPlayer) as usize) % 5usize;
 
             self.blobs_images[blob_state].execute(|image| {
-                window.draw(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image));
+                window.draw_ex(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image), Transform::IDENTITY, 2.0f32);
                 Ok(())
             })?;
         }
@@ -89,7 +89,7 @@ impl LocalGameState {
             let blob_state = (self.duel_match.get_world().get_blob_state(RightPlayer) as usize) % 5usize;
 
             self.blobs_images[blob_state].execute(|image| {
-                window.draw(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image));
+                window.draw_ex(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image), Transform::IDENTITY, 3.0f32);
                 Ok(())
             })?;
         }
@@ -104,7 +104,7 @@ impl LocalGameState {
             let animation_state = x % 16;
 
             self.ball_images[animation_state as usize].execute(|image| {
-                window.draw(&image.area().with_center((ball_pos.x, ball_pos.y)), Img(&image));
+                window.draw_ex(&image.area().with_center((ball_pos.x, ball_pos.y)), Img(&image), Transform::IDENTITY, 1.0f32);
                 Ok(())
             })?;
         }
