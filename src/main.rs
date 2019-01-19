@@ -11,14 +11,11 @@ mod global;
 mod player_input;
 
 use local_game_state::LocalGameState;
-use player::Player;
-use duel_match::DuelMatch;
 
 use quicksilver::{
     Result,
-    geom::{Circle, Line, Vector},
-    graphics::{Background::Col, Color},
-    lifecycle::{Settings, State, Window, run},
+    geom::{Vector},
+    lifecycle::{Settings, State, Window, Event, run},
 };
 
 impl State for LocalGameState {
@@ -35,6 +32,10 @@ impl State for LocalGameState {
 
     fn draw(&mut self, window: &mut Window) -> Result<()> {
         self.draw_window_content(window)
+    }
+
+    fn event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
+        self.handle_event(event, window)
     }
 }
 

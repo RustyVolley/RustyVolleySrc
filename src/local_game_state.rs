@@ -1,15 +1,14 @@
-#![feature(euclidean_division)]
-
 use player::Player;
 use duel_match::DuelMatch;
 use global::PlayerSide::*;
-use global::PlayerSide;
 
 use quicksilver::{
     Result,
-    geom::{Shape, Circle, Line, Vector},
-    graphics::{Background::Img, Background::Col, Color, Image},
-    lifecycle::{Asset, Settings, State, Window, run},
+    geom::{Shape},
+    graphics::{Background::Img, Color, Image},
+    input::{*},
+    lifecycle::{Asset, Window, Event},
+    sound::Sound,
 };
 
 pub struct LocalGameState {
@@ -19,6 +18,7 @@ pub struct LocalGameState {
     background_image: Asset<Image>,
     ball_images: Vec<Asset<Image>>,
     blobs_images : Vec<Asset<Image>>,
+    sounds : Vec<Asset<Sound>>,
     frame_number : usize
 }
 
@@ -47,6 +47,12 @@ impl LocalGameState {
             blobs_images.push(Asset::new(Image::load(path)));
         }
 
+        let mut sounds : Vec<Asset<Sound>> = vec!();
+
+        sounds.push(Asset::new(Sound::load("bums.wav")));
+        sounds.push(Asset::new(Sound::load("chat.wav")));
+        sounds.push(Asset::new(Sound::load("pfiff.wav")));
+
         LocalGameState {
             left_player: Player::new(),
             right_player: Player::new(),
@@ -54,6 +60,7 @@ impl LocalGameState {
             background_image: Asset::new(Image::load("strand1.png")),
             ball_images : ball_images,
             blobs_images: blobs_images,
+            sounds: sounds,
             frame_number: 0,
         }
     }
@@ -103,8 +110,77 @@ impl LocalGameState {
             })?;
         }
 
-        //dbg!(blob_state);
+        if self.frame_number == 50 {
+            self.sounds[2].execute(|sound| {
+                sound.play()?;
+                Ok(())
+            })?;
+        }
     
         Ok(())
     }
+
+    pub fn handle_event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
+
+        let mut player_right_input = self.duel_match.get_world().get_player_input(RightPlayer);
+        let mut player_left_input = self.duel_match.get_world().get_player_input(LeftPlayer);
+
+        if let &Event::Key(key, state) = event {
+
+            if key == Key::W {
+                match state {
+                    ButtonState::Pressed => player_left_input.up = true,
+                    ButtonState::Released => player_left_input.up = false,
+                    _ => ()
+                }
+            }
+
+            if key == Key::A {
+                match state {
+                    ButtonState::Pressed => player_left_input.left = true,
+                    ButtonState::Released => player_left_input.left = false,
+                    _ => ()
+                }
+            }
+
+
+            if key == Key::D {
+                match state {
+                    ButtonState::Pressed => player_left_input.right = true,
+                    ButtonState::Released => player_left_input.right = false,
+                    _ => ()
+                }
+            }
+
+            if key == Key::Up {
+                match state {
+                    ButtonState::Pressed => player_right_input.up = true,
+                    ButtonState::Released => player_right_input.up = false,
+                    _ => ()
+                }
+            }
+
+            if key == Key::Left {
+                match state {
+                    ButtonState::Pressed => player_right_input.left = true,
+                    ButtonState::Released => player_right_input.left = false,
+                    _ => ()
+                }
+            }
+
+            if key == Key::Right {
+                match state {
+                    ButtonState::Pressed => player_right_input.right = true,
+                    ButtonState::Released => player_right_input.right = false,
+                    _ => ()
+                }
+            }
+
+            self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
+            self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
+        }
+        Ok(())
+    }
+
+
 }

@@ -32,8 +32,8 @@ impl DuelMatch {
         }
     }
 
-    pub fn get_world(&self) -> &PhysicWorld {
-        &self.physic_world
+    pub fn get_world(&mut self) -> &mut PhysicWorld {
+        &mut self.physic_world
     }
 
     pub fn get_ball_position(&self) -> Vector2<f32> {

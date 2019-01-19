@@ -229,6 +229,14 @@ impl PhysicWorld {
         }
     }
 
+    pub fn get_player_input(&self, player: PlayerSide) -> PlayerInput {
+        self.player_inputs[player as usize]
+    }
+
+    pub fn set_player_input(&mut self, player: PlayerSide, input: PlayerInput) {
+        self.player_inputs[player as usize] = input;
+    }
+
     pub fn handle_blob(&mut self, player : PlayerSide) {
         let player_index = player.clone() as usize;
 
