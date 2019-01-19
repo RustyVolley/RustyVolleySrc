@@ -106,8 +106,8 @@ impl GameLogic {
         // count the touches
         self.squish[side_to_index(other_side(side.clone()))] = 0;
 
-        self.squish[side_to_index(side.clone())] = 
-            self.squish[side_to_index(side.clone())] + 1;
+        self.touches_ball_count[side_to_index(side.clone())] = 
+            self.touches_ball_count[side_to_index(side.clone())] + 1;
 
         if self.touches_ball_count[side_to_index(side.clone())] > 3
         {

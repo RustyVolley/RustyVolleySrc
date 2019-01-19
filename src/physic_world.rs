@@ -411,15 +411,15 @@ impl PhysicWorld {
             // Net Collisions
 
             let ball_net_vec : Vector2<f32> = 
-                self.ball_position - Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION);
+                Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
 
             let ball_net_distance = ball_net_vec.length();
 
             if ball_net_distance < NET_RADIUS + BALL_RADIUS
             { 
-                let vec = self.ball_position - Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION);
+                let vec = Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
                 // calculate
-                let normal = vec.normalize();
+                let normal = vec.normalized();
                         
                 // normal component of kinetic energy
                 let mut perp_ekin = normal.dot_product(&self.ball_velocity);
@@ -435,7 +435,7 @@ impl PhysicWorld {
                 
                 let nspeed = (perp_ekin + para_ekin).sqrt();
                 
-                self.ball_velocity = self.ball_velocity.reflect(&normal).normalize().scale(nspeed);
+                self.ball_velocity = self.ball_velocity.reflect(&normal).normalized().scale(nspeed);
                 
                 // pushes the ball out of the net
                 self.ball_position = 
@@ -446,7 +446,7 @@ impl PhysicWorld {
                     ) - normal * (NET_RADIUS + BALL_RADIUS);
             }
 
-            // self.ball_velocity = self.ball_velocity.reflect( Vector2( self.ball_position, Vector2 (NET_POSITION_X, temp) ).normalize()).scale(0.75);
+            // self.ball_velocity = self.ball_velocity.reflect( Vector2( self.ball_position, Vector2 (NET_POSITION_X, temp) ).normalized()).scale(0.75);
         }
 
         // Collision between blobby and the net
