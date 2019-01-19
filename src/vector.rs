@@ -14,7 +14,7 @@ pub trait VectorOP<N : 'static>
         Float +
         FromPrimitive
 {
-    fn normalise(&self) -> Vector2<N>; 
+    fn normalize(&self) -> Vector2<N>; 
     fn cross_product(&self, vector : &Vector2<N>) -> N;
     fn dot_product(&self, vector : &Vector2<N>) -> N;
     fn reflect(&self, normal : &Vector2<N>) -> Vector2<N>;
@@ -35,7 +35,7 @@ impl<N : 'static> VectorOP<N> for Vector2<N>
         Float +
         FromPrimitive
 {
-    fn normalise(&self) -> Vector2<N> {
+    fn normalize(&self) -> Vector2<N> {
         let length = self.length();
         if length > N::zero() {
             Vector2::new(self.x / length, self.y / length)

@@ -39,9 +39,9 @@ impl State for LocalGameState {
 
 fn main() {
     run::<LocalGameState>("RustyVolley", Vector::new(800, 600), Settings {
-        draw_rate: 1000. / 10., // 10 FPS are enough
-        update_rate: 16., // every second to make it appear like a clock
-        vsync: false, // don't use VSync, we're limiting to 10 FPS on our own
+        draw_rate: 6.0, 
+        update_rate: 16.0,
+        vsync: true,
         //fullscreen: true,
         ..Settings::default()
     });
