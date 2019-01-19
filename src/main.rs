@@ -8,6 +8,7 @@ mod physic_world;
 mod game_constants;
 mod vector;
 mod global;
+mod player_input;
 
 use local_game_state::LocalGameState;
 use player::Player;

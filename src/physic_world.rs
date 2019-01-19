@@ -3,6 +3,7 @@ extern crate nalgebra;
 use global::PlayerSide;
 use global::PlayerSide::*;
 use game_constants::*;
+use player_input::PlayerInput;
 
 use physic_world::nalgebra::base::Vector2;
 use vector::VectorOP;
@@ -16,6 +17,7 @@ pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
 
 pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
+pub const BLOBBY_SPEED : f32 = 4.5f32;
 
 
 pub struct PhysicWorld {
@@ -29,6 +31,8 @@ pub struct PhysicWorld {
     ball_angular_velocity : f32,
     blobs_animation_states : [f32; 2],
     blobs_animation_speed : [f32; 2],
+
+    player_inputs : [PlayerInput; 2],
 
     is_game_running : bool,
     is_ball_valid : bool,
@@ -50,6 +54,8 @@ impl PhysicWorld {
             ball_angular_velocity : 0.0f32,
             blobs_animation_states : [0.0f32; 2],
             blobs_animation_speed : [0.0f32; 2],
+
+            player_inputs : [PlayerInput::new() ; 2],
 
             is_game_running : false,
             is_ball_valid : false,
@@ -196,38 +202,66 @@ impl PhysicWorld {
         }
     }
 
-    // TODO
+    pub fn blobby_start_animation(&mut self, player : PlayerSide) {
+        let player_index = player.clone() as usize;
+
+        if self.blobs_animation_speed[player_index] == 0.0f32 {
+            self.blobs_animation_speed[player_index] = BLOBBY_ANIMATION_SPEED;
+        }
+    }
+
+    pub fn blobby_animation_step(&mut self, player : PlayerSide) {
+        let player_index = player.clone() as usize;
+
+        if self.blobs_animation_states[player_index] < 0.0f32 {
+            self.blobs_animation_speed[player_index] = 0.0f32;
+            self.blobs_animation_states[player_index] = 0.0f32;
+        }
+
+        if self.blobs_animation_states[player_index] >= 4.5f32 {
+            self.blobs_animation_speed[player_index] = - BLOBBY_ANIMATION_SPEED;
+        }
+
+        self.blobs_animation_states[player_index] += self.blobs_animation_speed[player_index];
+
+        if self.blobs_animation_states[player_index] >= 5.0f32 {
+            self.blobs_animation_states[player_index] = 4.99f32;
+        }
+    }
+
     pub fn handle_blob(&mut self, player : PlayerSide) {
         let player_index = player.clone() as usize;
 
         self.ball_hit_by_blobs[player_index] = false;
 
-        if false /* self.player_input[player_index].up */ {
+        if self.player_inputs[player_index].up {
             if self.blobby_hit_ground(player.clone()) {
                 self.blob_velocities[player_index].y = - BLOBBY_JUMP_ACCELERATION;
-                //self.blobby_start_animation(player.clone);
+                self.blobby_start_animation(player.clone());
             }
             self.blob_velocities[player_index].y -= BLOBBY_JUMP_BUFFER;
         }
 
         if  
-            /* (self.player_input[player_index].left || self.player_input[player_index].right) && */
+            (self.player_inputs[player_index].left || self.player_inputs[player_index].right) &&
             self.blobby_hit_ground(player.clone()) {
-                //self.blobby_start_animation(player.clone());
+                self.blobby_start_animation(player.clone());
             }
         
-        // self.blob_velocities[player_index].x = 
-        //     if self.player_input[player_index] { BLOBBY_SPEED } else { 0.0f32 } -
-        //     if self.player_input[player_index] { BLOBBY_SPEED } else { 0.0f32 };
+        self.blob_velocities[player_index].x = 
+            if self.player_inputs[player_index].right { BLOBBY_SPEED } else { 0.0f32 } -
+            if self.player_inputs[player_index].left { BLOBBY_SPEED } else { 0.0f32 };
 
+        // Acceleration Integration
         self.blob_velocities[player_index].y += GRAVITATION;
 
+        // Compute new position
         self.blob_positions[player_index] += self.blob_velocities[player_index];
 
         if self.blob_positions[player_index].y > GROUND_PLANE_HEIGHT {
 
             if self.blob_velocities[player_index].y > 3.5f32 {
-                //self.blobby_start_animation(player.clone());
+                self.blobby_start_animation(player.clone());
             }
 
             self.blob_positions[player_index].y = GROUND_PLANE_HEIGHT;
@@ -235,7 +269,7 @@ impl PhysicWorld {
 
         }
 
-        //self.blobby_animation_step(player.clone());
+        self.blobby_animation_step(player.clone());
     }
 
     pub fn ball_hit_left_player(&self) -> bool {
