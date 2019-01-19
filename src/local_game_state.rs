@@ -89,6 +89,7 @@ impl LocalGameState {
             })?;
         }
 
+        // draw the ball
         {
             let ball_pos = self.duel_match.get_ball_position();
             let ball_rot = self.duel_match.get_world().get_ball_rotation();
