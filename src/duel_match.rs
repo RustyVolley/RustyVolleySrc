@@ -68,11 +68,6 @@ impl DuelMatch {
             },
         }
 
-
-        // TODO process events
-
-        // TODO process last error
-
         if self.physic_world.is_round_finished() {
             //events.push(Event::EventReset); 
             self.is_ball_down = true;

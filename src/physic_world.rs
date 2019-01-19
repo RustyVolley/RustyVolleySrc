@@ -114,6 +114,13 @@ impl PhysicWorld {
         self.blobs_animation_states[LeftPlayer as usize] = 0.0f32;
         self.blobs_animation_states[RightPlayer as usize] = 0.0f32;
 
+        println!("Resetting");
+        println!("Resetting");
+        println!("Resetting");
+        println!("Resetting");
+        println!("Resetting");
+        println!("Resetting");
+
         self.is_game_running = false;
         self.is_ball_valid = true;
 
@@ -338,9 +345,9 @@ impl PhysicWorld {
             }
         }
 
-        if self.time_since_ball_out > TIMEOUT_MAX {
-            return true;
-        }
+        // if self.time_since_ball_out > TIMEOUT_MAX {
+        //     return true;
+        // }
 
         false
     }

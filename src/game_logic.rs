@@ -38,8 +38,10 @@ impl GameLogic {
         self.squish[1] = self.squish[1] - 1;
     }
 
-    pub fn get_last_error_side(&self) -> PlayerSide {
-        self.last_error.clone()
+    pub fn get_last_error_side(&mut self) -> PlayerSide {
+        let returned = self.last_error.clone();
+        self.last_error = NoPlayer;
+        returned
     }
 
     pub fn new() -> GameLogic {

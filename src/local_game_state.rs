@@ -24,14 +24,26 @@ pub struct LocalGameState {
 }
 
 impl LocalGameState {
-    // fn present_game(&self) {
-    //      panic!("Not implemented yet!");
-    // }
 
     pub fn step(&mut self) {
         self.duel_match.step();
         self.frame_number += 1;
-        //self.present_game();
+
+
+        // let is_ball_valid = 
+        //     self.duel_match.get_world().is_ball_valid;
+        
+        // let is_game_running =
+        //     self.duel_match.get_world().is_game_running;
+
+        // let ball_position =
+        //     self.duel_match.get_world().ball_position;
+
+        // println!(
+        //     "ball valid ? {}, game running ? {}, ball pos : {:?}", 
+        //     is_ball_valid,
+        //     is_game_running,
+        //     ball_position);
     }
 
     pub fn new() -> LocalGameState {
