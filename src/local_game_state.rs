@@ -101,6 +101,7 @@ impl LocalGameState {
             let ball_pos = self.duel_match.get_ball_position();
             let ball_rot = self.duel_match.get_world().get_ball_rotation();
 
+            //dbg!(ball_rot);
             let x = (ball_rot / std::f32::consts::PI / 2.0f32 * 16.0f32) as isize;
             let animation_state = x % 16;
 
@@ -110,12 +111,13 @@ impl LocalGameState {
             })?;
         }
 
-        if self.frame_number == 50 {
-            self.sounds[2].execute(|sound| {
-                sound.play()?;
-                Ok(())
-            })?;
-        }
+        // Play sound
+        // if self.frame_number == 50 {
+        //     self.sounds[2].execute(|sound| {
+        //         sound.play()?;
+        //         Ok(())
+        //     })?;
+        // }
     
         Ok(())
     }
@@ -142,7 +144,6 @@ impl LocalGameState {
                     _ => ()
                 }
             }
-
 
             if key == Key::D {
                 match state {

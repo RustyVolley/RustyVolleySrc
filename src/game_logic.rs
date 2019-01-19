@@ -1,5 +1,5 @@
 use global::PlayerSide;
-use global::PlayerSide::NoPlayer;
+use global::PlayerSide::*;
 
 pub const SQUISH_TOLERANCE : i32 = 10;
 
@@ -18,6 +18,18 @@ pub struct GameLogic {
     winning_player: PlayerSide,
     /// config parameter: score to win
     score_to_win : i32
+}
+
+fn side_to_index(side : PlayerSide) -> usize {
+    side as usize
+}
+
+fn other_side(side : PlayerSide) -> PlayerSide {
+    match side {
+        LeftPlayer => RightPlayer,
+        RightPlayer => LeftPlayer,
+        _ => panic!("Cannot find other side than Left and Right"),
+    }
 }
 
 impl GameLogic {
@@ -56,4 +68,47 @@ impl GameLogic {
         self.squish[0] = 0;
         self.squish[1] = 0;
     }
+
+    pub fn get_serving_player(&self) -> PlayerSide {
+        self.serving_player.clone()
+    }
+
+    pub fn on_ball_hits_ground(&mut self, side : PlayerSide) {
+        self.on_error(side);
+    }
+
+    pub fn  on_error(&mut self, side : PlayerSide) {
+        self.last_error = side.clone();
+
+        self.touches_ball_count[0] = 0;
+        self.touches_ball_count[1] = 0;
+        self.squish[0] = 0;
+        self.squish[1] = 0;
+
+        self.serving_player = other_side(side);
+    }
+
+    pub fn on_ball_hits_player(&mut self, side : PlayerSide) {
+
+        if !self.is_collision_valid(side.clone()) {
+            return;
+        }
+        
+        // otherwise, set the squish value
+        self.squish[side_to_index(side.clone())] = SQUISH_TOLERANCE;
+        
+        // count the touches
+        self.squish[side_to_index(other_side(side.clone()))] = 0;
+        
+        self.squish[side_to_index(side.clone())] = 
+            self.squish[side_to_index(side.clone())] + 1;
+
+        if self.touches_ball_count[side_to_index(side.clone())] > 3
+        {
+            // if a player hits a forth time, it is an error
+            self.on_error(side.clone());
+        }
+    }
+
+
 }

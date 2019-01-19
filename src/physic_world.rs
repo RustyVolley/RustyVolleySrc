@@ -288,6 +288,55 @@ impl PhysicWorld {
         self.ball_hit_by_blobs[RightPlayer as usize]
     }
 
+    pub fn ball_hit_right_ground(&self) -> bool {
+        if self.is_ball_valid {
+            if 
+                self.ball_position.y > GROUND_PLANE_HEIGHT && 
+                self.ball_position.x > NET_POSITION_X {
+                    return true;
+            }
+        }
+        false
+    }
+
+    pub fn ball_hit_left_ground(&self) -> bool {
+        if self.is_ball_valid {
+            if 
+                self.ball_position.y > GROUND_PLANE_HEIGHT && 
+                self.ball_position.x < NET_POSITION_X {
+                    return true;
+            }
+        }
+        false
+    }
+
+    pub fn reset_area_clear(&self) -> bool {
+        if self.blobby_hit_ground(LeftPlayer) && self.blobby_hit_ground(RightPlayer) {
+            return true;
+        }
+
+        false
+    }
+
+    pub fn is_round_finished(&self) -> bool {
+        if self.reset_area_clear() {
+            if !self.is_ball_valid {
+                if 
+                    self.ball_velocity.y < 1.5f32 &&
+                    self.ball_velocity.y > -1.5f32 && 
+                    self.ball_position.y > 430f32 {
+                        return true;
+                }
+            }
+        }
+
+        if self.time_since_ball_out > TIMEOUT_MAX {
+            return true;
+        }
+
+        false
+    }
+
     pub fn step(&mut self) {
 
         if self.is_game_running {
@@ -408,7 +457,6 @@ impl PhysicWorld {
             self.blob_positions[RightPlayer as usize].x = RIGHT_PLANE;
         }
 
-
         // Velocity Integration
         if self.ball_velocity.x > 0.0 {
             self.ball_rotation += self.ball_angular_velocity * (self.get_ball_speed() / 6.0f32);
@@ -420,14 +468,15 @@ impl PhysicWorld {
             self.ball_rotation -= self.ball_angular_velocity;
         }
 
-
         // Overflow-Protection
-        if self.ball_rotation <= 0f32 {
-            self.ball_rotation = 6.25f32 + self.ball_rotation;
+        if self.ball_rotation <= 0.0f32 {
+            self.ball_rotation = 6.25f32; //+ self.ball_rotation;
         }
         else if self.ball_rotation >= 6.25f32 {
-            self.ball_rotation = self.ball_rotation - 6.25f32;
+            self.ball_rotation = 6.25f32; //self.ball_rotation - 6.25f32;
         }
+
+        assert!(self.ball_rotation >= 0.0f32);
 
         self.time_since_ball_out = 
             if self.is_ball_valid 

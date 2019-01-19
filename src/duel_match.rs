@@ -13,10 +13,54 @@ pub struct DuelMatch {
     physic_world : PhysicWorld,
 }
 
+pub enum Event {
+    EventLeftBlobbyHit,
+    EventRightBlobbyHit,
+    EventBallHitLeftGround,
+    EventBallHitRightGround,
+    EventErrorLeft,
+    EventErrorRight,
+    EventReset,
+}
+
 impl DuelMatch {
     pub fn step(&mut self) {
         self.physic_world.step();
         self.game_logic.step();
+
+        let mut events : Vec<Event> = vec!();
+
+        if self.physic_world.ball_hit_left_player() {
+            self.game_logic.on_ball_hits_player(LeftPlayer);
+            //events.push(Event::EventLeftBlobbyHit);
+        }
+
+        if self.physic_world.ball_hit_right_player() {
+            //events.push(Event::EventRightBlobbyHit);   
+            self.game_logic.on_ball_hits_player(RightPlayer);
+        }
+
+        if self.physic_world.ball_hit_left_ground() {
+            self.game_logic.on_ball_hits_ground(LeftPlayer);
+            //events.push(Event::EventBallHitLeftGround);    
+        }
+
+        if self.physic_world.ball_hit_right_ground() {
+            //events.push(Event::EventBallHitRightGround);
+            self.game_logic.on_ball_hits_ground(RightPlayer);
+        }
+
+
+        // TODO process events
+
+        // TODO process last error
+
+        if self.physic_world.is_round_finished() {
+            //events.push(Event::EventReset); 
+            self.is_ball_down = true;
+            self.physic_world.reset(self.game_logic.get_serving_player());
+            println!("round finished");
+        }
     }
 
     pub fn new() -> DuelMatch {
