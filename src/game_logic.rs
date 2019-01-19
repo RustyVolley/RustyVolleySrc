@@ -104,7 +104,7 @@ impl GameLogic {
         self.squish[side_to_index(side.clone())] = SQUISH_TOLERANCE;
         
         // count the touches
-        self.squish[side_to_index(other_side(side.clone()))] = 0;
+        self.touches_ball_count[side_to_index(other_side(side.clone()))] = 0;
 
         self.touches_ball_count[side_to_index(side.clone())] = 
             self.touches_ball_count[side_to_index(side.clone())] + 1;
