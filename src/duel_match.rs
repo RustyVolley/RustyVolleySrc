@@ -36,6 +36,10 @@ impl DuelMatch {
         &self.physic_world
     }
 
+    pub fn get_ball_position(&self) -> Vector2<f32> {
+        self.physic_world.get_ball_position()
+    }
+
     pub fn get_blob_position(&self, player: PlayerSide) -> Vector2<f32> {
         if player == LeftPlayer
         {

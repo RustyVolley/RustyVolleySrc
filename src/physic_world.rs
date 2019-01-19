@@ -17,6 +17,7 @@ pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
 pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
 
+
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
     blob_positions : [Vector2<f32>; 2],
@@ -63,6 +64,14 @@ impl PhysicWorld {
         physic_world
     }
 
+    pub fn get_ball_position(&self) -> Vector2<f32> {
+        self.ball_position
+    }
+
+    pub fn get_ball_rotation(&self) -> f32 {
+        self.ball_rotation
+    }
+
     pub fn get_blob(&self, player: PlayerSide) -> Vector2<f32> {
         self.blob_positions[player as usize]
     }
@@ -95,8 +104,8 @@ impl PhysicWorld {
         self.ball_rotation = 0.0f32;
         self.ball_angular_velocity = STANDARD_BALL_ANGULAR_VELOCITY;
 
-        //mBlobState[LeftPlayer as usize] = 0.0f32;
-        //mBlobState[RightPlayer as usize] = 0.0f32;
+        self.blobs_animation_states[LeftPlayer as usize] = 0.0f32;
+        self.blobs_animation_states[RightPlayer as usize] = 0.0f32;
 
         self.is_game_running = false;
         self.is_ball_valid = true;
@@ -275,6 +284,7 @@ impl PhysicWorld {
             self.blob_positions[RightPlayer as usize].x = RIGHT_PLANE;
         }
 
+
         // Velocity Integration
         if self.ball_velocity.x > 0.0 {
             self.ball_rotation += self.ball_angular_velocity * (self.get_ball_speed() / 6.0f32);
@@ -285,6 +295,7 @@ impl PhysicWorld {
         else {
             self.ball_rotation -= self.ball_angular_velocity;
         }
+
 
         // Overflow-Protection
         if self.ball_rotation <= 0f32 {
