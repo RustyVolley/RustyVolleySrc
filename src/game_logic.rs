@@ -92,8 +92,6 @@ impl GameLogic {
         self.squish[1] = 0;
 
         self.serving_player = other_side(side);
-
-        println!("round is ended, serving player is {:?}.", self.serving_player);
     }
 
     pub fn on_ball_hits_player(&mut self, side : PlayerSide) {

@@ -72,7 +72,6 @@ impl DuelMatch {
             //events.push(Event::EventReset); 
             self.is_ball_down = true;
             self.physic_world.reset(self.game_logic.get_serving_player());
-            println!("round finished");
         }
     }
 

@@ -22,8 +22,8 @@ pub const BLOBBY_SPEED : f32 = 4.5f32;
 
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
-    blob_positions : [Vector2<f32>; 2],
-    ball_position : Vector2<f32>,
+    pub blob_positions : [Vector2<f32>; 2],
+    pub ball_position : Vector2<f32>,
     blob_velocities : [Vector2<f32>; 2],
     ball_velocity : Vector2<f32>,
 
@@ -114,13 +114,6 @@ impl PhysicWorld {
         self.blobs_animation_states[LeftPlayer as usize] = 0.0f32;
         self.blobs_animation_states[RightPlayer as usize] = 0.0f32;
 
-        println!("Resetting");
-        println!("Resetting");
-        println!("Resetting");
-        println!("Resetting");
-        println!("Resetting");
-        println!("Resetting");
-
         self.is_game_running = false;
         self.is_ball_valid = true;
 
@@ -174,22 +167,26 @@ impl PhysicWorld {
             self.last_hit_intensity = (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2<f32> = Vector2::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
+            let circle_pos : Vector2<f32> = 
+                Vector2::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
             
-            self.ball_velocity = -(self.ball_position - circle_pos);
-            self.ball_velocity = self.ball_velocity.normalize();
+            self.ball_velocity = -(circle_pos - self.ball_position);
+            self.ball_velocity = self.ball_velocity.normalized();
             self.ball_velocity = self.ball_velocity.scale(BALL_COLLISION_VELOCITY);
             self.ball_position += self.ball_velocity;
             self.ball_hit_by_blobs[player_index] = true;
+            
         }
         else if self.player_top_ball_collision(player.clone()) {
-            self.last_hit_intensity = (self.ball_velocity - self.blob_velocities[player_index]).length();
+            self.last_hit_intensity = 
+                (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2<f32> = Vector2::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
+            let circle_pos : Vector2<f32> = 
+                 Vector2::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
 
-            self.ball_velocity = -(self.ball_position - circle_pos);
-            self.ball_velocity = self.ball_velocity.normalize();
+            self.ball_velocity = -(circle_pos - self.ball_position);
+            self.ball_velocity = self.ball_velocity.normalized();
             self.ball_velocity = self.ball_velocity.scale(BALL_COLLISION_VELOCITY);
             self.ball_position += self.ball_velocity;
             self.ball_hit_by_blobs[player_index] = true;
