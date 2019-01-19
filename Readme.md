@@ -30,3 +30,5 @@ Then go to [http://[::1]:8000](http://[::1]:8000)
 [nalgebra](https://github.com/rustsim/nalgebra)
 
 [Quicksilver](https://github.com/ryanisaacg/quicksilver)
+
+[num-traits](https://github.com/rust-num/num-traits)
