@@ -482,10 +482,18 @@ impl PhysicWorld {
 
         // Overflow-Protection
         if self.ball_rotation <= 0.0f32 {
-            self.ball_rotation = 6.25f32; //+ self.ball_rotation;
+            self.ball_rotation = 6.25f32 + self.ball_rotation;
         }
         else if self.ball_rotation >= 6.25f32 {
-            self.ball_rotation = 6.25f32; //self.ball_rotation - 6.25f32;
+            self.ball_rotation = self.ball_rotation - 6.25f32;
+        }
+
+        // More Overflow-Protection
+        if self.ball_rotation <= 0.0f32 {
+            self.ball_rotation = 6.25f32;
+        }
+        else if self.ball_rotation >= 6.25f32 {
+            self.ball_rotation = 6.25f32;
         }
 
         assert!(self.ball_rotation >= 0.0f32);

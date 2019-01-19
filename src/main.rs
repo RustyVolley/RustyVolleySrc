@@ -41,7 +41,7 @@ impl State for LocalGameState {
 
 fn main() {
     run::<LocalGameState>("RustyVolley", Vector::new(800, 600), Settings {
-        draw_rate: 6.0, 
+        draw_rate: 4.0, 
         update_rate: 16.0,
         vsync: true,
         //fullscreen: true,
