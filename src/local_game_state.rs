@@ -28,31 +28,6 @@ impl LocalGameState {
     pub fn step(&mut self) {
         self.duel_match.step();
         self.frame_number += 1;
-
-
-        // let is_ball_valid = 
-        //     self.duel_match.get_world().is_ball_valid;
-        
-        // let is_game_running =
-        //     self.duel_match.get_world().is_game_running;
-
-        
-        let blob_positions =
-            self.duel_match.get_world().blob_positions;
-
-        let ball_position =
-            self.duel_match.get_world().ball_position;
-
-        // println!
-        // (
-        //     "left: {:03} {:03}, right: {:03} {:03}, ball pos: {:03} {:03}", 
-        //     blob_positions[0].x as isize,
-        //     blob_positions[0].y as isize,
-        //     blob_positions[1].x as isize,
-        //     blob_positions[1].y as isize,
-        //     ball_position.x as isize,
-        //     ball_position.y as isize
-        // );
     }
 
     pub fn new() -> LocalGameState {

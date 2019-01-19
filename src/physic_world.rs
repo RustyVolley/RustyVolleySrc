@@ -22,8 +22,8 @@ pub const BLOBBY_SPEED : f32 = 4.5f32;
 
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
-    pub blob_positions : [Vector2<f32>; 2],
-    pub ball_position : Vector2<f32>,
+    blob_positions : [Vector2<f32>; 2],
+    ball_position : Vector2<f32>,
     blob_velocities : [Vector2<f32>; 2],
     ball_velocity : Vector2<f32>,
 
