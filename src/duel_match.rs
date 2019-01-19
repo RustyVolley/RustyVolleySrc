@@ -28,7 +28,9 @@ impl DuelMatch {
         self.physic_world.step();
         self.game_logic.step();
 
-        let mut events : Vec<Event> = vec!();
+        //let mut events : Vec<Event> = vec!();
+
+        let mut has_ball_hit_ground = false;
 
         if self.physic_world.ball_hit_left_player() {
             self.game_logic.on_ball_hits_player(LeftPlayer);
@@ -41,13 +43,29 @@ impl DuelMatch {
         }
 
         if self.physic_world.ball_hit_left_ground() {
+            has_ball_hit_ground = true;
             self.game_logic.on_ball_hits_ground(LeftPlayer);
             //events.push(Event::EventBallHitLeftGround);    
         }
 
         if self.physic_world.ball_hit_right_ground() {
+            has_ball_hit_ground = true;
             //events.push(Event::EventBallHitRightGround);
             self.game_logic.on_ball_hits_ground(RightPlayer);
+        }
+
+        let last_error = self.game_logic.get_last_error_side();
+
+        match last_error {
+            NoPlayer => (),
+            _ => {
+                if !has_ball_hit_ground {
+                    self.physic_world.damp_ball();
+                }
+                
+                self.physic_world.set_ball_validity(false);
+                self.is_ball_down = true;
+            },
         }
 
 

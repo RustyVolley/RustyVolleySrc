@@ -38,6 +38,10 @@ impl GameLogic {
         self.squish[1] = self.squish[1] - 1;
     }
 
+    pub fn get_last_error_side(&self) -> PlayerSide {
+        self.last_error.clone()
+    }
+
     pub fn new() -> GameLogic {
         let mut game_logic = GameLogic {
             scores: [0i32; 2],
@@ -77,7 +81,7 @@ impl GameLogic {
         self.on_error(side);
     }
 
-    pub fn  on_error(&mut self, side : PlayerSide) {
+    pub fn on_error(&mut self, side : PlayerSide) {
         self.last_error = side.clone();
 
         self.touches_ball_count[0] = 0;
@@ -86,6 +90,8 @@ impl GameLogic {
         self.squish[1] = 0;
 
         self.serving_player = other_side(side);
+
+        println!("round is ended, serving player is {:?}.", self.serving_player);
     }
 
     pub fn on_ball_hits_player(&mut self, side : PlayerSide) {
@@ -99,7 +105,7 @@ impl GameLogic {
         
         // count the touches
         self.squish[side_to_index(other_side(side.clone()))] = 0;
-        
+
         self.squish[side_to_index(side.clone())] = 
             self.squish[side_to_index(side.clone())] + 1;
 

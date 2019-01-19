@@ -5,7 +5,7 @@ use global::PlayerSide::*;
 use quicksilver::{
     Result,
     geom::{Shape},
-    graphics::{Background::Img, Color, Image},
+    graphics::{Background::Img, Font, FontStyle, Color, Image},
     input::{*},
     lifecycle::{Asset, Window, Event},
     sound::Sound,
@@ -19,6 +19,7 @@ pub struct LocalGameState {
     ball_images: Vec<Asset<Image>>,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
+    font :  Asset<Font>,
     frame_number : usize
 }
 
@@ -61,6 +62,7 @@ impl LocalGameState {
             ball_images : ball_images,
             blobs_images: blobs_images,
             sounds: sounds,
+            font: Asset::new(Font::load("font.ttf")),
             frame_number: 0,
         }
     }
@@ -110,6 +112,24 @@ impl LocalGameState {
                 Ok(())
             })?;
         }
+
+        // {
+        //     let style = FontStyle::new(30.0, Color::BLACK);
+
+        //     self.font.execute(|my_font | {
+        //         let my_image : quicksilver::graphics::Image = 
+        //             my_font.render("Sample Text", &style)?;
+                
+        //         my_image.execute(|image| {
+        //             window.draw(&image.area().with_center((400, 300)), Img(&image));
+        //         });
+        //         // my_image.execute(|image| {
+        //         //     window.draw(&image.area().with_center((400, 300)), Img(&image));
+        //         //     Ok(())
+        //         // })
+        //         Ok(())
+        //     })?;
+        // }
 
         // Play sound
         // if self.frame_number == 50 {

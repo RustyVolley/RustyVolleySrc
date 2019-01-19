@@ -210,6 +210,14 @@ impl PhysicWorld {
         }
     }
 
+    pub fn damp_ball(&mut self) {
+        self.ball_velocity = self.ball_velocity.scale(0.6f32);
+    }
+
+    pub fn set_ball_validity(&mut self, validity: bool) {
+        self.is_ball_valid = validity;
+    }
+
     pub fn blobby_animation_step(&mut self, player : PlayerSide) {
         let player_index = player.clone() as usize;
 
