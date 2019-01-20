@@ -10,6 +10,7 @@ mod global;
 mod player_input;
 
 use local_game_state::LocalGameState;
+use game_constants::*;
 
 use quicksilver::{
     Result,
@@ -39,7 +40,7 @@ impl State for LocalGameState {
 }
 
 fn main() {
-    run::<LocalGameState>("RustyVolley", Vector::new(800, 600), Settings {
+    run::<LocalGameState>("RustyVolley", Vector::new(WINDOW_WIDTH, WINDOW_HEIGHT), Settings {
         draw_rate: 4.0, 
         update_rate: 16.0,
         vsync: true,

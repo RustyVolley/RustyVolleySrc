@@ -1,7 +1,6 @@
 use global::PlayerSide;
 use global::PlayerSide::*;
-
-pub const SQUISH_TOLERANCE : i32 = 10;
+use game_constants::*;
 
 pub struct GameLogic {
     // this array contains the scores
@@ -109,7 +108,7 @@ impl GameLogic {
         self.touches_ball_count[side_to_index(side.clone())] = 
             self.touches_ball_count[side_to_index(side.clone())] + 1;
 
-        if self.touches_ball_count[side_to_index(side.clone())] > 3
+        if self.touches_ball_count[side_to_index(side.clone())] > MAX_BALL_TOUCH_COUNT
         {
             // if a player hits a forth time, it is an error
             self.on_error(side.clone());

@@ -8,13 +8,6 @@ use player_input::PlayerInput;
 use physic_world::nalgebra::base::Vector2;
 use vector::VectorOP;
 
-// Gamefeeling relevant constants:
-pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
-
-pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
-pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
-pub const BLOBBY_SPEED : f32 = 4.5f32;
-
 
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
@@ -84,22 +77,29 @@ impl PhysicWorld {
     }
 
     pub fn reset_player(&mut self) {
-        self.blob_positions[LeftPlayer as usize] =  Vector2::new(200.0f32, GROUND_PLANE_HEIGHT);
-        self.blob_positions[RightPlayer as usize] = Vector2::new(600.0f32, GROUND_PLANE_HEIGHT);
+
+        self.blob_positions[LeftPlayer as usize] = 
+            Vector2::new(LEFT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
+
+        self.blob_positions[RightPlayer as usize] = 
+            Vector2::new(RIGHT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
     }
 
     pub fn reset(&mut self, player: PlayerSide) {
         if player == LeftPlayer
         {
-            self.ball_position = Vector2::new(200f32, STANDARD_BALL_HEIGHT);
+            self.ball_position = 
+                Vector2::new(LEFT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else if player == RightPlayer
         {
-            self.ball_position = Vector2::new(600f32, STANDARD_BALL_HEIGHT);
+            self.ball_position = 
+                Vector2::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else
         {
-            self.ball_position = Vector2::new(400f32, 450f32);
+            self.ball_position = 
+                Vector2::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32);
         }
 
         self.ball_velocity.clear();
@@ -211,7 +211,7 @@ impl PhysicWorld {
     }
 
     pub fn damp_ball(&mut self) {
-        self.ball_velocity = self.ball_velocity.scale(0.6f32);
+        self.ball_velocity = self.ball_velocity.scale(DAMP_BALL_SCALE_FACTOR);
     }
 
     pub fn set_ball_validity(&mut self, validity: bool) {
@@ -362,10 +362,10 @@ impl PhysicWorld {
             self.check_blobby_ball_collision(RightPlayer);
         }
         // Ball to ground Collision
-        else if self.ball_position.y + BALL_RADIUS > 500.0f32 {
+        else if self.ball_position.y + BALL_RADIUS > GROUND_PLANE_HEIGHT_MAX {
             self.ball_velocity = self.ball_velocity.reflect_y().scale_y(0.5f32);
             self.ball_velocity = self.ball_velocity.scale_x(0.55f32);
-            self.ball_position.y = 500.0f32 - BALL_RADIUS;
+            self.ball_position.y = GROUND_PLANE_HEIGHT_MAX - BALL_RADIUS;
         }
 
         if self.ball_hit_left_player() || self.ball_hit_right_player() {
