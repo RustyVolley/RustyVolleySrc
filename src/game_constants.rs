@@ -29,7 +29,6 @@ pub const BALL_COLLISION_VELOCITY : f32 = 13.125f32;
 
 // Volley Ball Net
 pub const NET_POSITION_X : f32 = RIGHT_PLANE / 2.0f32;
-pub const NET_POSITION_Y : f32 = 438f32;
 pub const NET_RADIUS : f32 = 7f32;
 //pub const NET_SPHERE : f32 = 154;		// what is the meaning of this value ???????
 pub const NET_SPHERE_POSITION : f32 = 284f32;

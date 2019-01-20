@@ -5,7 +5,7 @@ use global::PlayerSide::*;
 use quicksilver::{
     Result,
     geom::{Shape, Transform},
-    graphics::{Background::Img, Font, FontStyle, Color, Image},
+    graphics::{Background::Img, Color, Image},
     input::{*},
     lifecycle::{Asset, Window, Event},
     sound::Sound,
@@ -17,7 +17,6 @@ pub struct LocalGameState {
     ball_images: Vec<Asset<Image>>,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
-    font :  Asset<Font>,
     frame_events: Vec<FrameEvent>,
     frame_number : usize,
 }
@@ -26,15 +25,14 @@ impl LocalGameState {
 
     pub fn step(&mut self) {
         self.frame_events.clear();
-        let frame_events = self.duel_match.step(&mut self.frame_events);
+        self.duel_match.step(&mut self.frame_events);
 
         if self.frame_events.iter().any( |x| 
             *x == FrameEvent::EventLeftBlobbyHit ||
             *x == FrameEvent::EventRightBlobbyHit
         ) {
-            let frame_number = self.frame_number;
             let _ = self.sounds[0].execute(|sound| {
-                sound.play()?;
+                let _ = sound.play()?;
                 Ok(())
             });
         }
@@ -43,18 +41,17 @@ impl LocalGameState {
             *x == FrameEvent::EventErrorLeft ||
             *x == FrameEvent::EventErrorRight
         ) {
-            let frame_number = self.frame_number;
             let _ = self.sounds[2].execute(|sound| {
                 sound.set_volume(50.0f32);
-                sound.play()?;
+                let _ = sound.play()?;
                 Ok(())
             });
         }
 
         if self.frame_number == 0 {
-            let result = self.sounds[2].execute(|sound| {
+            let _ = self.sounds[2].execute(|sound| {
                 sound.set_volume(50.0f32);
-                sound.play()?;
+                let _ = sound.play()?;
                 Ok(())
             });
         }
@@ -88,7 +85,6 @@ impl LocalGameState {
             ball_images : ball_images,
             blobs_images: blobs_images,
             sounds: sounds,
-            font: Asset::new(Font::load("font.ttf")),
             frame_events: vec!(),
             frame_number: 0,
         }
@@ -141,28 +137,10 @@ impl LocalGameState {
             })?;
         }
 
-        // {
-        //     let style = FontStyle::new(30.0, Color::BLACK);
-
-        //     self.font.execute(|my_font | {
-        //         let my_image : quicksilver::graphics::Image = 
-        //             my_font.render("Sample Text", &style)?;
-                
-        //         my_image.execute(|image| {
-        //             window.draw(&image.area().with_center((400, 300)), Img(&image));
-        //         });
-        //         // my_image.execute(|image| {
-        //         //     window.draw(&image.area().with_center((400, 300)), Img(&image));
-        //         //     Ok(())
-        //         // })
-        //         Ok(())
-        //     })?;
-        // }
-
         Ok(())
     }
 
-    pub fn handle_event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
+    pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {
 
         let mut player_right_input = self.duel_match.get_world().get_player_input(RightPlayer);
         let mut player_left_input = self.duel_match.get_world().get_player_input(LeftPlayer);

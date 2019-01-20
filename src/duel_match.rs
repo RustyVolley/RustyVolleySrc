@@ -57,12 +57,12 @@ impl DuelMatch {
 
         match last_error {
             NoPlayer => (),
-            playerSide @ _ => {
+            player_side @ _ => {
                 if !has_ball_hit_ground {
                     self.physic_world.damp_ball();
                 }
 
-                match playerSide {
+                match player_side {
                     LeftPlayer => events.push(FrameEvent::EventErrorLeft),
                     RightPlayer => events.push(FrameEvent::EventErrorRight),
                     _ => ()

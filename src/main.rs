@@ -23,7 +23,7 @@ impl State for LocalGameState {
         Ok(LocalGameState::new())
     }
 
-    fn update(&mut self, window: &mut Window) -> Result<()> {
+    fn update(&mut self, _window: &mut Window) -> Result<()> {
         self.step();
         // self.elapsed += window.update_rate()
         Ok(())

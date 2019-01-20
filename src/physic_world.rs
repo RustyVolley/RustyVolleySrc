@@ -8,10 +8,6 @@ use player_input::PlayerInput;
 use physic_world::nalgebra::base::Vector2;
 use vector::VectorOP;
 
-pub const TIMESTEP : usize = 5usize; // calculations per frame
-
-pub const TIMEOUT_MAX : f32 = 2.5f32;
-
 // Gamefeeling relevant constants:
 pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
 
