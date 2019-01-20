@@ -13,6 +13,7 @@ jobs:
       - run:
           name: Check formatting
           command: |
+            rustup component add rustfmt
             rustfmt --version
             cargo fmt -- --write-mode=diff
       - run:
