@@ -13,7 +13,8 @@ pub struct DuelMatch {
     physic_world : PhysicWorld,
 }
 
-pub enum Event {
+#[derive(PartialEq, Eq)]
+pub enum FrameEvent {
     EventLeftBlobbyHit,
     EventRightBlobbyHit,
     EventBallHitLeftGround,
@@ -24,33 +25,31 @@ pub enum Event {
 }
 
 impl DuelMatch {
-    pub fn step(&mut self) {
+    pub fn step(&mut self, events : &mut Vec<FrameEvent>) {
         self.physic_world.step();
         self.game_logic.step();
-
-        //let mut events : Vec<Event> = vec!();
 
         let mut has_ball_hit_ground = false;
 
         if self.physic_world.ball_hit_left_player() {
             self.game_logic.on_ball_hits_player(LeftPlayer);
-            //events.push(Event::EventLeftBlobbyHit);
+            events.push(FrameEvent::EventLeftBlobbyHit);
         }
 
         if self.physic_world.ball_hit_right_player() {
-            //events.push(Event::EventRightBlobbyHit);   
+            events.push(FrameEvent::EventRightBlobbyHit);   
             self.game_logic.on_ball_hits_player(RightPlayer);
         }
 
         if self.physic_world.ball_hit_left_ground() {
             has_ball_hit_ground = true;
             self.game_logic.on_ball_hits_ground(LeftPlayer);
-            //events.push(Event::EventBallHitLeftGround);    
+            events.push(FrameEvent::EventBallHitLeftGround);    
         }
 
         if self.physic_world.ball_hit_right_ground() {
             has_ball_hit_ground = true;
-            //events.push(Event::EventBallHitRightGround);
+            events.push(FrameEvent::EventBallHitRightGround);
             self.game_logic.on_ball_hits_ground(RightPlayer);
         }
 
@@ -58,9 +57,15 @@ impl DuelMatch {
 
         match last_error {
             NoPlayer => (),
-            _ => {
+            playerSide @ _ => {
                 if !has_ball_hit_ground {
                     self.physic_world.damp_ball();
+                }
+
+                match playerSide {
+                    LeftPlayer => events.push(FrameEvent::EventErrorLeft),
+                    RightPlayer => events.push(FrameEvent::EventErrorLeft),
+                    _ => ()
                 }
                 
                 self.physic_world.set_ball_validity(false);
@@ -69,10 +74,11 @@ impl DuelMatch {
         }
 
         if self.physic_world.is_round_finished() {
-            //events.push(Event::EventReset); 
+            events.push(FrameEvent::EventReset); 
             self.is_ball_down = true;
             self.physic_world.reset(self.game_logic.get_serving_player());
         }
+
     }
 
     pub fn new() -> DuelMatch {

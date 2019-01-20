@@ -1,5 +1,5 @@
-use player::Player;
 use duel_match::DuelMatch;
+use duel_match::FrameEvent;
 use global::PlayerSide::*;
 
 use quicksilver::{
@@ -12,21 +12,53 @@ use quicksilver::{
 };
 
 pub struct LocalGameState {
-    left_player: Player,
-    right_player: Player,
     duel_match : DuelMatch,
     background_image: Asset<Image>,
     ball_images: Vec<Asset<Image>>,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
     font :  Asset<Font>,
-    frame_number : usize
+    frame_events: Vec<FrameEvent>,
+    frame_number : usize,
 }
 
 impl LocalGameState {
 
     pub fn step(&mut self) {
-        self.duel_match.step();
+        self.frame_events.clear();
+        let frame_events = self.duel_match.step(&mut self.frame_events);
+
+        if self.frame_events.iter().any( |x| 
+            *x == FrameEvent::EventLeftBlobbyHit ||
+            *x == FrameEvent::EventRightBlobbyHit
+        ) {
+            let frame_number = self.frame_number;
+            let _ = self.sounds[0].execute(|sound| {
+                sound.play()?;
+                Ok(())
+            });
+        }
+
+        if self.frame_events.iter().any( |x| 
+            *x == FrameEvent::EventErrorLeft ||
+            *x == FrameEvent::EventErrorRight
+        ) {
+            let frame_number = self.frame_number;
+            let _ = self.sounds[2].execute(|sound| {
+                sound.set_volume(50.0f32);
+                sound.play()?;
+                Ok(())
+            });
+        }
+
+        if self.frame_number == 0 {
+            let result = self.sounds[2].execute(|sound| {
+                sound.set_volume(50.0f32);
+                sound.play()?;
+                Ok(())
+            });
+        }
+
         self.frame_number += 1;
     }
 
@@ -51,19 +83,19 @@ impl LocalGameState {
         sounds.push(Asset::new(Sound::load("pfiff.wav")));
 
         LocalGameState {
-            left_player: Player::new(),
-            right_player: Player::new(),
             duel_match: DuelMatch::new(),
             background_image: Asset::new(Image::load("strand1.png")),
             ball_images : ball_images,
             blobs_images: blobs_images,
             sounds: sounds,
             font: Asset::new(Font::load("font.ttf")),
+            frame_events: vec!(),
             frame_number: 0,
         }
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window) -> Result<()> {
+
         window.clear(Color::WHITE)?;
 
         // draw background
@@ -127,14 +159,6 @@ impl LocalGameState {
         //     })?;
         // }
 
-        // Play sound
-        // if self.frame_number == 50 {
-        //     self.sounds[2].execute(|sound| {
-        //         sound.play()?;
-        //         Ok(())
-        //     })?;
-        // }
-    
         Ok(())
     }
 
