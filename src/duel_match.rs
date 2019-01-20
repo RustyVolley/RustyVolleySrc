@@ -64,7 +64,7 @@ impl DuelMatch {
 
                 match playerSide {
                     LeftPlayer => events.push(FrameEvent::EventErrorLeft),
-                    RightPlayer => events.push(FrameEvent::EventErrorLeft),
+                    RightPlayer => events.push(FrameEvent::EventErrorRight),
                     _ => ()
                 }
                 
