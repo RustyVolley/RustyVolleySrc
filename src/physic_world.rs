@@ -160,7 +160,8 @@ impl PhysicWorld {
 
         // Check for bottom circles
         if self.player_bottom_ball_collision(player.clone()) {
-            self.last_hit_intensity = (self.ball_velocity - self.blob_velocities[player_index]).length();
+            self.last_hit_intensity = 
+                (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
             let circle_pos : Vector2<f32> = 
@@ -227,10 +228,11 @@ impl PhysicWorld {
         }
 
         if self.blobs_animation_states[player_index] >= 4.5f32 {
-            self.blobs_animation_speed[player_index] = - BLOBBY_ANIMATION_SPEED;
+            self.blobs_animation_speed[player_index] = -BLOBBY_ANIMATION_SPEED;
         }
 
-        self.blobs_animation_states[player_index] += self.blobs_animation_speed[player_index];
+        self.blobs_animation_states[player_index] += 
+            self.blobs_animation_speed[player_index] * TIME_SCALING;
 
         if self.blobs_animation_states[player_index] >= 5.0f32 {
             self.blobs_animation_states[player_index] = 4.99f32;
@@ -255,7 +257,7 @@ impl PhysicWorld {
                 self.blob_velocities[player_index].y = - BLOBBY_JUMP_ACCELERATION;
                 self.blobby_start_animation(player.clone());
             }
-            self.blob_velocities[player_index].y -= BLOBBY_JUMP_BUFFER;
+            self.blob_velocities[player_index].y -= BLOBBY_JUMP_BUFFER * TIME_SCALING;
         }
 
         if  
@@ -269,10 +271,11 @@ impl PhysicWorld {
             if self.player_inputs[player_index].left { BLOBBY_SPEED } else { 0.0f32 };
 
         // Acceleration Integration
-        self.blob_velocities[player_index].y += GRAVITATION;
+        self.blob_velocities[player_index].y += BLOBBY_GRAVITATION * TIME_SCALING;
 
         // Compute new position
-        self.blob_positions[player_index] += self.blob_velocities[player_index];
+        self.blob_positions[player_index] += 
+            self.blob_velocities[player_index] * TIME_SCALING;
 
         if self.blob_positions[player_index].y > GROUND_PLANE_HEIGHT {
 
@@ -348,13 +351,13 @@ impl PhysicWorld {
     pub fn step(&mut self) {
 
         if self.is_game_running {
-            self.ball_velocity.y += BALL_GRAVITATION;
+            self.ball_velocity.y += BALL_GRAVITATION * TIME_SCALING;
         }
 
         self.handle_blob(LeftPlayer);
         self.handle_blob(RightPlayer);
 
-        self.ball_position += self.ball_velocity;
+        self.ball_position += self.ball_velocity * TIME_SCALING;
 
         // Collision detection
         if self.is_ball_valid {
@@ -498,17 +501,17 @@ impl PhysicWorld {
         // Velocity Integration
         if self.ball_velocity.x > 0.0 {
             self.ball_rotation += 
-                self.ball_angular_velocity * 
+                self.ball_angular_velocity * TIME_SCALING *
                     (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
         }
         else if self.ball_velocity.x < 0.0 {
             self.ball_rotation -= 
-                self.ball_angular_velocity * 
+                self.ball_angular_velocity * TIME_SCALING *
                     (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
         }
         else {
             self.ball_rotation -= 
-                self.ball_angular_velocity;
+                self.ball_angular_velocity * TIME_SCALING;
         }
 
         // Overflow-Protection

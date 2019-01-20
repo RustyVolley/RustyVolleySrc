@@ -15,7 +15,7 @@ pub const BLOBBY_LOWER_RADIUS : f32 = 33f32;
 // This is exactly the half of the gravitation, i checked it in
 // the original code
 pub const BLOBBY_JUMP_BUFFER : f32 = 0.44f32;
-pub const GRAVITATION : f32 = 0.88f32;
+pub const BLOBBY_GRAVITATION : f32 = 0.88f32;
 pub const BLOBBY_JUMP_ACCELERATION : f32 = 15.1f32;
 
 // Ball Settings
@@ -62,3 +62,5 @@ pub const PERPENDICULAR_KINEMATIC_ENERGY_DAMPING_FACTOR : f32 = 0.7;
 pub const PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR : f32 = 0.9;
 
 pub const BALL_ANGULAR_VELOCITY_SCALE_FACTOR : f32 = 6.0;
+
+pub const TIME_SCALING : f32 = 0.0875f32;
