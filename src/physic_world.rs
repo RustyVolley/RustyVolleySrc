@@ -363,8 +363,15 @@ impl PhysicWorld {
         }
         // Ball to ground Collision
         else if self.ball_position.y + BALL_RADIUS > GROUND_PLANE_HEIGHT_MAX {
-            self.ball_velocity = self.ball_velocity.reflect_y().scale_y(0.5f32);
-            self.ball_velocity = self.ball_velocity.scale_x(0.55f32);
+
+            self.ball_velocity = 
+                self.ball_velocity
+                .reflect_y()
+                .scale_y(SPEED_SCALE_ON_GROUND_BOUNCE_Y);
+
+            self.ball_velocity = 
+                self.ball_velocity.scale_x(SPEED_SCALE_ON_GROUND_BOUNCE_X);
+
             self.ball_position.y = GROUND_PLANE_HEIGHT_MAX - BALL_RADIUS;
         }
 
@@ -373,13 +380,17 @@ impl PhysicWorld {
         }
 
         // Border Collision
-        if self.ball_position.x - BALL_RADIUS <= LEFT_PLANE && self.ball_velocity.x < 0.0
+        if 
+            self.ball_position.x - BALL_RADIUS <= LEFT_PLANE && 
+            self.ball_velocity.x < 0.0
         {
             self.ball_velocity = self.ball_velocity.reflect_x();
             // set the ball's position
             self.ball_position.x = LEFT_PLANE + BALL_RADIUS;
         }
-        else if self.ball_position.x + BALL_RADIUS >= RIGHT_PLANE && self.ball_velocity.x > 0.0
+        else if 
+            self.ball_position.x + BALL_RADIUS >= RIGHT_PLANE && 
+            self.ball_velocity.x > 0.0
         {
             self.ball_velocity = self.ball_velocity.reflect_x();
             // set the ball's position
@@ -406,32 +417,45 @@ impl PhysicWorld {
         {
             // Net Collisions
 
-            let ball_net_vec : Vector2<f32> = 
+            let ball_net_vec = 
                 Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
 
             let ball_net_distance = ball_net_vec.length();
 
             if ball_net_distance < NET_RADIUS + BALL_RADIUS
             { 
-                let vec = Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
+                let vec = 
+                    Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - 
+                    self.ball_position;
                 // calculate
                 let normal = vec.normalized();
                         
                 // normal component of kinetic energy
-                let mut perp_ekin = normal.dot_product(&self.ball_velocity);
+                let mut perpendicular_kinematic_energy = 
+                    normal.dot_product(&self.ball_velocity);
 
-                perp_ekin *= perp_ekin;
+                perpendicular_kinematic_energy *= perpendicular_kinematic_energy;
                 // parallel component of kinetic energy
-                let mut para_ekin = self.ball_velocity.length() * self.ball_velocity.length() - perp_ekin;
+                let mut parallel_kinematic_energy = 
+                    self.ball_velocity.length() * self.ball_velocity.length() - 
+                    perpendicular_kinematic_energy;
                 
                 // the normal component is damped stronger than the parallel component
                 // the values are ~ 0.85² and ca. 0.95², because speed is sqrt(ekin)
-                perp_ekin *= 0.7;
-                para_ekin *= 0.9;
+                perpendicular_kinematic_energy *= 
+                    PERPENDICULAR_KINEMATIC_ENERGY_DAMPING_FACTOR;
+                    
+                parallel_kinematic_energy *= 
+                    PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR;
                 
-                let nspeed = (perp_ekin + para_ekin).sqrt();
+                let n_speed = 
+                    (perpendicular_kinematic_energy + parallel_kinematic_energy).sqrt();
                 
-                self.ball_velocity = self.ball_velocity.reflect(&normal).normalized().scale(nspeed);
+                self.ball_velocity = 
+                    self.ball_velocity
+                    .reflect(&normal)
+                    .normalized()
+                    .scale(n_speed);
                 
                 // pushes the ball out of the net
                 self.ball_position = 
@@ -446,14 +470,20 @@ impl PhysicWorld {
         }
 
         // Collision between blobby and the net
-        if self.blob_positions[LeftPlayer as usize].x + BLOBBY_LOWER_RADIUS > NET_POSITION_X - NET_RADIUS // Collision with the net
+        if 
+            self.blob_positions[LeftPlayer as usize].x + BLOBBY_LOWER_RADIUS > 
+            NET_POSITION_X - NET_RADIUS // Collision with the net
         {
-		    self.blob_positions[LeftPlayer as usize].x = NET_POSITION_X - NET_RADIUS - BLOBBY_LOWER_RADIUS;
+		    self.blob_positions[LeftPlayer as usize].x = 
+                NET_POSITION_X - NET_RADIUS - BLOBBY_LOWER_RADIUS;
         }
 
-        if self.blob_positions[RightPlayer as usize].x - BLOBBY_LOWER_RADIUS < NET_POSITION_X + NET_RADIUS
+        if 
+            self.blob_positions[RightPlayer as usize].x - BLOBBY_LOWER_RADIUS < 
+            NET_POSITION_X + NET_RADIUS
         {
-            self.blob_positions[RightPlayer as usize].x = NET_POSITION_X + NET_RADIUS + BLOBBY_LOWER_RADIUS;
+            self.blob_positions[RightPlayer as usize].x = 
+                NET_POSITION_X + NET_RADIUS + BLOBBY_LOWER_RADIUS;
         }
 
         // Collision between blobby and the border
@@ -467,13 +497,18 @@ impl PhysicWorld {
 
         // Velocity Integration
         if self.ball_velocity.x > 0.0 {
-            self.ball_rotation += self.ball_angular_velocity * (self.get_ball_speed() / 6.0f32);
+            self.ball_rotation += 
+                self.ball_angular_velocity * 
+                    (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
         }
         else if self.ball_velocity.x < 0.0 {
-            self.ball_rotation -= self.ball_angular_velocity * (self.get_ball_speed() / 6.0f32);
+            self.ball_rotation -= 
+                self.ball_angular_velocity * 
+                    (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
         }
         else {
-            self.ball_rotation -= self.ball_angular_velocity;
+            self.ball_rotation -= 
+                self.ball_angular_velocity;
         }
 
         // Overflow-Protection
