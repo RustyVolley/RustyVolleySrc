@@ -9,7 +9,7 @@ A rewrite of [Blobby Volley 2](https://sourceforge.net/projects/blobby/) written
 # Compiling and running it
 
 
-1. Getting the tools
+## 1. Get the tools
 
 You need Rust nightly to compile this beauty:
 
@@ -28,7 +28,7 @@ Also, you will need cargo-web if you want to run it in your web browser.
 cargo install cargo-web
 ```
 
-2. Run the game
+## 2. Compile and run the game
 
 ```sh
 cargo web start
