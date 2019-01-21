@@ -6,7 +6,7 @@ A rewrite of [Blobby Volley 2](https://sourceforge.net/projects/blobby/) written
 
 > That is too much buzzwords for me, show me code already!
 
-[Here you go!](https://codec-abc.github.io/RustyVolley/)
+[Here you go!](https://rustyvolley.github.io/WebDemo/)
 
 # Compiling and running it
 
