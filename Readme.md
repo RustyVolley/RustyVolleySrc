@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/codec-abc/RustyVolley.svg?style=svg)](https://circleci.com/gh/codec-abc/RustyVolley)
+[![CircleCI](https://circleci.com/gh/RustyVolley/RustyVolleySrc.svg?style=svg)](https://circleci.com/gh/RustyVolley/RustyVolleySrc)
 
 # What is this?
 
