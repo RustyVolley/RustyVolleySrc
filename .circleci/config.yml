@@ -24,7 +24,7 @@ jobs:
             rustup run nightly cargo --version --verbose
             rustup run nightly cargo build
             rustup run nightly cargo build --release
-            - run:
+      - run:
           name: Nightly Build Web
           command: |
             rustup install nightly
