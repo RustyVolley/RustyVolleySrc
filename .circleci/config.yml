@@ -14,7 +14,7 @@ jobs:
       - restore_cache:
           key: project-cache
       - run:
-          name: Nightly Build
+          name: Nightly Build Desktop
           command: |
             sudo apt-get install libudev-dev
             sudo apt-get install libasound2-dev
@@ -24,6 +24,14 @@ jobs:
             rustup run nightly cargo --version --verbose
             rustup run nightly cargo build
             rustup run nightly cargo build --release
+            - run:
+          name: Nightly Build Web
+          command: |
+            rustup install nightly
+            rustup run nightly rustc --version --verbose
+            rustup run nightly cargo --version --verbose
+            rustup run nightly cargo web deploy
+            rustup run nightly cargo web deploy --release
       - save_cache:
           key: project-cache
           paths:

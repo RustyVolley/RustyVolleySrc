@@ -24,7 +24,7 @@ rustup update
 ```
 
 
-Also, you will need cargo-web if you want to run it in your web browser.
+Also, you will need cargo-web if you want to run it in your web browser:
 
 ```sh
 cargo install cargo-web
@@ -32,15 +32,21 @@ cargo install cargo-web
 
 ## 2. Compile and run the game
 
+To run it in with WebAssembly do:
+
 ```sh
 cargo web start
 ```
-
 Then go to [http://[::1]:8000](http://[::1]:8000) to see it in action.
+
+If you only want to generate the files for building a web release do:
+```sh
+cargo web deploy --release
+```
 
 Also, you can run it in a desktop window with:
 ```sh
-cargo run
+cargo run --release
 ```
 
 ### Libraries used
