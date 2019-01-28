@@ -40,12 +40,14 @@ pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
 pub const BLOBBY_SPEED : f32 = 4.5f32;
 
-pub const SQUISH_TOLERANCE : i32 = 10;
+pub const SQUISH_TOLERANCE : i32 = 80;
 
 pub const MAX_BALL_TOUCH_COUNT : i32 = 3;
 
-pub const WINDOW_WIDTH : i32 = 800;
-pub const WINDOW_HEIGHT : i32 = 600;
+pub const WINDOW_WIDTH : i32 = 1920;
+pub const WINDOW_HEIGHT : i32 = 1440;
+
+pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
 
 pub const LEFT_SPAWN_POS_X : i32 = 200;
 pub const RIGHT_SPAWN_POS_X : i32 = 600;
@@ -63,4 +65,4 @@ pub const PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR : f32 = 0.9;
 
 pub const BALL_ANGULAR_VELOCITY_SCALE_FACTOR : f32 = 6.0;
 
-pub const TIME_SCALING : f32 = 0.0875f32;
+pub const TIME_SCALING : f32 = 0.35f32;

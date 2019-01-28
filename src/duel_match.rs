@@ -32,13 +32,17 @@ impl DuelMatch {
         let mut has_ball_hit_ground = false;
 
         if self.physic_world.ball_hit_left_player() {
-            self.game_logic.on_ball_hits_player(LeftPlayer);
-            events.push(FrameEvent::EventLeftBlobbyHit);
+            let valid_hit = self.game_logic.on_ball_hits_player(LeftPlayer);
+            if valid_hit {
+                events.push(FrameEvent::EventLeftBlobbyHit);
+            }
         }
 
         if self.physic_world.ball_hit_right_player() {
-            events.push(FrameEvent::EventRightBlobbyHit);   
-            self.game_logic.on_ball_hits_player(RightPlayer);
+            let valid_hit = self.game_logic.on_ball_hits_player(RightPlayer);
+            if valid_hit {
+                events.push(FrameEvent::EventRightBlobbyHit);   
+            }
         }
 
         if self.physic_world.ball_hit_left_ground() {

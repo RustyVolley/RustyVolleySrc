@@ -1,10 +1,11 @@
 use duel_match::DuelMatch;
 use duel_match::FrameEvent;
 use global::PlayerSide::*;
+use game_constants::*;
 
 use quicksilver::{
     Result,
-    geom::{Shape, Transform},
+    geom::{Shape, Transform, Vector},
     graphics::{Background::Img, Color, Image},
     input::{*},
     lifecycle::{Asset, Window, Event},
@@ -14,7 +15,7 @@ use quicksilver::{
 pub struct LocalGameState {
     duel_match : DuelMatch,
     background_image: Asset<Image>,
-    ball_images: Vec<Asset<Image>>,
+    ball_images: Asset<Image>,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
     frame_events: Vec<FrameEvent>,
@@ -60,13 +61,8 @@ impl LocalGameState {
     }
 
     pub fn new() -> LocalGameState {
-        let mut ball_images : Vec<Asset<Image>> = vec!();
-        let mut blobs_images : Vec<Asset<Image>> = vec!();
 
-        for i in 1..17 {
-            let path = format!("ball{:02}.png", i);
-            ball_images.push(Asset::new(Image::load(path)));
-        }
+        let mut blobs_images : Vec<Asset<Image>> = vec!();
 
         for i in 1..6 {
             let path = format!("blobbym{:1}.png", i);
@@ -81,8 +77,8 @@ impl LocalGameState {
 
         LocalGameState {
             duel_match: DuelMatch::new(),
-            background_image: Asset::new(Image::load("strand1.png")),
-            ball_images : ball_images,
+            background_image: Asset::new(Image::load("background.png")),
+            ball_images : Asset::new(Image::load("ball.png")),
             blobs_images: blobs_images,
             sounds: sounds,
             frame_events: vec!(),
@@ -94,19 +90,60 @@ impl LocalGameState {
 
         window.clear(Color::WHITE)?;
 
+
         // draw background
-        self.background_image.execute(|image| {
-            window.draw_ex(&image.area().with_center((400, 300)), Img(&image), Transform::IDENTITY, 0.0f32);
-            Ok(())
-        })?;
+        {
+            let transform = 
+                Transform::IDENTITY * 
+                Transform::scale(
+                    Vector::new(
+                        DISPLAY_SCALE_FACTOR, 
+                        DISPLAY_SCALE_FACTOR
+                    )
+                );
+
+            self.background_image.execute(|image| {
+                window.draw_ex(
+                    &image.area().with_center(
+                        (
+                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                            WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
+                        )
+                    ), 
+                    Img(&image), 
+                    transform, 
+                    0.0f32
+                );
+                Ok(())
+            })?;
+        }
 
         // draw left player
         {
             let blob_pos = self.duel_match.get_blob_position(LeftPlayer);
             let blob_state = (self.duel_match.get_world().get_blob_state(LeftPlayer) as usize) % 5usize;
 
+             let transform = 
+                Transform::scale(
+                    Vector::new(
+                        DISPLAY_SCALE_FACTOR * 2.4f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32
+                    )
+                );
+
             self.blobs_images[blob_state].execute(|image| {
-                window.draw_ex(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image), Transform::IDENTITY, 2.0f32);
+                window.draw_ex(
+                    &image.area().with_center(
+                        (
+                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            blob_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
+                        )
+                    ), 
+                    Img(&image), 
+                    transform, 
+                    2.0f32
+                );
+
                 Ok(())
             })?;
         }
@@ -116,8 +153,27 @@ impl LocalGameState {
             let blob_pos = self.duel_match.get_blob_position(RightPlayer);
             let blob_state = (self.duel_match.get_world().get_blob_state(RightPlayer) as usize) % 5usize;
 
+            let transform = 
+                Transform::scale(
+                    Vector::new(
+                        DISPLAY_SCALE_FACTOR * 2.4f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32
+                    )
+                );
+
             self.blobs_images[blob_state].execute(|image| {
-                window.draw_ex(&image.area().with_center((blob_pos.x, blob_pos.y)), Img(&image), Transform::IDENTITY, 3.0f32);
+                window.draw_ex(
+                    &image.area().with_center(
+                        (
+                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            blob_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
+                        )
+                    ), 
+                    Img(&image), 
+                    transform, 
+                    3.0f32
+                );
+
                 Ok(())
             })?;
         }
@@ -127,12 +183,30 @@ impl LocalGameState {
             let ball_pos = self.duel_match.get_ball_position();
             let ball_rot = self.duel_match.get_world().get_ball_rotation();
 
-            //dbg!(ball_rot);
-            let x = (ball_rot / std::f32::consts::PI / 2.0f32 * 16.0f32) as isize;
-            let animation_state = x % 16;
+            let transform = 
+                Transform::scale(
+                    Vector::new(
+                        DISPLAY_SCALE_FACTOR * 2.4f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32
+                    )
+                ) *
+                Transform::rotate(
+                    ball_rot as f32 / std::f32::consts::PI * 180.0f32
+                );
 
-            self.ball_images[animation_state as usize].execute(|image| {
-                window.draw_ex(&image.area().with_center((ball_pos.x, ball_pos.y)), Img(&image), Transform::IDENTITY, 1.0f32);
+            self.ball_images.execute(|image| {
+                window.draw_ex(
+                    &image.area().with_center(
+                        (
+                            ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            ball_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
+                        )
+                    ), 
+                    Img(&image), 
+                    transform, 
+                    1.0f32
+                );
+
                 Ok(())
             })?;
         }

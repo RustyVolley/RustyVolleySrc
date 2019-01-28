@@ -93,10 +93,10 @@ impl GameLogic {
         self.serving_player = other_side(side);
     }
 
-    pub fn on_ball_hits_player(&mut self, side : PlayerSide) {
+    pub fn on_ball_hits_player(&mut self, side : PlayerSide) -> bool {
 
         if !self.is_collision_valid(side.clone()) {
-            return;
+            return false;
         }
         
         // otherwise, set the squish value
@@ -113,6 +113,8 @@ impl GameLogic {
             // if a player hits a forth time, it is an error
             self.on_error(side.clone());
         }
+
+        true
     }
 
 
