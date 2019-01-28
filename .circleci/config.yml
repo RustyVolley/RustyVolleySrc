@@ -11,8 +11,6 @@ jobs:
       TZ: "/usr/share/zoneinfo/Europe/Paris"
     steps:
       - checkout
-      - restore_cache:
-          key: project-cache
       - run:
           name: Nightly Build Desktop
           command: |
@@ -33,8 +31,3 @@ jobs:
             rustup run nightly cargo install cargo-web
             rustup run nightly cargo web deploy
             rustup run nightly cargo web deploy --release
-      - save_cache:
-          key: project-cache
-          paths:
-            - "~/.cargo"
-            - "./target"
