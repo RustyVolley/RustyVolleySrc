@@ -49,6 +49,9 @@ pub const WINDOW_HEIGHT : i32 = 1440;
 
 pub const BALL_INDICATOR_HEIGHT : i32 = 20;
 
+pub const SCORE_BASELINE_HEIGHT : i32 = 50;
+pub const SCORE_PADDING_X : i32 = 100;
+
 pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
 
 pub const LEFT_SPAWN_POS_X : i32 = 200;

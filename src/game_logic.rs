@@ -89,6 +89,8 @@ impl GameLogic {
         self.touches_ball_count[1] = 0;
         self.squish[0] = 0;
         self.squish[1] = 0;
+        self.scores[side_to_index(other_side(side.clone()))] = 
+            self.scores[side_to_index(other_side(side.clone()))] + 1;
 
         self.serving_player = other_side(side);
     }
@@ -115,6 +117,10 @@ impl GameLogic {
         }
 
         true
+    }
+
+    pub fn get_scores(&self) -> (i32, i32) {
+        (self.scores[0], self.scores[1])
     }
 
 

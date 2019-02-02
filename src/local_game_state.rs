@@ -1,3 +1,6 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use duel_match::DuelMatch;
 use duel_match::FrameEvent;
 use global::PlayerSide::*;
@@ -6,21 +9,42 @@ use game_constants::*;
 use quicksilver::{
     Result,
     geom::{Shape, Transform, Vector},
-    graphics::{Background::Img, Color, Image},
+    graphics::{Background::Img, Color, Image, Font, FontStyle},
     input::{*},
     lifecycle::{Asset, Window, Event},
     sound::Sound,
 };
+
+pub struct Scoring {
+    score1: i32,
+    score2: i32,
+    score1_texture : Option<Image>,
+    score2_texture : Option<Image>,
+}
+
+impl Scoring {
+    pub fn new() -> Scoring {
+        Scoring {
+            score1: -1,
+            score2: -1,
+            score1_texture: None,
+            score2_texture: None,
+        }
+    }
+}
 
 pub struct LocalGameState {
     duel_match : DuelMatch,
     background_image: Asset<Image>,
     ball_image: Asset<Image>,
     ball_indicator: Asset<Image>,
+    font: Rc<RefCell<Asset<Font>>>,
+    font_style: FontStyle,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
     frame_events: Vec<FrameEvent>,
     frame_number : usize,
+    scoring : Scoring,
 }
 
 impl LocalGameState {
@@ -85,6 +109,9 @@ impl LocalGameState {
             sounds: sounds,
             frame_events: vec!(),
             frame_number: 0,
+            font: Rc::new(RefCell::new(Asset::new(Font::load("font11.ttf")))),
+            font_style: FontStyle::new(64.0, Color::BLACK),
+            scoring: Scoring::new()
         }
     }
 
@@ -227,7 +254,7 @@ impl LocalGameState {
                         )
                     );
                     
-                return self.ball_indicator.execute(|image| {
+                self.ball_indicator.execute(|image| {
                     window.draw_ex(
                         &image.area().with_center(
                             (
@@ -239,12 +266,89 @@ impl LocalGameState {
                         transform, 
                         4.0f32
                     );
+
                     Ok(())
-                });
-            } else {
-                Ok(())
+                })?;
             }
         }
+
+        // draw the score
+        {
+
+            let transform = 
+                    Transform::scale(
+                        Vector::new(
+                            DISPLAY_SCALE_FACTOR * 1.6f32, 
+                            DISPLAY_SCALE_FACTOR * 1.6f32
+                        )
+                    );
+
+            let (score1, score2) = self.duel_match.get_scores();
+            let font_style = self.font_style.clone();
+            let should_recreate_texture =
+                self.scoring.score1 != score1 ||
+                self.scoring.score2 != score2 ||
+                self.scoring.score1_texture.is_none();
+                self.scoring.score2_texture.is_none();
+
+            let cloned_font_ref = self.font.clone();
+
+            cloned_font_ref.borrow_mut().execute(|a_font| {
+                
+                if should_recreate_texture {
+
+                    let score1_texture = 
+                        a_font.render(&format!("{:02}", score1), &font_style).unwrap();
+
+                    self.scoring.score1 = score1;
+                    self.scoring.score1_texture = Some(score1_texture);
+                    
+                   let score2_texture = 
+                       a_font.render(&format!("{:02}", score2), &font_style).unwrap();
+
+                    self.scoring.score2 = score2;
+                    self.scoring.score2_texture = Some(score2_texture);
+                }
+
+                match self.scoring.score1_texture {
+                    None => (),
+                    Some(ref image) => {
+                        window.draw_ex(
+                            &image.area().with_center(
+                                (
+                                    SCORE_PADDING_X as f32 * DISPLAY_SCALE_FACTOR, 
+                                    SCORE_BASELINE_HEIGHT as f32 * DISPLAY_SCALE_FACTOR
+                                )
+                            ), 
+                            Img(&image), 
+                            transform, 
+                            5.0f32
+                        );
+                    }
+                }
+
+                match self.scoring.score2_texture {
+                    None => (),
+                    Some(ref image) => {
+                        window.draw_ex(
+                            &image.area().with_center(
+                                (
+                                    (WINDOW_WIDTH - SCORE_PADDING_X) as f32 * DISPLAY_SCALE_FACTOR, 
+                                    SCORE_BASELINE_HEIGHT as f32 * DISPLAY_SCALE_FACTOR
+                                )
+                            ), 
+                            Img(&image), 
+                            transform, 
+                            5.0f32
+                        );
+                    }
+                }
+
+                Ok(())
+            })?;
+        }
+
+        Ok(())
     }
 
     pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {

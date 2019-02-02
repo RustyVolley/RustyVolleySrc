@@ -120,4 +120,8 @@ impl DuelMatch {
             return Vector2::new(0.0f32, 0.0f32);
         }
     }
+
+    pub fn get_scores(&self) -> (i32, i32) {
+        self.game_logic.get_scores()
+    }
 }
