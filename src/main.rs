@@ -44,8 +44,8 @@ fn main() {
     (
         "RustyVolley", 
         Vector::new(
-            WINDOW_WIDTH as f32 * DISPLAY_SCALE_FACTOR, 
-            WINDOW_HEIGHT as f32 * DISPLAY_SCALE_FACTOR
+            ((WINDOW_WIDTH as f32) * DISPLAY_SCALE_FACTOR) as u32,
+            ((WINDOW_HEIGHT as f32) * DISPLAY_SCALE_FACTOR) as u32
         ), 
         Settings {
             draw_rate: 4.0, 

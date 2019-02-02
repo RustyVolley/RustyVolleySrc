@@ -52,8 +52,6 @@ pub const BALL_INDICATOR_HEIGHT : i32 = 20;
 pub const SCORE_BASELINE_HEIGHT : i32 = 50;
 pub const SCORE_PADDING_X : i32 = 100;
 
-pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
-
 pub const LEFT_SPAWN_POS_X : i32 = 200;
 pub const RIGHT_SPAWN_POS_X : i32 = 600;
 
@@ -70,4 +68,6 @@ pub const PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR : f32 = 0.9;
 
 pub const BALL_ANGULAR_VELOCITY_SCALE_FACTOR : f32 = 6.0;
 
+
+pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
 pub const TIME_SCALING : f32 = 0.35f32;
