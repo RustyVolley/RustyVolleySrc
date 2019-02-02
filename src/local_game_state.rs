@@ -15,7 +15,8 @@ use quicksilver::{
 pub struct LocalGameState {
     duel_match : DuelMatch,
     background_image: Asset<Image>,
-    ball_images: Asset<Image>,
+    ball_image: Asset<Image>,
+    ball_indicator: Asset<Image>,
     blobs_images : Vec<Asset<Image>>,
     sounds : Vec<Asset<Sound>>,
     frame_events: Vec<FrameEvent>,
@@ -78,7 +79,8 @@ impl LocalGameState {
         LocalGameState {
             duel_match: DuelMatch::new(),
             background_image: Asset::new(Image::load("background.png")),
-            ball_images : Asset::new(Image::load("ball.png")),
+            ball_image : Asset::new(Image::load("ball.png")),
+            ball_indicator : Asset::new(Image::load("ball_indicator.png")),
             blobs_images: blobs_images,
             sounds: sounds,
             frame_events: vec!(),
@@ -194,7 +196,7 @@ impl LocalGameState {
                     ball_rot as f32 / std::f32::consts::PI * 180.0f32
                 );
 
-            self.ball_images.execute(|image| {
+            self.ball_image.execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -211,7 +213,38 @@ impl LocalGameState {
             })?;
         }
 
-        Ok(())
+        //draw ball indicator
+        {
+            let ball_pos = self.duel_match.get_ball_position();
+
+            if ball_pos.y < (0.0f32 - BALL_RADIUS) {
+
+                let transform = 
+                    Transform::scale(
+                        Vector::new(
+                            DISPLAY_SCALE_FACTOR, 
+                            DISPLAY_SCALE_FACTOR
+                        )
+                    );
+                    
+                return self.ball_indicator.execute(|image| {
+                    window.draw_ex(
+                        &image.area().with_center(
+                            (
+                                ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                                BALL_INDICATOR_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
+                            )
+                        ), 
+                        Img(&image), 
+                        transform, 
+                        4.0f32
+                    );
+                    Ok(())
+                });
+            } else {
+                Ok(())
+            }
+        }
     }
 
     pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {

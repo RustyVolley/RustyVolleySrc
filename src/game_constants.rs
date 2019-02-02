@@ -47,6 +47,8 @@ pub const MAX_BALL_TOUCH_COUNT : i32 = 3;
 pub const WINDOW_WIDTH : i32 = 1920;
 pub const WINDOW_HEIGHT : i32 = 1440;
 
+pub const BALL_INDICATOR_HEIGHT : i32 = 20;
+
 pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
 
 pub const LEFT_SPAWN_POS_X : i32 = 200;
