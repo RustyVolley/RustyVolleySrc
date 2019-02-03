@@ -18,11 +18,8 @@ A rewrite of [Blobby Volley 2](https://sourceforge.net/projects/blobby/) written
 You need Rust nightly to compile this beauty:
 
 ```sh
-rustup default nightly
-```
-
-```sh
-rustup update
+rustup toolchain install nightly-2019-01-15
+rustup default nightly-2019-01-15
 ```
 
 
