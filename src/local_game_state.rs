@@ -110,7 +110,12 @@ impl LocalGameState {
             frame_events: vec!(),
             frame_number: 0,
             font: Rc::new(RefCell::new(Asset::new(Font::load("font11.ttf")))),
-            font_style: FontStyle::new(64.0, Color::BLACK),
+            font_style: FontStyle::new(64.0, Color {
+                r: 0.0f32,
+                g: 0.5f32,
+                b: 0.4f32,
+                a: 1.0f32,
+            }),
             scoring: Scoring::new()
         }
     }
@@ -249,8 +254,8 @@ impl LocalGameState {
                 let transform = 
                     Transform::scale(
                         Vector::new(
-                            DISPLAY_SCALE_FACTOR, 
-                            DISPLAY_SCALE_FACTOR
+                            DISPLAY_SCALE_FACTOR * 2.0f32, 
+                            DISPLAY_SCALE_FACTOR * 2.0f32
                         )
                     );
                     
@@ -259,12 +264,12 @@ impl LocalGameState {
                         &image.area().with_center(
                             (
                                 ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
-                                BALL_INDICATOR_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
+                                BALL_INDICATOR_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR * 2.0f32
                             )
                         ), 
                         Img(&image), 
                         transform, 
-                        4.0f32
+                        5.0f32
                     );
 
                     Ok(())
@@ -284,7 +289,7 @@ impl LocalGameState {
                     );
 
             let (score1, score2) = self.duel_match.get_scores();
-            let font_style = self.font_style.clone();
+
             let should_recreate_texture =
                 self.scoring.score1 != score1 ||
                 self.scoring.score2 != score2 ||
@@ -298,13 +303,15 @@ impl LocalGameState {
                 if should_recreate_texture {
 
                     let score1_texture = 
-                        a_font.render(&format!("{:02}", score1), &font_style).unwrap();
+                        a_font.render(&format!("{:02}", score1), &self.font_style)
+                        .unwrap();
 
                     self.scoring.score1 = score1;
                     self.scoring.score1_texture = Some(score1_texture);
                     
                    let score2_texture = 
-                       a_font.render(&format!("{:02}", score2), &font_style).unwrap();
+                       a_font.render(&format!("{:02}", score2), &self.font_style)
+                       .unwrap();
 
                     self.scoring.score2 = score2;
                     self.scoring.score2_texture = Some(score2_texture);
@@ -322,7 +329,7 @@ impl LocalGameState {
                             ), 
                             Img(&image), 
                             transform, 
-                            5.0f32
+                            4.0f32
                         );
                     }
                 }
@@ -339,7 +346,7 @@ impl LocalGameState {
                             ), 
                             Img(&image), 
                             transform, 
-                            5.0f32
+                            4.0f32
                         );
                     }
                 }
