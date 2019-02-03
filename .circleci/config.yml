@@ -17,7 +17,8 @@ jobs:
             sudo apt-get install libudev-dev
             sudo apt-get install libasound2-dev
             sudo apt-get install alsa-utils
-            rustup toolchain install nightly 1.33.0
+            rustup toolchain install nightly-2019-01-15
+            rustup default nightly-2019-01-15
             rustup run nightly rustc --version --verbose
             rustup run nightly cargo --version --verbose
             rustup run nightly cargo build
@@ -25,7 +26,8 @@ jobs:
       - run:
           name: Nightly Build Web
           command: |
-            rustup toolchain install nightly 1.33.0
+            rustup toolchain install nightly-2019-01-15
+            rustup default nightly-2019-01-15
             rustup run nightly rustc --version --verbose
             rustup run nightly cargo --version --verbose
             rustup run nightly cargo install cargo-web
