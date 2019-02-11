@@ -1,6 +1,3 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-
 use duel_match::DuelMatch;
 use duel_match::FrameEvent;
 use global::PlayerSide::*;
@@ -9,11 +6,14 @@ use game_constants::*;
 use quicksilver::{
     Result,
     geom::{Shape, Transform, Vector},
-    graphics::{Background::Img, Color, Image, Font, FontStyle},
+    graphics::{Background::Img, Color, Image},
     input::{*},
-    lifecycle::{Asset, Window, Event},
-    sound::Sound,
+    lifecycle::{Window, Event},
 };
+
+use state_manager::*;
+
+use state_manager::RustyVollyState;
 
 pub struct Scoring {
     score1: i32,
@@ -35,13 +35,6 @@ impl Scoring {
 
 pub struct LocalGameState {
     duel_match : DuelMatch,
-    background_image: Asset<Image>,
-    ball_image: Asset<Image>,
-    ball_indicator: Asset<Image>,
-    font: Rc<RefCell<Asset<Font>>>,
-    font_style: FontStyle,
-    blobs_images : Vec<Asset<Image>>,
-    sounds : Vec<Asset<Sound>>,
     frame_events: Vec<FrameEvent>,
     frame_number : usize,
     scoring : Scoring,
@@ -49,7 +42,7 @@ pub struct LocalGameState {
 
 impl LocalGameState {
 
-    pub fn step(&mut self) {
+    pub fn step(&mut self, game_assets: &mut GamesAssets) {
         self.frame_events.clear();
         self.duel_match.step(&mut self.frame_events);
 
@@ -57,7 +50,7 @@ impl LocalGameState {
             *x == FrameEvent::EventLeftBlobbyHit ||
             *x == FrameEvent::EventRightBlobbyHit
         ) {
-            let _ = self.sounds[0].execute(|sound| {
+            let _ = game_assets.sounds[0].execute(|sound| {
                 let _ = sound.play()?;
                 Ok(())
             });
@@ -67,7 +60,7 @@ impl LocalGameState {
             *x == FrameEvent::EventErrorLeft ||
             *x == FrameEvent::EventErrorRight
         ) {
-            let _ = self.sounds[2].execute(|sound| {
+            let _ = game_assets.sounds[2].execute(|sound| {
                 sound.set_volume(50.0f32);
                 let _ = sound.play()?;
                 Ok(())
@@ -75,7 +68,7 @@ impl LocalGameState {
         }
 
         if self.frame_number == 0 {
-            let _ = self.sounds[2].execute(|sound| {
+            let _ = game_assets.sounds[2].execute(|sound| {
                 sound.set_volume(50.0f32);
                 let _ = sound.play()?;
                 Ok(())
@@ -87,43 +80,17 @@ impl LocalGameState {
 
     pub fn new() -> LocalGameState {
 
-        let mut blobs_images : Vec<Asset<Image>> = vec!();
-
-        for i in 1..6 {
-            let path = format!("blobbym{:1}.png", i);
-            blobs_images.push(Asset::new(Image::load(path)));
-        }
-
-        let mut sounds : Vec<Asset<Sound>> = vec!();
-
-        sounds.push(Asset::new(Sound::load("bums.wav")));
-        sounds.push(Asset::new(Sound::load("chat.wav")));
-        sounds.push(Asset::new(Sound::load("pfiff.wav")));
-
         LocalGameState {
             duel_match: DuelMatch::new(),
-            background_image: Asset::new(Image::load("background.png")),
-            ball_image : Asset::new(Image::load("ball.png")),
-            ball_indicator : Asset::new(Image::load("ball_indicator.png")),
-            blobs_images: blobs_images,
-            sounds: sounds,
             frame_events: vec!(),
             frame_number: 0,
-            font: Rc::new(RefCell::new(Asset::new(Font::load("font11.ttf")))),
-            font_style: FontStyle::new(64.0, Color {
-                r: 0.0f32,
-                g: 0.5f32,
-                b: 0.4f32,
-                a: 1.0f32,
-            }),
             scoring: Scoring::new()
         }
     }
 
-    pub fn draw_window_content(&mut self, window: &mut Window) -> Result<()> {
+    pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
 
         window.clear(Color::WHITE)?;
-
 
         // draw background
         {
@@ -136,7 +103,7 @@ impl LocalGameState {
                     )
                 );
 
-            self.background_image.execute(|image| {
+            game_assets.background_image.execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -165,7 +132,7 @@ impl LocalGameState {
                     )
                 );
 
-            self.blobs_images[blob_state].execute(|image| {
+            game_assets.blobs_images[blob_state].execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -195,7 +162,7 @@ impl LocalGameState {
                     )
                 );
 
-            self.blobs_images[blob_state].execute(|image| {
+            game_assets.blobs_images[blob_state].execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -228,7 +195,7 @@ impl LocalGameState {
                     ball_rot as f32 / std::f32::consts::PI * 180.0f32
                 );
 
-            self.ball_image.execute(|image| {
+            game_assets.ball_image.execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -259,7 +226,7 @@ impl LocalGameState {
                         )
                     );
                     
-                self.ball_indicator.execute(|image| {
+                game_assets.ball_indicator.execute(|image| {
                     window.draw_ex(
                         &image.area().with_center(
                             (
@@ -296,21 +263,21 @@ impl LocalGameState {
                 self.scoring.score1_texture.is_none();
                 self.scoring.score2_texture.is_none();
 
-            let cloned_font_ref = self.font.clone();
+            let cloned_font_ref = game_assets.font.clone();
 
             cloned_font_ref.borrow_mut().execute(|a_font| {
                 
                 if should_recreate_texture {
 
                     let score1_texture = 
-                        a_font.render(&format!("{:02}", score1), &self.font_style)
+                        a_font.render(&format!("{:02}", score1), &game_assets.font_style)
                         .unwrap();
 
                     self.scoring.score1 = score1;
                     self.scoring.score1_texture = Some(score1_texture);
                     
                    let score2_texture = 
-                       a_font.render(&format!("{:02}", score2), &self.font_style)
+                       a_font.render(&format!("{:02}", score2), &game_assets.font_style)
                        .unwrap();
 
                     self.scoring.score2 = score2;
@@ -418,6 +385,19 @@ impl LocalGameState {
         }
         Ok(())
     }
+}
 
+impl RustyVollyState for LocalGameState {
+    fn step(&mut self, game_assets: &mut GamesAssets) -> Result<()> {
+        self.step(game_assets);
+        Ok(())
+    }
 
+    fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
+        self.draw_window_content(window, game_assets)
+    }
+
+    fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {
+        self.handle_event(event, _window)
+    }
 }

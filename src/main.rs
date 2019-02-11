@@ -1,6 +1,7 @@
 extern crate quicksilver;
 
 mod local_game_state;
+mod home_menu_state;
 mod duel_match;
 mod game_logic;
 mod physic_world;
@@ -8,39 +9,20 @@ mod game_constants;
 mod vector;
 mod global;
 mod player_input;
+mod state_manager;
 
-use local_game_state::LocalGameState;
 use game_constants::*;
 
+use state_manager::StateManager;
+
 use quicksilver::{
-    Result,
     geom::{Vector},
-    lifecycle::{Settings, State, Window, Event, run},
+    lifecycle::{Settings, run},
 };
 
-impl State for LocalGameState {
-    
-    fn new() -> Result<LocalGameState> {
-        Ok(LocalGameState::new())
-    }
-
-    fn update(&mut self, _window: &mut Window) -> Result<()> {
-        self.step();
-        // self.elapsed += window.update_rate()
-        Ok(())
-    }
-
-    fn draw(&mut self, window: &mut Window) -> Result<()> {
-        self.draw_window_content(window)
-    }
-
-    fn event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
-        self.handle_event(event, window)
-    }
-}
-
 fn main() {
-    run::<LocalGameState>
+
+    run::<StateManager>
     (
         "RustyVolley", 
         Vector::new(
