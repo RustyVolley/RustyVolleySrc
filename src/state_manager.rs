@@ -58,7 +58,7 @@ impl StateManager {
             ball_indicator : Asset::new(Image::load("ball_indicator.png")),
             blobs_images: blobs_images,
             sounds: sounds,
-            font: Rc::new(RefCell::new(Asset::new(Font::load("font11.ttf")))),
+            font: Rc::new(RefCell::new(Asset::new(Font::load("font8.ttf")))),
             font_style: FontStyle::new(64.0, Color {
                 r: 0.0f32,
                 g: 0.5f32,
@@ -69,7 +69,7 @@ impl StateManager {
 
         StateManager {
             local_game_state : Rc::new(RefCell::new(LocalGameState::new())),
-            home_menu_state : Rc::new(RefCell::new(HomeMenuState {})),
+            home_menu_state : Rc::new(RefCell::new(HomeMenuState::new())),
             game_assets : game_assets,
             current_state : RustyGameState::HomeMenu,
         }

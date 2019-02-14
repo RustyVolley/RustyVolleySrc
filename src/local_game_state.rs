@@ -41,6 +41,15 @@ pub struct LocalGameState {
 
 impl LocalGameState {
 
+    pub fn new() -> LocalGameState {
+        LocalGameState {
+            duel_match: DuelMatch::new(),
+            frame_events: vec!(),
+            frame_number: 0,
+            scoring: Scoring::new()
+        }
+    }
+
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
         self.duel_match.step(&mut self.frame_events);
@@ -77,15 +86,6 @@ impl LocalGameState {
         self.frame_number += 1;
 
         NoTransition
-    }
-
-    pub fn new() -> LocalGameState {
-        LocalGameState {
-            duel_match: DuelMatch::new(),
-            frame_events: vec!(),
-            frame_number: 0,
-            scoring: Scoring::new()
-        }
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
