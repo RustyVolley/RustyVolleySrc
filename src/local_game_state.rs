@@ -13,6 +13,7 @@ use quicksilver::{
 
 use state_manager::*;
 use state_manager::StateTransition::*;
+use state_manager::RustyGameState::*;
 
 pub struct Scoring {
     score1: i32,
@@ -50,6 +51,13 @@ impl LocalGameState {
         }
     }
 
+    pub fn reset(&mut self) {
+        self.duel_match = DuelMatch::new();
+        self.frame_events = vec!();
+        self.frame_number = 0;
+        self.scoring = Scoring::new();
+    }
+
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
         self.duel_match.step(&mut self.frame_events);
@@ -85,7 +93,18 @@ impl LocalGameState {
 
         self.frame_number += 1;
 
-        NoTransition
+        if self.frame_events.iter().any( |x| 
+            *x == FrameEvent::EventWinLeft
+        ) {
+            StateTransition::WinStateTransition(LeftPlayer)
+        }
+        else if self.frame_events.iter().any( |x| 
+            *x == FrameEvent::EventWinRight
+        ) {
+            StateTransition::WinStateTransition(RightPlayer)
+        } else {
+            NoTransition
+        }
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {

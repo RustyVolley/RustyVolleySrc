@@ -21,6 +21,8 @@ pub enum FrameEvent {
     EventBallHitRightGround,
     EventErrorLeft,
     EventErrorRight,
+    EventWinLeft,
+    EventWinRight,
     EventReset,
 }
 
@@ -81,6 +83,20 @@ impl DuelMatch {
             events.push(FrameEvent::EventReset); 
             self.is_ball_down = true;
             self.physic_world.reset(self.game_logic.get_serving_player());
+        }
+
+        let winning_player = self.game_logic.get_winning_player();
+
+        match winning_player {
+            NoPlayer => (),
+            player_side @ _ => {
+                dbg!(winning_player);
+                match player_side {
+                    LeftPlayer => events.push(FrameEvent::EventWinLeft),
+                    RightPlayer => events.push(FrameEvent::EventWinRight),
+                    _ => ()
+                }
+            },
         }
 
     }

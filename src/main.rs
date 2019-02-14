@@ -2,6 +2,7 @@ extern crate quicksilver;
 
 mod local_game_state;
 mod home_menu_state;
+mod win_menu_state;
 mod duel_match;
 mod game_logic;
 mod physic_world;

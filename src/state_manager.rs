@@ -10,22 +10,28 @@ use std::cell::RefCell;
 
 use local_game_state::LocalGameState;
 use home_menu_state::HomeMenuState;
+use win_menu_state::WinMenuState;
+
+use global::PlayerSide;
 
 pub enum RustyGameState {
     HomeMenu,
     LocalGame,
+    WinMenu,
 }
 
 pub struct StateManager {
     local_game_state: Rc<RefCell<LocalGameState>>,
     home_menu_state : Rc<RefCell<HomeMenuState>>,
+    win_menu_state : Rc<RefCell<WinMenuState>>,
     game_assets: GamesAssets,
     current_state: RustyGameState,
 }
 
 pub enum StateTransition {
     NoTransition,
-    Transition(RustyGameState),
+    StateLessTransition(RustyGameState),
+    WinStateTransition(PlayerSide), // winningPlayer
 }
 
 pub trait RustyVollyState {
@@ -70,6 +76,7 @@ impl StateManager {
         StateManager {
             local_game_state : Rc::new(RefCell::new(LocalGameState::new())),
             home_menu_state : Rc::new(RefCell::new(HomeMenuState::new())),
+            win_menu_state : Rc::new(RefCell::new(WinMenuState::new())),
             game_assets : game_assets,
             current_state : RustyGameState::HomeMenu,
         }
@@ -78,14 +85,23 @@ impl StateManager {
     fn get_current_state(&mut self) -> Rc<RefCell<RustyVollyState>> {
         match self.current_state {
             RustyGameState::HomeMenu => self.home_menu_state.clone(),
-            RustyGameState::LocalGame => self.local_game_state.clone()
+            RustyGameState::LocalGame => self.local_game_state.clone(),
+            RustyGameState::WinMenu => self.win_menu_state.clone(),
         } 
     }
 
     fn update_state_if_needed(&mut self, transition : StateTransition) {
         match transition {
             StateTransition::NoTransition => (),
-            StateTransition::Transition(state) => self.current_state = state,
+            StateTransition::StateLessTransition(state) => self.current_state = state,
+            StateTransition::WinStateTransition(player_side) => {
+                self.current_state = RustyGameState::WinMenu;
+                let mut win_menu_state_mutable = self.win_menu_state.borrow_mut();
+                win_menu_state_mutable.set_winner(player_side);
+
+                let mut local_game_state_mutable = self.local_game_state.borrow_mut();
+                local_game_state_mutable.reset();
+            },
         }
     }
 }
@@ -98,22 +114,28 @@ impl State for StateManager {
 
     fn update(&mut self, _window: &mut Window) -> Result<()> {
         let current_state_ref = self.get_current_state();
-        let mut current_state = current_state_ref.borrow_mut();
-        let transition = current_state.step(&mut self.game_assets);
+        let transition = {
+            let mut current_state = current_state_ref.borrow_mut();
+            current_state.step(&mut self.game_assets)
+        };
         self.update_state_if_needed(transition);
         Ok(())
     }
 
     fn draw(&mut self, window: &mut Window) -> Result<()> {
         let current_state_ref = self.get_current_state();
-        let mut current_state = current_state_ref.borrow_mut();
-        current_state.draw_window_content(window, &mut self.game_assets)
+        {
+            let mut current_state = current_state_ref.borrow_mut();
+            current_state.draw_window_content(window, &mut self.game_assets)
+        }
     }
 
     fn event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
         let current_state_ref = self.get_current_state();
-        let mut current_state = current_state_ref.borrow_mut();
-        let transition = current_state.handle_event(event, window);
+        let transition = {
+            let mut current_state = current_state_ref.borrow_mut();
+            current_state.handle_event(event, window)
+        };
         self.update_state_if_needed(transition);
         Ok(())
     }

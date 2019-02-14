@@ -15,19 +15,28 @@ use state_manager::{
 
 use game_constants::*;
 
-pub struct HomeMenuState {
+use global::PlayerSide;
+use global::PlayerSide::*;
+
+pub struct WinMenuState {
     home_menu_text : Option<Image>,
+    winning_player : PlayerSide,
 }
 
-impl HomeMenuState {
-    pub fn new() -> HomeMenuState {
-        HomeMenuState {
+impl WinMenuState {
+    pub fn new() -> WinMenuState {
+        WinMenuState {
             home_menu_text: None,
+            winning_player : NoPlayer,
         }
+    }
+
+    pub fn set_winner(&mut self, winner: PlayerSide) {
+        self.winning_player = winner;
     }
 }
 
-impl RustyVollyState for HomeMenuState {
+impl RustyVollyState for WinMenuState {
 
     fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         NoTransition
@@ -79,10 +88,17 @@ impl RustyVollyState for HomeMenuState {
             cloned_font_ref.borrow_mut().execute(|a_font| {
 
                 if self.home_menu_text.is_none() {
-                    let home_menu_text = 
-                        a_font.render(&format!("Click to start!"), &game_assets.font_style)
-                        .unwrap();
-                    
+
+                    let home_menu_text = match self.winning_player {
+                        LeftPlayer => 
+                            a_font.render(&format!("Left Player won!"), &game_assets.font_style).unwrap(),
+                        RightPlayer => 
+                            a_font.render(&format!("Right Player won!"), &game_assets.font_style).unwrap(),
+                        _ =>
+                            a_font.render(&format!("Unkown Player won!"), &game_assets.font_style).unwrap(),
+
+                    };
+
                     self.home_menu_text = Some(home_menu_text);
                 }
 
@@ -112,11 +128,18 @@ impl RustyVollyState for HomeMenuState {
     }
 
     fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
-        match *event {
+        let transition = match *event {
             Event::Key(Key::Space, ButtonState::Pressed) =>  StateTransition::StateLessTransition(LocalGame),
             Event::Key(Key::Return, ButtonState::Pressed) => StateTransition::StateLessTransition(LocalGame),
             Event::MouseButton(MouseButton::Left, ButtonState::Pressed) => StateTransition::StateLessTransition(LocalGame),
             _ => NoTransition,
-        }
+        };
+
+        match transition {
+            NoTransition => (),
+            _ => self.home_menu_text = None,
+        };
+
+        transition
     }
 }

@@ -14,9 +14,9 @@ pub struct GameLogic {
     // player that is currently serving
     serving_player: PlayerSide,
     // player that has won the game
-    //winning_player: PlayerSide,
+    winning_player: PlayerSide,
     // config parameter: score to win
-    //score_to_win : i32
+    score_to_win : i32
 }
 
 fn side_to_index(side : PlayerSide) -> usize {
@@ -43,6 +43,10 @@ impl GameLogic {
         returned
     }
 
+    pub fn get_winning_player(&self) -> PlayerSide {
+        self.winning_player
+    }
+
     pub fn new() -> GameLogic {
         let mut game_logic = GameLogic {
             scores: [0i32; 2],
@@ -50,8 +54,8 @@ impl GameLogic {
             squish: [0i32; 2],
             last_error: NoPlayer,
             serving_player: NoPlayer,
-            //winning_player: NoPlayer,
-            //score_to_win : 15,
+            winning_player: NoPlayer,
+            score_to_win : 15,
         };
 
 
@@ -89,10 +93,15 @@ impl GameLogic {
         self.touches_ball_count[1] = 0;
         self.squish[0] = 0;
         self.squish[1] = 0;
+
         self.scores[side_to_index(other_side(side))] = 
             self.scores[side_to_index(other_side(side))] + 1;
 
         self.serving_player = other_side(side);
+
+        if self.scores[side_to_index(other_side(side))] >= self.score_to_win {
+            self.winning_player = other_side(side);
+        }
     }
 
     pub fn on_ball_hits_player(&mut self, side : PlayerSide) -> bool {
