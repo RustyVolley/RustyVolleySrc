@@ -77,7 +77,6 @@ impl PhysicWorld {
     }
 
     pub fn reset_player(&mut self) {
-
         self.blob_positions[LeftPlayer as usize] = 
             Vector2::new(LEFT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
 
@@ -121,7 +120,7 @@ impl PhysicWorld {
     }
 
     pub fn player_bottom_ball_collision(&mut self, player : PlayerSide) -> bool {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         let pos = 		        
             Vector2::new
@@ -138,7 +137,7 @@ impl PhysicWorld {
     }
 
     pub fn player_top_ball_collision(&mut self, player : PlayerSide) -> bool {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         let pos = 		        
             Vector2::new
@@ -156,10 +155,10 @@ impl PhysicWorld {
     }
 
     pub fn check_blobby_ball_collision(&mut self, player : PlayerSide) {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         // Check for bottom circles
-        if self.player_bottom_ball_collision(player.clone()) {
+        if self.player_bottom_ball_collision(player) {
             self.last_hit_intensity = 
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
@@ -174,7 +173,7 @@ impl PhysicWorld {
             self.ball_hit_by_blobs[player_index] = true;
             
         }
-        else if self.player_top_ball_collision(player.clone()) {
+        else if self.player_top_ball_collision(player) {
             self.last_hit_intensity = 
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
@@ -204,7 +203,7 @@ impl PhysicWorld {
     }
 
     pub fn blobby_start_animation(&mut self, player : PlayerSide) {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         if self.blobs_animation_speed[player_index] == 0.0f32 {
             self.blobs_animation_speed[player_index] = BLOBBY_ANIMATION_SPEED;
@@ -220,7 +219,7 @@ impl PhysicWorld {
     }
 
     pub fn blobby_animation_step(&mut self, player : PlayerSide) {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         if self.blobs_animation_states[player_index] < 0.0f32 {
             self.blobs_animation_speed[player_index] = 0.0f32;
@@ -248,22 +247,22 @@ impl PhysicWorld {
     }
 
     pub fn handle_blob(&mut self, player : PlayerSide) {
-        let player_index = player.clone() as usize;
+        let player_index = player as usize;
 
         self.ball_hit_by_blobs[player_index] = false;
 
         if self.player_inputs[player_index].up {
-            if self.blobby_hit_ground(player.clone()) {
+            if self.blobby_hit_ground(player) {
                 self.blob_velocities[player_index].y = - BLOBBY_JUMP_ACCELERATION;
-                self.blobby_start_animation(player.clone());
+                self.blobby_start_animation(player);
             }
             self.blob_velocities[player_index].y -= BLOBBY_JUMP_BUFFER * TIME_SCALING;
         }
 
         if  
             (self.player_inputs[player_index].left || self.player_inputs[player_index].right) &&
-            self.blobby_hit_ground(player.clone()) {
-                self.blobby_start_animation(player.clone());
+            self.blobby_hit_ground(player) {
+                self.blobby_start_animation(player);
             }
         
         self.blob_velocities[player_index].x = 
@@ -280,7 +279,7 @@ impl PhysicWorld {
         if self.blob_positions[player_index].y > GROUND_PLANE_HEIGHT {
 
             if self.blob_velocities[player_index].y > 3.5f32 {
-                self.blobby_start_animation(player.clone());
+                self.blobby_start_animation(player);
             }
 
             self.blob_positions[player_index].y = GROUND_PLANE_HEIGHT;
@@ -288,7 +287,7 @@ impl PhysicWorld {
 
         }
 
-        self.blobby_animation_step(player.clone());
+        self.blobby_animation_step(player);
     }
 
     pub fn ball_hit_left_player(&self) -> bool {

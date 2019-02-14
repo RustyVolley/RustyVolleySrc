@@ -38,7 +38,7 @@ impl GameLogic {
     }
 
     pub fn get_last_error_side(&mut self) -> PlayerSide {
-        let returned = self.last_error.clone();
+        let returned = self.last_error;
         self.last_error = NoPlayer;
         returned
     }
@@ -75,7 +75,7 @@ impl GameLogic {
     }
 
     pub fn get_serving_player(&self) -> PlayerSide {
-        self.serving_player.clone()
+        self.serving_player
     }
 
     pub fn on_ball_hits_ground(&mut self, side : PlayerSide) {
@@ -83,37 +83,37 @@ impl GameLogic {
     }
 
     pub fn on_error(&mut self, side : PlayerSide) {
-        self.last_error = side.clone();
+        self.last_error = side;
 
         self.touches_ball_count[0] = 0;
         self.touches_ball_count[1] = 0;
         self.squish[0] = 0;
         self.squish[1] = 0;
-        self.scores[side_to_index(other_side(side.clone()))] = 
-            self.scores[side_to_index(other_side(side.clone()))] + 1;
+        self.scores[side_to_index(other_side(side))] = 
+            self.scores[side_to_index(other_side(side))] + 1;
 
         self.serving_player = other_side(side);
     }
 
     pub fn on_ball_hits_player(&mut self, side : PlayerSide) -> bool {
 
-        if !self.is_collision_valid(side.clone()) {
+        if !self.is_collision_valid(side) {
             return false;
         }
         
         // otherwise, set the squish value
-        self.squish[side_to_index(side.clone())] = SQUISH_TOLERANCE;
+        self.squish[side_to_index(side)] = SQUISH_TOLERANCE;
         
         // count the touches
-        self.touches_ball_count[side_to_index(other_side(side.clone()))] = 0;
+        self.touches_ball_count[side_to_index(other_side(side))] = 0;
 
-        self.touches_ball_count[side_to_index(side.clone())] = 
-            self.touches_ball_count[side_to_index(side.clone())] + 1;
+        self.touches_ball_count[side_to_index(side)] = 
+            self.touches_ball_count[side_to_index(side)] + 1;
 
-        if self.touches_ball_count[side_to_index(side.clone())] > MAX_BALL_TOUCH_COUNT
+        if self.touches_ball_count[side_to_index(side)] > MAX_BALL_TOUCH_COUNT
         {
             // if a player hits a forth time, it is an error
-            self.on_error(side.clone());
+            self.on_error(side);
         }
 
         true

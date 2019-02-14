@@ -43,7 +43,6 @@ impl<N : 'static> VectorOP<N> for Vector2<N>
                 return result;
         } else {
             let result = self.clone();
-
             return result;
         }
     }
