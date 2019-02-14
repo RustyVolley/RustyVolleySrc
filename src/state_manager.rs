@@ -11,7 +11,7 @@ use std::cell::RefCell;
 use local_game_state::LocalGameState;
 use home_menu_state::HomeMenuState;
 
-enum CurrentState {
+pub enum RustyGameState {
     HomeMenu,
     LocalGame,
 }
@@ -20,16 +20,20 @@ pub struct StateManager {
     local_game_state: Rc<RefCell<LocalGameState>>,
     home_menu_state : Rc<RefCell<HomeMenuState>>,
     game_assets: GamesAssets,
-    current_state: CurrentState,
+    current_state: RustyGameState,
+}
+
+pub enum StateTransition {
+    NoTransition,
+    Transition(RustyGameState),
 }
 
 pub trait RustyVollyState {
-    fn step(&mut self, game_assets: &mut GamesAssets) -> Result<()>;
+    fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition;
 
     fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()>;
 
-    fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()>;
-
+    fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition;
 }
 
 impl StateManager {
@@ -67,17 +71,22 @@ impl StateManager {
             local_game_state : Rc::new(RefCell::new(LocalGameState::new())),
             home_menu_state : Rc::new(RefCell::new(HomeMenuState {})),
             game_assets : game_assets,
-            current_state : CurrentState::HomeMenu,
+            current_state : RustyGameState::HomeMenu,
         }
     }
 
     fn get_current_state(&mut self) -> Rc<RefCell<RustyVollyState>> {
-
         match self.current_state {
-            CurrentState::HomeMenu => self.home_menu_state.clone(),
-            CurrentState::LocalGame => self.local_game_state.clone()
+            RustyGameState::HomeMenu => self.home_menu_state.clone(),
+            RustyGameState::LocalGame => self.local_game_state.clone()
+        } 
+    }
+
+    fn update_state_if_needed(&mut self, transition : StateTransition) {
+        match transition {
+            StateTransition::NoTransition => (),
+            StateTransition::Transition(state) => self.current_state = state,
         }
-        
     }
 }
 
@@ -90,7 +99,9 @@ impl State for StateManager {
     fn update(&mut self, _window: &mut Window) -> Result<()> {
         let current_state_ref = self.get_current_state();
         let mut current_state = current_state_ref.borrow_mut();
-        current_state.step(&mut self.game_assets)
+        let transition = current_state.step(&mut self.game_assets);
+        self.update_state_if_needed(transition);
+        Ok(())
     }
 
     fn draw(&mut self, window: &mut Window) -> Result<()> {
@@ -102,7 +113,9 @@ impl State for StateManager {
     fn event(&mut self, event: &Event, window: &mut Window) -> Result<()> {
         let current_state_ref = self.get_current_state();
         let mut current_state = current_state_ref.borrow_mut();
-        current_state.handle_event(event, window)
+        let transition = current_state.handle_event(event, window);
+        self.update_state_if_needed(transition);
+        Ok(())
     }
 }
 

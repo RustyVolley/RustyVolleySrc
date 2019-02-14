@@ -12,8 +12,7 @@ use quicksilver::{
 };
 
 use state_manager::*;
-
-use state_manager::RustyVollyState;
+use state_manager::StateTransition::*;
 
 pub struct Scoring {
     score1: i32,
@@ -42,7 +41,7 @@ pub struct LocalGameState {
 
 impl LocalGameState {
 
-    pub fn step(&mut self, game_assets: &mut GamesAssets) {
+    pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
         self.duel_match.step(&mut self.frame_events);
 
@@ -76,10 +75,11 @@ impl LocalGameState {
         }
 
         self.frame_number += 1;
+
+        NoTransition
     }
 
     pub fn new() -> LocalGameState {
-
         LocalGameState {
             duel_match: DuelMatch::new(),
             frame_events: vec!(),
@@ -325,7 +325,7 @@ impl LocalGameState {
         Ok(())
     }
 
-    pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {
+    pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
 
         let mut player_right_input = self.duel_match.get_world().get_player_input(RightPlayer);
         let mut player_left_input = self.duel_match.get_world().get_player_input(LeftPlayer);
@@ -383,21 +383,20 @@ impl LocalGameState {
             self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
             self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
         }
-        Ok(())
+        NoTransition
     }
 }
 
 impl RustyVollyState for LocalGameState {
-    fn step(&mut self, game_assets: &mut GamesAssets) -> Result<()> {
-        self.step(game_assets);
-        Ok(())
+    fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
+        self.step(game_assets)
     }
 
     fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
         self.draw_window_content(window, game_assets)
     }
 
-    fn handle_event(&mut self, event: &Event, _window: &mut Window) -> Result<()> {
+    fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
         self.handle_event(event, _window)
     }
 }
