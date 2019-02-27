@@ -66,13 +66,17 @@ impl LocalGameState {
 
         let bot_data = CurrentGameState { 
             blob_positions : self.duel_match.get_world().get_blob_positions(),
-            ball_position : self.duel_match.get_world().get_ball_position(),
             blob_velocities : self.duel_match.get_world().get_blob_velocities(),
-            ball_velocity : self.duel_match.get_world().get_ball_velocity(),
             is_game_running : self.duel_match.get_world().is_game_running(),
         };
 
-        self.bot.step(bot_data);
+        self.bot.step
+        (
+            bot_data, 
+            self.duel_match.get_world().get_ball_position(), 
+            self.duel_match.get_world().get_ball_velocity()
+        );
+        
         self.duel_match.step(&mut self.frame_events);
 
         if self.frame_events.iter().any( |x| 

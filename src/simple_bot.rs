@@ -12,9 +12,9 @@ use global::PlayerSide::*;
 
 pub struct CurrentGameState {
     pub blob_positions : [Vector2<f32>; 2],
-    pub ball_position : Vector2<f32>,
     pub blob_velocities : [Vector2<f32>; 2],
-    pub ball_velocity : Vector2<f32>,
+    // pub ball_position : Vector2<f32>,
+    // pub ball_velocity : Vector2<f32>,
     pub is_game_running : bool,
 }
 
@@ -43,8 +43,8 @@ pub struct SimpleBot {
     want_jump : bool,
 
     simulated_physic_world : PhysicWorld,
-
     current_game_state : CurrentGameState,
+    bot_impl : SimpleBotImpl
 }
 
 impl SimpleBot {
@@ -68,7 +68,8 @@ impl SimpleBot {
             want_left : false,
             
             simulated_physic_world : PhysicWorld::new(),
-            current_game_state : CurrentGameState::new()
+            current_game_state : CurrentGameState::new(),
+            bot_impl : SimpleBotImpl::new(),
         }
     }
 
@@ -123,7 +124,7 @@ impl SimpleBot {
     }
 
     pub fn move_to(&mut self, target : Option<f32>) -> bool {
-        let target = target.expect("invalid target for moveto");
+        let target = target.expect("invalid target for move_to");
 
         let x = self.pos_x();
 
@@ -428,8 +429,21 @@ impl SimpleBot {
         }
     }
 
-    pub fn step(&mut self, game_data: CurrentGameState) {
+    pub fn step(
+        &mut self, 
+        game_data: CurrentGameState, 
+        ball_position : Vector2<f32>, 
+        ball_velocity : Vector2<f32>
+    ) {
         self.current_game_state = game_data;
+        self.ball_x = ball_position.x;
+        self.ball_y = ball_position.y;
+
+        self.ball_velocity_x = ball_velocity.x;
+        self.ball_velocity_y = ball_velocity.y;
+
+        // TODO : complete this using bot_api.lua line 358 an reduced.lua
+
         if !self.current_game_state.is_game_running {
             panic!("not implemented yet.");
         } else {
@@ -448,21 +462,13 @@ pub struct SimpleBotImpl {
     target : f32,
     naive_target : f32,
     estim_speed_x : f32,
-
-    physic_world: PhysicWorld,
-
-    left: bool,
-    right: bool,
-    jump: bool
 }
 
 impl CurrentGameState {
     fn new() -> CurrentGameState {
         CurrentGameState {
             blob_positions : [Vector2::new(0.0f32, 0.0f32); 2],
-            ball_position : Vector2::new(0.0f32, 0.0f32),
             blob_velocities : [Vector2::new(0.0f32, 0.0f32); 2],
-            ball_velocity : Vector2::new(0.0f32, 0.0f32),
             is_game_running : false, 
         }
     }
@@ -476,10 +482,6 @@ impl SimpleBotImpl {
             target: 0f32,
             naive_target: 0f32,
             estim_speed_x: 0f32,
-            left: false,
-            right: false,
-            jump: false,
-            physic_world : PhysicWorld::new()
         }
     }
 }
