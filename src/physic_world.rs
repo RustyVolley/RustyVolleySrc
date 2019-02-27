@@ -1,4 +1,4 @@
-extern crate nalgebra;
+pub extern crate nalgebra;
 
 use global::PlayerSide;
 use global::PlayerSide::*;
@@ -60,8 +60,24 @@ impl PhysicWorld {
         physic_world
     }
 
+    pub fn get_blob_positions(&self) -> [Vector2<f32>; 2] {
+        self.blob_positions
+    }
+
+    pub fn get_blob_velocities(&self) -> [Vector2<f32>; 2] {
+        self.blob_velocities
+    }
+
+    pub fn is_game_running(&self) -> bool {
+        self.is_game_running
+    }
+
     pub fn get_ball_position(&self) -> Vector2<f32> {
         self.ball_position
+    }
+
+    pub fn get_ball_velocity(&self) -> Vector2<f32> {
+        self.ball_velocity
     }
 
     pub fn get_ball_rotation(&self) -> f32 {

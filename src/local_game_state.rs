@@ -2,6 +2,7 @@ use duel_match::DuelMatch;
 use duel_match::FrameEvent;
 use global::PlayerSide::*;
 use game_constants::*;
+use simple_bot::*;
 
 use quicksilver::{
     Result,
@@ -38,6 +39,7 @@ pub struct LocalGameState {
     frame_events: Vec<FrameEvent>,
     frame_number : usize,
     scoring : Scoring,
+    bot : SimpleBot,
 }
 
 impl LocalGameState {
@@ -47,7 +49,8 @@ impl LocalGameState {
             duel_match: DuelMatch::new(),
             frame_events: vec!(),
             frame_number: 0,
-            scoring: Scoring::new()
+            scoring: Scoring::new(),
+            bot: SimpleBot::new(RightPlayer, 1),
         }
     }
 
@@ -60,6 +63,16 @@ impl LocalGameState {
 
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
+
+        let bot_data = CurrentGameState { 
+            blob_positions : self.duel_match.get_world().get_blob_positions(),
+            ball_position : self.duel_match.get_world().get_ball_position(),
+            blob_velocities : self.duel_match.get_world().get_blob_velocities(),
+            ball_velocity : self.duel_match.get_world().get_ball_velocity(),
+            is_game_running : self.duel_match.get_world().is_game_running(),
+        };
+
+        self.bot.step(bot_data);
         self.duel_match.step(&mut self.frame_events);
 
         if self.frame_events.iter().any( |x| 
@@ -399,7 +412,9 @@ impl LocalGameState {
                 }
             }
 
-            self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
+            //self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
+            
+            self.duel_match.get_world().set_player_input(RightPlayer, self.bot.compute_input());
             self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
         }
         NoTransition

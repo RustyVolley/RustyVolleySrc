@@ -11,6 +11,7 @@ mod vector;
 mod global;
 mod player_input;
 mod state_manager;
+mod simple_bot;
 
 use game_constants::*;
 
