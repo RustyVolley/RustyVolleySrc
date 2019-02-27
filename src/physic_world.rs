@@ -68,20 +68,36 @@ impl PhysicWorld {
         self.blob_velocities
     }
 
-    pub fn is_game_running(&self) -> bool {
-        self.is_game_running
-    }
-
     pub fn get_ball_position(&self) -> Vector2<f32> {
         self.ball_position
+    }
+
+    pub fn set_ball_position(&mut self, ball_position : Vector2<f32>) {
+        self.ball_position = ball_position;
     }
 
     pub fn get_ball_velocity(&self) -> Vector2<f32> {
         self.ball_velocity
     }
 
+    pub fn set_ball_velocity(&mut self, ball_velocity : Vector2<f32>) {
+        self.ball_velocity = ball_velocity;
+    }
+
     pub fn get_ball_rotation(&self) -> f32 {
         self.ball_rotation
+    }
+
+    pub fn set_ball_validity(&mut self, validity: bool) {
+        self.is_ball_valid = validity;
+    }
+
+    pub fn is_game_running(&self) -> bool {
+        self.is_game_running
+    }
+
+    pub fn set_game_running(&mut self, game_running : bool) {
+        self.is_game_running = game_running;
     }
 
     pub fn get_blob(&self, player: PlayerSide) -> Vector2<f32> {
@@ -228,10 +244,6 @@ impl PhysicWorld {
 
     pub fn damp_ball(&mut self) {
         self.ball_velocity = self.ball_velocity.scale(DAMP_BALL_SCALE_FACTOR);
-    }
-
-    pub fn set_ball_validity(&mut self, validity: bool) {
-        self.is_ball_valid = validity;
     }
 
     pub fn blobby_animation_step(&mut self, player : PlayerSide) {

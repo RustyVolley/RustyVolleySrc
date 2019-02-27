@@ -19,11 +19,11 @@ pub struct GameLogic {
     score_to_win : i32
 }
 
-fn side_to_index(side : PlayerSide) -> usize {
+pub fn side_to_index(side : PlayerSide) -> usize {
     side as usize
 }
 
-fn other_side(side : PlayerSide) -> PlayerSide {
+pub fn other_side(side : PlayerSide) -> PlayerSide {
     match side {
         LeftPlayer => RightPlayer,
         RightPlayer => LeftPlayer,
