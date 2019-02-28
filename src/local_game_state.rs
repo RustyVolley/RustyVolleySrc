@@ -68,6 +68,8 @@ impl LocalGameState {
             blob_positions : self.duel_match.get_world().get_blob_positions(),
             blob_velocities : self.duel_match.get_world().get_blob_velocities(),
             is_game_running : self.duel_match.get_world().is_game_running(),
+            is_ball_valid : self.duel_match.is_ball_valid(),
+            serving_player : self.duel_match.get_serving_player()
         };
 
         self.bot.step

@@ -114,8 +114,16 @@ impl DuelMatch {
         }
     }
 
+    pub fn is_ball_valid(&self) -> bool {
+        !self.is_ball_down
+    }
+
     pub fn get_world(&mut self) -> &mut PhysicWorld {
         &mut self.physic_world
+    }
+
+    pub fn get_serving_player(&self) -> PlayerSide {
+        self.game_logic.get_serving_player()
     }
 
     pub fn get_ball_position(&self) -> Vector2<f32> {

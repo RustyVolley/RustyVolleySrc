@@ -13,9 +13,21 @@ use global::PlayerSide::*;
 pub struct CurrentGameState {
     pub blob_positions : [Vector2<f32>; 2],
     pub blob_velocities : [Vector2<f32>; 2],
-    // pub ball_position : Vector2<f32>,
-    // pub ball_velocity : Vector2<f32>,
     pub is_game_running : bool,
+    pub is_ball_valid : bool,
+    pub serving_player : PlayerSide,
+}
+
+impl CurrentGameState {
+    fn new() -> CurrentGameState {
+        CurrentGameState {
+            blob_positions : [Vector2::new(0.0f32, 0.0f32); 2],
+            blob_velocities : [Vector2::new(0.0f32, 0.0f32); 2],
+            is_game_running : false,
+            is_ball_valid : false,
+            serving_player : LeftPlayer,
+        }
+    }
 }
 
 #[derive(PartialEq, Eq)]
@@ -37,6 +49,8 @@ pub struct SimpleBot {
     error_ball_y : f32,
     error_ball_velocity_x : f32,
     error_ball_velocity_y : f32,
+
+    last_ball_speed : Option<f32>,
 
     want_right : bool,
     want_left : bool,
@@ -62,6 +76,8 @@ impl SimpleBot {
             error_ball_y : 0.0f32,
             error_ball_velocity_x : 0.0f32,
             error_ball_velocity_y : 0.0f32,
+
+            last_ball_speed : None,
 
             want_jump : false,
             want_right : false,
@@ -442,17 +458,80 @@ impl SimpleBot {
         self.ball_velocity_x = ball_velocity.x;
         self.ball_velocity_y = ball_velocity.y;
 
+        let original_bvx = self.ball_velocity_x;
+
         // TODO : complete this using bot_api.lua line 358 an reduced.lua
 
+        if self.difficulty > 0 {
+            self.ball_x = self.ball_x + self.error_ball_x * (self.difficulty as f32);
+            self.ball_y = self.ball_y + self.error_ball_y * (self.difficulty as f32);
+            self.ball_velocity_x = self.ball_velocity_x + self.error_ball_velocity_x * (self.difficulty as f32);
+            self.ball_velocity_y = self.ball_velocity_y + self.error_ball_velocity_y * (self.difficulty as f32);
+        }
+
+        if self.last_ball_speed.is_none() { 
+            self.last_ball_speed = Some(original_bvx);
+        }
+
+        if self.last_ball_speed.unwrap() != original_bvx && self.current_game_state.is_ball_valid {
+            self.last_ball_speed = Some(original_bvx);
+            let mut er = (rand::random::<f32>()  + rand::random::<f32>()) * BALL_RADIUS;
+            let mut phi = 2.0f32 * std::f32::consts::PI * rand::random::<f32>();
+            self.error_ball_x = phi.sin() * er;
+            self.error_ball_y = phi.cos() * er;
+            er = rand::random::<f32>() * 1.5f32;
+            phi = 2.0f32 * std::f32::consts::PI * rand::random::<f32>();
+            self.error_ball_velocity_x = phi.sin() * er;
+            self.error_ball_velocity_y = phi.cos() * er;
+
+            // if on_bounce {
+            //     self.on_bounce();
+            // }
+        }
+
         if !self.current_game_state.is_game_running {
-            panic!("not implemented yet.");
+            let server_side = self.current_game_state.serving_player;
+            if self.side == server_side {
+                let is_ball_valid = self.current_game_state.is_ball_valid;
+                self.on_serve(is_ball_valid);
+            }
+            else {
+                self.on_opponent_serve();
+            }
         } else {
-            panic!("not implemented yed!");
+            self.on_game();
         }
     }
 
+    pub fn on_game(&mut self) {
+        panic!("not implemented yet.");
+    }
+
     pub fn compute_input(&self) -> PlayerInput {
-        panic!("not implemented yed!");
+        PlayerInput {
+            left : self.want_left,
+            right : self.want_right,
+            up : self.want_jump,
+        }
+    }
+
+    pub fn on_serve(&mut self, is_ball_ready : bool) {
+
+        if self.bot_impl.serve_random.is_none() {
+            self.bot_impl.serve_random = Some(rand::random::<f32>());
+        }
+
+        let ball_x = self.ball_x;
+        let serve_rnd = self.bot_impl.serve_random.unwrap();
+
+        if self.move_to(Some(ball_x + serve_rnd * 5.0f32)) && is_ball_ready {
+            self.jump();
+            self.bot_impl.serve_random = None;
+        }
+    }
+
+    pub fn on_opponent_serve(&mut self) {
+        self.move_to(Some(100.0f32));
     }
 }
 
@@ -462,16 +541,7 @@ pub struct SimpleBotImpl {
     target : f32,
     naive_target : f32,
     estim_speed_x : f32,
-}
-
-impl CurrentGameState {
-    fn new() -> CurrentGameState {
-        CurrentGameState {
-            blob_positions : [Vector2::new(0.0f32, 0.0f32); 2],
-            blob_velocities : [Vector2::new(0.0f32, 0.0f32); 2],
-            is_game_running : false, 
-        }
-    }
+    serve_random : Option<f32>,
 }
 
 impl SimpleBotImpl {
@@ -482,6 +552,7 @@ impl SimpleBotImpl {
             target: 0f32,
             naive_target: 0f32,
             estim_speed_x: 0f32,
+            serve_random : None,
         }
     }
 }
