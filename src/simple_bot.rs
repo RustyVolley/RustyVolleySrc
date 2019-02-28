@@ -106,24 +106,24 @@ impl SimpleBot {
         }
     }
 
-    pub fn opp_x(&self) -> f32 {
-        let blob_pos = self.get_blob_pos(other_side(self.side));
-        if self.side == RightPlayer {
-            return FIELD_WIDTH - blob_pos.x;
-        } else {
-            return blob_pos.x;
-        }
-    }
+    // pub fn opp_x(&self) -> f32 {
+    //     let blob_pos = self.get_blob_pos(other_side(self.side));
+    //     if self.side == RightPlayer {
+    //         return FIELD_WIDTH - blob_pos.x;
+    //     } else {
+    //         return blob_pos.x;
+    //     }
+    // }
 
-    pub fn pos_y(&self) -> f32 {
-        let blob_pos = self.get_blob_pos(self.side);
-        return blob_pos.y;
-    }
+    // pub fn pos_y(&self) -> f32 {
+    //     let blob_pos = self.get_blob_pos(self.side);
+    //     return blob_pos.y;
+    // }
 
-    pub fn opp_y(&self) -> f32 {
-        let blob_pos = self.get_blob_pos(other_side(self.side));
-        return blob_pos.y;
-    }
+    // pub fn opp_y(&self) -> f32 {
+    //     let blob_pos = self.get_blob_pos(other_side(self.side));
+    //     return blob_pos.y;
+    // }
 
     pub fn left(&mut self) {
         self.want_left = self.side == LeftPlayer;
@@ -159,60 +159,60 @@ impl SimpleBot {
         }
     }
 
-    pub fn ball_time_to_x(
-        &self, 
-        destination : Option<f32>, 
-        pos_x : Option<f32>, 
-        pos_y : Option<f32>, 
-        vel_x : Option<f32>, 
-        vel_y : Option<f32>) -> f32 {
-        let destination = destination.expect("invalid destination specified for ball_time_to_x");
+    // pub fn ball_time_to_x(
+    //     &self, 
+    //     destination : Option<f32>, 
+    //     pos_x : Option<f32>, 
+    //     pos_y : Option<f32>, 
+    //     vel_x : Option<f32>, 
+    //     vel_y : Option<f32>) -> f32 {
+    //     let destination = destination.expect("invalid destination specified for ball_time_to_x");
 
-        let pos_x = match pos_x {
-            Some(a) => a,
-            None => self.ball_x,
-        };
+    //     let pos_x = match pos_x {
+    //         Some(a) => a,
+    //         None => self.ball_x,
+    //     };
 
-        let vel_x = match vel_x {
-            Some(a) => a,
-            None => self.ball_velocity_x,
-        };
+    //     let vel_x = match vel_x {
+    //         Some(a) => a,
+    //         None => self.ball_velocity_x,
+    //     };
 
-        SimpleBot::linear_time_first(self.pos_x(), vel_x, destination)
-    }
+    //     SimpleBot::linear_time_first(self.pos_x(), vel_x, destination)
+    // }
 
-    pub fn blob_time_to_x(&self, destination : f32) -> f32 {
-        (self.pos_x() - destination).abs() / BLOBBY_SPEED
-    }
+    // pub fn blob_time_to_x(&self, destination : f32) -> f32 {
+    //     (self.pos_x() - destination).abs() / BLOBBY_SPEED
+    // }
 
-    pub fn blob_time_to_y(&self, destination : f32) -> f32 {
-        let blobby_ground_pos = GROUND_HEIGHT - BLOBBY_HEIGHT / 2.0f32;
-        let y = self.pos_y();
-        let grav = BLOBBY_GRAVITY / 2.0f32;
-        let time1 = BLOBBY_JUMP / grav + (2.0f32 * grav * (y- blobby_ground_pos) + BLOBBY_JUMP * BLOBBY_JUMP).sqrt() / grav;
-        let time2 = BLOBBY_JUMP / grav - (2.0f32 * grav * (y- blobby_ground_pos) + BLOBBY_JUMP * BLOBBY_JUMP).sqrt() / grav;
-        if time1 < time2 {
-            return time1;
-        }
-        else {
-            return time2;
-        }
-    }
+    // pub fn blob_time_to_y(&self, destination : f32) -> f32 {
+    //     let blobby_ground_pos = GROUND_HEIGHT - BLOBBY_HEIGHT / 2.0f32;
+    //     let y = self.pos_y();
+    //     let grav = BLOBBY_GRAVITY / 2.0f32;
+    //     let time1 = BLOBBY_JUMP / grav + (2.0f32 * grav * (y- blobby_ground_pos) + BLOBBY_JUMP * BLOBBY_JUMP).sqrt() / grav;
+    //     let time2 = BLOBBY_JUMP / grav - (2.0f32 * grav * (y- blobby_ground_pos) + BLOBBY_JUMP * BLOBBY_JUMP).sqrt() / grav;
+    //     if time1 < time2 {
+    //         return time1;
+    //     }
+    //     else {
+    //         return time2;
+    //     }
+    // }
 
     // checks whether a certain position can be reached by the blob in a certain time frame
     // currently, this function assumes that the blob is standing on the ground.
-    pub fn can_blob_reach(time : f32, blob_x : f32, pos_x : f32, pos_y : f32) -> bool {
-        let min_x = blob_x - BLOBBY_SPEED * time;
-        let max_x = blob_x + BLOBBY_SPEED * time;
+    // pub fn can_blob_reach(time : f32, blob_x : f32, pos_x : f32, pos_y : f32) -> bool {
+    //     let min_x = blob_x - BLOBBY_SPEED * time;
+    //     let max_x = blob_x + BLOBBY_SPEED * time;
 
-        let mut max_y = BLOBBY_GROUND_HEIGHT + BLOBBY_JUMP * time + BLOBBY_GRAVITY / 2.0f32 * time * time;
-        let vel = BLOBBY_JUMP + BLOBBY_GRAVITY * time;
-        if vel < 0.0f32 {
-            max_y = BLOBBY_MAX_JUMP();
-        }
+    //     let mut max_y = BLOBBY_GROUND_HEIGHT + BLOBBY_JUMP * time + BLOBBY_GRAVITY / 2.0f32 * time * time;
+    //     let vel = BLOBBY_JUMP + BLOBBY_GRAVITY * time;
+    //     if vel < 0.0f32 {
+    //         max_y = BLOBBY_MAX_JUMP();
+    //     }
 
-        min_x < pos_x && pos_x < max_x && pos_y < max_y
-    }
+    //     min_x < pos_x && pos_x < max_x && pos_y < max_y
+    // }
 
     pub fn ball_time_to_y(
         &self, 
@@ -250,7 +250,7 @@ impl SimpleBot {
         if grav < 0.0f32 {
             let temp = t_min;
             t_min = t_max;
-            t_max = t_min;
+            t_max = temp;
         }
 
         if t_min > 0.0f32 {
@@ -263,37 +263,37 @@ impl SimpleBot {
         
     }
 
-    pub fn estimate(
-        &mut self, 
-        time : i32,
-        pos_x : Option<f32>,
-        pos_y : Option<f32>,
-        vel_x : Option<f32>,
-        vel_y : Option<f32>
-    ) -> (f32, f32, f32, f32) {
+    // pub fn estimate(
+    //     &mut self, 
+    //     time : i32,
+    //     pos_x : Option<f32>,
+    //     pos_y : Option<f32>,
+    //     vel_x : Option<f32>,
+    //     vel_y : Option<f32>
+    // ) -> (f32, f32, f32, f32) {
 
-        let pos_x = match pos_x {
-            Some(a) => a,
-            None => self.ball_x
-        };
+    //     let pos_x = match pos_x {
+    //         Some(a) => a,
+    //         None => self.ball_x
+    //     };
 
-        let vel_x = match vel_x {
-            Some(a) => a,
-            None => self.ball_velocity_x
-        };
+    //     let vel_x = match vel_x {
+    //         Some(a) => a,
+    //         None => self.ball_velocity_x
+    //     };
 
-        let pos_y = match pos_y {
-            Some(a) => a,
-            None => self.ball_y
-        };
+    //     let pos_y = match pos_y {
+    //         Some(a) => a,
+    //         None => self.ball_y
+    //     };
 
-        let vel_y = match vel_y {
-            Some(a) => a,
-            None => self.ball_velocity_y
-        };
+    //     let vel_y = match vel_y {
+    //         Some(a) => a,
+    //         None => self.ball_velocity_y
+    //     };
 
-        return self.simulate(time, pos_x, pos_y, vel_x, vel_y);
-    }
+    //     return self.simulate(time, pos_x, pos_y, vel_x, vel_y);
+    // }
 
     pub fn esimtate_x_at_y(
         &mut self,
@@ -436,19 +436,19 @@ impl SimpleBot {
 
     }
 
-    pub fn linear_time_first(pos : f32, vel : f32, destination : f32) -> f32 {
-        if vel == 0.0f32 {
-            return std::f32::INFINITY;
-        }
+    // pub fn linear_time_first(pos : f32, vel : f32, destination : f32) -> f32 {
+    //     if vel == 0.0f32 {
+    //         return std::f32::INFINITY;
+    //     }
 
-        let result = (destination - pos) / vel;
+    //     let result = (destination - pos) / vel;
 
-        if result < 0.0f32 {
-            return std::f32::INFINITY;
-        } else {
-            return result;
-        }
-    }
+    //     if result < 0.0f32 {
+    //         return std::f32::INFINITY;
+    //     } else {
+    //         return result;
+    //     }
+    // }
 
     pub fn step(
         &mut self, 
