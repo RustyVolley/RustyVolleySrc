@@ -14,7 +14,6 @@ use quicksilver::{
 
 use state_manager::*;
 use state_manager::StateTransition::*;
-use state_manager::RustyGameState::*;
 
 pub struct Scoring {
     score1: i32,

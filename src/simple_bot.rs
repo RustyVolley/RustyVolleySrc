@@ -7,8 +7,8 @@ use game_constants::*;
 use global::PlayerSide;
 use physic_world::nalgebra::base::Vector2;
 use game_logic::side_to_index;
-use game_logic::other_side;
 use global::PlayerSide::*;
+//use game_logic::other_side;
 
 pub struct CurrentGameState {
     pub blob_positions : [Vector2<f32>; 2],
@@ -32,8 +32,8 @@ impl CurrentGameState {
 
 #[derive(PartialEq, Eq)]
 pub enum Axis {
-    Axis_X,
-    Axis_Y
+    AxisX,
+    AxisY
 }
 
 pub struct SimpleBot {
@@ -337,7 +337,8 @@ impl SimpleBot {
         }
 
         // TODO : check this
-        let (time, pos_x, pos_y, vel_x, vel_y) = self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::Axis_Y, height);
+        let (time, pos_x, pos_y, vel_x, vel_y) = 
+            self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
 
         let mut pos_x_out = pos_x;
         let mut vel_x_out = vel_x;
@@ -347,8 +348,13 @@ impl SimpleBot {
 
         if vel_y > 0.0f32 && downward {
             let ot = time + 1.0f32;
-            let (pos_x, pos_y, vel_x, vel_y) = self.simulate(1, pos_x, pos_y, vel_x, vel_y);
-            let (time, pos_x, pos_y, vel_x, vel_y) = self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::Axis_Y, height);
+
+            let (pos_x, pos_y, vel_x, vel_y) = 
+                self.simulate(1, pos_x, pos_y, vel_x, vel_y);
+
+            let (time, pos_x, pos_y, vel_x, vel_y) = 
+                self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
+
             let time = time + ot;
 
             pos_x_out = pos_x;
@@ -370,7 +376,7 @@ impl SimpleBot {
         vy : f32
     ) -> (f32, f32, f32, f32) {
 
-        self.simulated_physic_world.set_ball_position(Vector2::new(x, 600.0f32 - y));
+        self.simulated_physic_world.set_ball_position(Vector2::new(x, VERTICAL_PLANE_LENGTH - y));
         self.simulated_physic_world.set_ball_velocity(Vector2::new(vx, -vy));
 
         self.simulated_physic_world.set_player_input(LeftPlayer, PlayerInput::new());
@@ -379,7 +385,7 @@ impl SimpleBot {
         self.simulated_physic_world.set_ball_validity(false);
         self.simulated_physic_world.set_game_running(true);
 
-        for i in 0..steps {
+        for _ in 0..steps {
             self.simulated_physic_world.step();
         }
 
@@ -399,11 +405,11 @@ impl SimpleBot {
         coordinate : f32
     ) -> (f32, f32, f32, f32, f32) {
 
-        let ival = if axis == Axis::Axis_X { x } else { y };
+        let ival = if axis == Axis::AxisX { x } else { y };
 
         let init = ival < coordinate;
 
-        self.simulated_physic_world.set_ball_position(Vector2::new(x, 600.0f32 - y));
+        self.simulated_physic_world.set_ball_position(Vector2::new(x, VERTICAL_PLANE_LENGTH - y));
         self.simulated_physic_world.set_ball_velocity(Vector2::new(vx, -vy));
 
         self.simulated_physic_world.set_player_input(LeftPlayer, PlayerInput::new());
@@ -419,7 +425,7 @@ impl SimpleBot {
             steps = steps + 1.0f32;
             self.simulated_physic_world.step();
             let pos = self.simulated_physic_world.get_ball_position();
-            let v = if axis == Axis::Axis_X { pos.x } else { 600.0f32 - pos.y }; 
+            let v = if axis == Axis::AxisX { pos.x } else { VERTICAL_PLANE_LENGTH - pos.y }; 
             if (v < coordinate) != init {
                 break;
             }
@@ -535,9 +541,10 @@ impl SimpleBot {
         let ball_dir = if self.bot_impl.estim_ball_speed_x >= 0.0f32 { 1.0f32 } else { -1.0f32 };
 
         if self.estim_impact_low() {
+            let upper_bound = (ball_dir * (self.bot_impl.target.unwrap() - self.pos_x()) - 10.0f32) / BLOBBY_SPEED;
             if 
-                self.bot_impl.time_to > (ball_dir * (self.bot_impl.target.unwrap() - self.pos_x()) -10.0f32) / BLOBBY_SPEED ||
-                self.bot_impl.naive_target >= FIELD_MIDDLE {
+                self.bot_impl.time_to > upper_bound ||
+                self.bot_impl.naive_target >= FIELD_MIDDLE  {
                     self.low_play();
                 }
             else if self.bot_impl.naive_target < FIELD_MIDDLE {
@@ -545,8 +552,6 @@ impl SimpleBot {
                 self.jump();
             }
         }
-
-
     }
 
     pub fn compute_input(&self) -> PlayerInput {
