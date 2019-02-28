@@ -126,16 +126,19 @@ impl SimpleBot {
     // }
 
     pub fn left(&mut self) {
+        dbg!("left");
         self.want_left = self.side == LeftPlayer;
-        self.want_right = self.side == LeftPlayer;
+        self.want_right = self.side != LeftPlayer;
     }
 
     pub fn right(&mut self) {
-        self.want_left = self.side != LeftPlayer;
+        dbg!("right");
+        self.want_left = self.side == LeftPlayer;
         self.want_right = self.side != LeftPlayer;
     }
 
     pub fn jump(&mut self) {
+        dbg!("jump");
         self.want_jump = true;
     }
 
