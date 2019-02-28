@@ -333,7 +333,14 @@ impl SimpleBot {
         let (time_, time2) = self.ball_time_to_y(height, Some(pos_x), Some(pos_y), Some(vel_x), Some(vel_y));
 
         if time_ == std::f32::INFINITY {
-            return (std::f32::INFINITY, std::f32::INFINITY, std::f32::INFINITY, std::f32::INFINITY, std::f32::INFINITY);
+            return 
+            (
+                std::f32::INFINITY, 
+                std::f32::INFINITY, 
+                std::f32::INFINITY, 
+                std::f32::INFINITY, 
+                std::f32::INFINITY
+            );
         }
 
         // TODO : check this
@@ -520,7 +527,7 @@ impl SimpleBot {
                 self.bot_impl.naive_target < FIELD_MIDDLE && 
                 self.bot_impl.target.unwrap() < FIELD_MIDDLE &&
                 (   self.bot_impl.mode_lock || 
-                    self.bot_impl.time_to > (self.pos_x() - self.high_play_pos()).abs() /4.5f32 + 26.0f32
+                    self.bot_impl.time_to > (self.pos_x() - self.high_play_pos()).abs() / 4.5f32 + 26.0f32
                 ) // TODO : add touches() < 3
                 {
 
