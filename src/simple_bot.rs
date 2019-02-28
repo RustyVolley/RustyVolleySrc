@@ -139,8 +139,8 @@ impl SimpleBot {
 
     pub fn right(&mut self) {
         dbg!("right");
-        self.want_left = self.side == LeftPlayer;
-        self.want_right = self.side != LeftPlayer;
+        self.want_left = self.side != LeftPlayer;
+        self.want_right = self.side == LeftPlayer;
     }
 
     pub fn jump(&mut self) {
@@ -478,7 +478,7 @@ impl SimpleBot {
         ball_position : Vector2<f32>, 
         ball_velocity : Vector2<f32>
     ) {
-        dbg!("stepping bot");
+        //dbg!("stepping bot");
         self.current_game_state = game_data;
         self.ball_x = ball_position.x;
         self.ball_y = ball_position.y;
@@ -530,7 +530,7 @@ impl SimpleBot {
     }
 
     pub fn on_game(&mut self) {
-        dbg!("on_game");
+        //dbg!("on_game");
         if self.estim_impact_high() {
             if 
                 self.bot_impl.naive_target < FIELD_MIDDLE && 
@@ -594,12 +594,12 @@ impl SimpleBot {
     }
 
     pub fn on_opponent_serve(&mut self) {
-        dbg!("on_opponent_serve");
+        //dbg!("on_opponent_serve");
         self.move_to(Some(100.0f32));
     }
 
     pub fn estim_impact(&mut self, dest_y : f32) -> bool {
-        dbg!("estim_impact");
+        //dbg!("estim_impact");
         let (x, v, t, _, _) = self.esimtate_x_at_y(dest_y, None, None, None, None, None);
 
         if t == std::f32::INFINITY {
@@ -656,12 +656,12 @@ impl SimpleBot {
     }
 
     pub fn estim_impact_high(&mut self) -> bool {
-        dbg!("estim_impact_high");
+        //dbg!("estim_impact_high");
         self.estim_impact(BLOBBY_MAX_JUMP() - 25.0f32)
     }
 
     pub fn estim_impact_low(&mut self) -> bool {
-        dbg!("estim_impact_low");
+        //dbg!("estim_impact_low");
         self.estim_impact(BALL_BLOBBY_HEAD)
     }
 }
