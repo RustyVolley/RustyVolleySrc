@@ -49,7 +49,7 @@ impl LocalGameState {
             frame_events: vec!(),
             frame_number: 0,
             scoring: Scoring::new(),
-            bot: SimpleBot::new(RightPlayer, 1),
+            bot: SimpleBot::new(RightPlayer, 0),
         }
     }
 
@@ -77,7 +77,9 @@ impl LocalGameState {
             self.duel_match.get_world().get_ball_position(), 
             self.duel_match.get_world().get_ball_velocity()
         );
-        
+
+        self.duel_match.get_world().set_player_input(RightPlayer, self.bot.compute_input());
+        self.bot.reset_input();
         self.duel_match.step(&mut self.frame_events);
 
         if self.frame_events.iter().any( |x| 
@@ -419,7 +421,7 @@ impl LocalGameState {
 
             //self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
             
-            self.duel_match.get_world().set_player_input(RightPlayer, self.bot.compute_input());
+            //self.duel_match.get_world().set_player_input(RightPlayer, self.bot.compute_input());
             self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
         }
         NoTransition

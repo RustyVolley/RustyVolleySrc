@@ -89,6 +89,12 @@ impl SimpleBot {
         }
     }
 
+    pub fn reset_input(&mut self) {
+        self.want_jump = false;
+        self.want_left = false;
+        self.want_right = false;
+    }
+
     pub fn get_blob_pos(&self, side : PlayerSide) -> Vector2<f32> {
         match side {
             LeftPlayer => self.current_game_state.blob_positions[side_to_index(side)],
@@ -472,6 +478,7 @@ impl SimpleBot {
         ball_position : Vector2<f32>, 
         ball_velocity : Vector2<f32>
     ) {
+        dbg!("stepping bot");
         self.current_game_state = game_data;
         self.ball_x = ball_position.x;
         self.ball_y = ball_position.y;
@@ -480,8 +487,6 @@ impl SimpleBot {
         self.ball_velocity_y = ball_velocity.y;
 
         let original_bvx = self.ball_velocity_x;
-
-        // TODO : complete this using bot_api.lua line 358 an reduced.lua
 
         if self.difficulty > 0 {
             self.ball_x = self.ball_x + self.error_ball_x * (self.difficulty as f32);
@@ -525,6 +530,7 @@ impl SimpleBot {
     }
 
     pub fn on_game(&mut self) {
+        dbg!("on_game");
         if self.estim_impact_high() {
             if 
                 self.bot_impl.naive_target < FIELD_MIDDLE && 
@@ -573,7 +579,7 @@ impl SimpleBot {
     }
 
     pub fn on_serve(&mut self, is_ball_ready : bool) {
-
+        dbg!("on_serve");
         if self.bot_impl.serve_random.is_none() {
             self.bot_impl.serve_random = Some(rand::random::<f32>());
         }
@@ -588,10 +594,12 @@ impl SimpleBot {
     }
 
     pub fn on_opponent_serve(&mut self) {
+        dbg!("on_opponent_serve");
         self.move_to(Some(100.0f32));
     }
 
     pub fn estim_impact(&mut self, dest_y : f32) -> bool {
+        dbg!("estim_impact");
         let (x, v, t, _, _) = self.esimtate_x_at_y(dest_y, None, None, None, None, None);
 
         if t == std::f32::INFINITY {
@@ -608,6 +616,7 @@ impl SimpleBot {
     }
 
     pub fn high_play_pos(&mut self) -> f32 {
+        dbg!("high_play_pos");
         if self.bot_impl.estim_ball_speed_x < 0.0f32 {
             return self.bot_impl.target.unwrap() - 50.0f32 - self.bot_impl.estim_ball_speed_x / 5.0f32;
         } else {
@@ -616,6 +625,7 @@ impl SimpleBot {
     }
     
     pub fn high_play(&mut self) {
+        dbg!("high_play");
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
             self.move_to(Some(100.0f32)); 
         } 
@@ -635,6 +645,7 @@ impl SimpleBot {
     }
 
     pub fn low_play(&mut self) {
+        dbg!("low_play");
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
             self.move_to(Some(100.0f32)); 
         }
@@ -645,10 +656,12 @@ impl SimpleBot {
     }
 
     pub fn estim_impact_high(&mut self) -> bool {
+        dbg!("estim_impact_high");
         self.estim_impact(BLOBBY_MAX_JUMP() - 25.0f32)
     }
 
     pub fn estim_impact_low(&mut self) -> bool {
+        dbg!("estim_impact_low");
         self.estim_impact(BALL_BLOBBY_HEAD)
     }
 }
