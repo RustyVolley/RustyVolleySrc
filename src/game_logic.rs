@@ -53,7 +53,7 @@ impl GameLogic {
             touches_ball_count : [0i32; 2],
             squish: [0i32; 2],
             last_error: NoPlayer,
-            serving_player: NoPlayer,
+            serving_player: LeftPlayer,
             winning_player: NoPlayer,
             score_to_win : 15,
         };

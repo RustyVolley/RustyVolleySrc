@@ -88,6 +88,10 @@ impl PhysicWorld {
         self.ball_rotation
     }
 
+    pub fn is_ball_valid(&self) -> bool {
+        self.is_ball_valid
+    }
+
     pub fn set_ball_validity(&mut self, validity: bool) {
         self.is_ball_valid = validity;
     }

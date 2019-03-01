@@ -8,7 +8,6 @@ use global::PlayerSide;
 use duel_match::nalgebra::base::Vector2;
 
 pub struct DuelMatch {
-    is_ball_down : bool,
     game_logic : GameLogic,
     physic_world : PhysicWorld,
 }
@@ -75,13 +74,11 @@ impl DuelMatch {
                 }
                 
                 self.physic_world.set_ball_validity(false);
-                self.is_ball_down = true;
             },
         }
 
         if self.physic_world.is_round_finished() {
             events.push(FrameEvent::EventReset); 
-            self.is_ball_down = true;
             self.physic_world.reset(self.game_logic.get_serving_player());
         }
 
@@ -108,14 +105,9 @@ impl DuelMatch {
         physic_world.step();
 
         DuelMatch {
-            is_ball_down : false,
             physic_world : physic_world,
             game_logic: GameLogic::new(),
         }
-    }
-
-    pub fn is_ball_valid(&self) -> bool {
-        !self.is_ball_down
     }
 
     pub fn get_world(&mut self) -> &mut PhysicWorld {
