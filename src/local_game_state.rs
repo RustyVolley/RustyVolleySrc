@@ -185,8 +185,7 @@ impl LocalGameState {
         // draw left player
         {
             let blob_pos = self.duel_match.get_blob_position(LeftPlayer);
-            let blob_state = (self.duel_match.get_world().get_blob_state(LeftPlayer) as usize) % 5usize;
-
+            let blob_state = (self.duel_match.get_world().get_blob_state(LeftPlayer) as usize) % (BLOBBY_ANIMATION_FRAMES) ;
              let transform = 
                 Transform::scale(
                     Vector::new(
@@ -215,8 +214,7 @@ impl LocalGameState {
         // draw right player
         {
             let blob_pos = self.duel_match.get_blob_position(RightPlayer);
-            let blob_state = (self.duel_match.get_world().get_blob_state(RightPlayer) as usize) % 5usize;
-
+            let blob_state = (self.duel_match.get_world().get_blob_state(RightPlayer) as usize) % (BLOBBY_ANIMATION_FRAMES);
             let transform = 
                 Transform::scale(
                     Vector::new(

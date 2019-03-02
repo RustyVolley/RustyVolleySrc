@@ -11,6 +11,7 @@ use std::cell::RefCell;
 use local_game_state::LocalGameState;
 use home_menu_state::HomeMenuState;
 use win_menu_state::WinMenuState;
+use game_constants::BLOBBY_ANIMATION_FRAMES;
 
 use global::PlayerSide;
 
@@ -48,7 +49,7 @@ impl StateManager {
         let mut blobs_images_left : Vec<Asset<Image>> = vec!();
         let mut blobs_images_right : Vec<Asset<Image>> = vec!();
 
-        for i in 1..12 {
+        for i in 1..BLOBBY_ANIMATION_FRAMES + 1 {
             let path = format!("blobby_p1_{:04}.png", i);
             blobs_images_left.push(Asset::new(Image::load(path)));
             let path = format!("blobby_p2_{:04}.png", i);

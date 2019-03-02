@@ -91,6 +91,10 @@ impl SimpleBot {
         }
     }
 
+    pub fn get_random() -> f32 {
+        rand::random::<f32>()
+    }
+
     pub fn reset_input(&mut self) {
         self.want_jump = false;
         self.want_left = false;
@@ -275,12 +279,12 @@ impl SimpleBot {
 
         if self.last_ball_speed.unwrap() != original_bvx && self.current_game_state.is_ball_valid {
             self.last_ball_speed = Some(original_bvx);
-            let mut er = (rand::random::<f32>()  + rand::random::<f32>()) * BALL_RADIUS;
-            let mut phi = 2.0f32 * std::f32::consts::PI * rand::random::<f32>();
+            let mut er = (SimpleBot::get_random()  + SimpleBot::get_random()) * BALL_RADIUS;
+            let mut phi = 2.0f32 * std::f32::consts::PI * SimpleBot::get_random();
             self.error_ball_x = phi.sin() * er;
             self.error_ball_y = phi.cos() * er;
-            er = rand::random::<f32>() * 1.5f32;
-            phi = 2.0f32 * std::f32::consts::PI * rand::random::<f32>();
+            er = SimpleBot::get_random() * 1.5f32;
+            phi = 2.0f32 * std::f32::consts::PI * SimpleBot::get_random();
             self.error_ball_velocity_x = phi.sin() * er;
             self.error_ball_velocity_y = phi.cos() * er;
 
@@ -351,7 +355,7 @@ impl SimpleBot {
 
     pub fn on_serve(&mut self, is_ball_ready : bool) {
         if self.bot_impl.serve_random.is_none() {
-            self.bot_impl.serve_random = Some(rand::random::<f32>());
+            self.bot_impl.serve_random = Some(SimpleBot::get_random());
         }
 
         let ball_x = self.ball_x;
