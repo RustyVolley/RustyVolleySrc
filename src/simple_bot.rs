@@ -191,53 +191,7 @@ impl SimpleBot {
         let mut pos_y_out = pos_y;
         let mut vel_y_out = vel_y;
 
-        // if vel_y > 0.0f32 && downward {
-        //     let ot = time + 1.0f32;
-
-        //     let (pos_x, pos_y, vel_x, vel_y) = 
-        //         self.simulate(1, pos_x, pos_y, vel_x, vel_y);
-
-        //     let (time, pos_x, pos_y, vel_x, vel_y) = 
-        //         self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
-
-        //     let time = time + ot;
-
-        //     pos_x_out = pos_x;
-        //     vel_x_out = vel_x;
-        //     time_out = time;
-        //     pos_y_out = pos_y;
-        //     vel_y_out = vel_y;
-        // }
-
         return (pos_x_out, vel_x_out, time_out, pos_y_out, vel_y_out);
-    }
-
-    pub fn simulate(
-        &mut self, 
-        steps : i32, 
-        x : f32, 
-        y : f32, 
-        vx: f32, 
-        vy : f32
-    ) -> (f32, f32, f32, f32) {
-
-        self.simulated_physic_world.set_ball_position(Vector2::new(x, VERTICAL_PLANE_LENGTH - y));
-        self.simulated_physic_world.set_ball_velocity(Vector2::new(vx, -vy));
-
-        self.simulated_physic_world.set_player_input(LeftPlayer, PlayerInput::new());
-        self.simulated_physic_world.set_player_input(RightPlayer, PlayerInput::new());
-
-        self.simulated_physic_world.set_ball_validity(false);
-        self.simulated_physic_world.set_game_running(true);
-
-        for _ in 0..steps {
-            self.simulated_physic_world.step();
-        }
-
-        let pos = self.simulated_physic_world.get_ball_position();
-        let vel = self.simulated_physic_world.get_ball_velocity();
-
-        (pos.x, pos.y, vel.x, vel.y)
     }
 
     pub fn simulate_until(
@@ -365,7 +319,7 @@ impl SimpleBot {
         let delta_x = self.ball_x - self.pos_x();
         if self.estim_impact_low() {
             if 
-                self.bot_impl.estim_ball_speed_x.abs() < 2.5f32 && 
+                self.bot_impl.estim_ball_speed_x.abs() < 2.8f32 && 
                 self.ball_velocity_y < 0.0f32 && 
                 delta_x.abs() < 35.0f32 &&
                 delta_y < 285.0f32 {
@@ -382,6 +336,8 @@ impl SimpleBot {
             else {
                 self.low_play();
             }
+        } else {
+            println!("cannot predict where ball will fall");
         }
     }
 
@@ -402,7 +358,7 @@ impl SimpleBot {
         let serve_rnd = self.bot_impl.serve_random.unwrap();
         let direction = if self.side == LeftPlayer { 1.0f32 } else { -1.0f32 };
 
-        if self.move_to(Some(ball_x + direction * ( 3.0f32 + serve_rnd * 8.0f32))) && is_ball_ready {
+        if self.move_to(Some(ball_x + direction * ( 5.0f32 + serve_rnd * 8.0f32))) && is_ball_ready {
             self.jump();
             self.bot_impl.serve_random = None;
         }
@@ -447,7 +403,7 @@ impl SimpleBot {
     }
 
     pub fn estim_impact_low(&mut self) -> bool {
-        self.estim_impact(220.0f32)
+        self.estim_impact(200.0f32)
     }
 }
 

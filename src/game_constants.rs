@@ -41,7 +41,7 @@ pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
 
 pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
-pub const BLOBBY_SPEED : f32 = 4.5f32;
+pub const BLOBBY_SPEED : f32 = 5.2f32;
 
 pub const SQUISH_TOLERANCE : i32 = 80;
 
@@ -57,7 +57,7 @@ pub const SCORE_PADDING_X : i32 = 100;
 
 pub const BALL_SPAWN_POS_X : i32 = 200;
 
-pub const LEFT_SPAWN_POS_X : i32 = 174;
+pub const LEFT_SPAWN_POS_X : i32 = 200;
 pub const RIGHT_SPAWN_POS_X : i32 = 600;
 
 pub const BALL_MIDDLE_SPAWN_X : i32 = 400;
