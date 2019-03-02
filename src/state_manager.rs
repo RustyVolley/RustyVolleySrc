@@ -58,7 +58,6 @@ impl StateManager {
         let mut sounds : Vec<Asset<Sound>> = vec!();
 
         sounds.push(Asset::new(Sound::load("ball_player.wav")));
-        sounds.push(Asset::new(Sound::load("chat.wav"))); // not used
         sounds.push(Asset::new(Sound::load("whistle.wav")));
 
         let game_assets = GamesAssets {

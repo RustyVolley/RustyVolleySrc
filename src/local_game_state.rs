@@ -77,7 +77,7 @@ impl LocalGameState {
             *x == FrameEvent::EventErrorLeft ||
             *x == FrameEvent::EventErrorRight
         ) {
-            let _ = game_assets.sounds[2].execute(|sound| {
+            let _ = game_assets.sounds[1].execute(|sound| {
                 sound.set_volume(1.0f32);
                 let _ = sound.play()?;
                 Ok(())
@@ -85,7 +85,7 @@ impl LocalGameState {
         }
 
         if self.frame_number == 0 {
-            let _ = game_assets.sounds[2].execute(|sound| {
+            let _ = game_assets.sounds[1].execute(|sound| {
                 sound.set_volume(1.0f32);
                 let _ = sound.play()?;
                 Ok(())
