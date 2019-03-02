@@ -1,6 +1,9 @@
 
 pub const LEFT_PLANE : f32 = 0f32;
 pub const RIGHT_PLANE : f32 = 800.0;
+
+pub const VERTICAL_PLANE_LENGTH : f32 = 600.0;
+
 // These numbers should include the blobbys width, but in the original game
 // the blobbys can go a bit into the walls too.
 
@@ -20,7 +23,7 @@ pub const BLOBBY_JUMP_ACCELERATION : f32 = 15.1f32;
 
 // Ball Settings
 pub const BALL_RADIUS : f32 = 31.5f32;
-pub const BALL_GRAVITATION : f32 = 0.28f32;
+pub const BALL_GRAVITATION : f32 = 0.287f32;
 pub const BALL_COLLISION_VELOCITY : f32 = 13.125f32;
 
 // Volley Ball Net
@@ -38,7 +41,7 @@ pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
 
 pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
-pub const BLOBBY_SPEED : f32 = 4.5f32;
+pub const BLOBBY_SPEED : f32 = 5.2f32;
 
 pub const SQUISH_TOLERANCE : i32 = 80;
 
@@ -51,6 +54,8 @@ pub const BALL_INDICATOR_HEIGHT : i32 = 20;
 
 pub const SCORE_BASELINE_HEIGHT : i32 = 50;
 pub const SCORE_PADDING_X : i32 = 100;
+
+pub const BALL_SPAWN_POS_X : i32 = 200;
 
 pub const LEFT_SPAWN_POS_X : i32 = 200;
 pub const RIGHT_SPAWN_POS_X : i32 = 600;
@@ -68,6 +73,19 @@ pub const PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR : f32 = 0.9;
 
 pub const BALL_ANGULAR_VELOCITY_SCALE_FACTOR : f32 = 6.0;
 
+pub const FIELD_WIDTH : f32 = RIGHT_PLANE;
+pub const FIELD_MIDDLE : f32 = FIELD_WIDTH / 2.0f32;
+pub const BALL_GRAVITY : f32 = -BALL_GRAVITATION;
+pub const BLOBBY_JUMP : f32 = BLOBBY_JUMP_ACCELERATION;
+pub const GROUND_HEIGHT : f32 = VERTICAL_PLANE_LENGTH - GROUND_PLANE_HEIGHT_MAX;
+pub const BLOBBY_GROUND_HEIGHT : f32 = GROUND_HEIGHT + BLOBBY_HEIGHT / 2.0f32;
+pub const BALL_BLOBBY_HEAD : f32 = GROUND_HEIGHT + BLOBBY_HEIGHT + BALL_RADIUS;
 
-pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
+pub const BLOBBY_GRAVITY : f32 = -BLOBBY_GRAVITATION;
+
+pub fn BLOBBY_MAX_JUMP() -> f32 {
+    BLOBBY_GROUND_HEIGHT + (BLOBBY_JUMP * BLOBBY_JUMP / BLOBBY_GRAVITY).abs()
+}
+
+pub const DISPLAY_SCALE_FACTOR : f32 = 0.4166666666666667f32;
 pub const TIME_SCALING : f32 = 0.35f32;

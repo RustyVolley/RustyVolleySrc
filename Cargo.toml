@@ -7,3 +7,4 @@ authors = ["cviot <>"]
 quicksilver = "0.3.7"
 nalgebra = "0.16.13"
 num-traits = "0.2.6"
+rand = "0.5.5"

@@ -1,4 +1,4 @@
-extern crate nalgebra;
+pub extern crate nalgebra;
 
 use global::PlayerSide;
 use global::PlayerSide::*;
@@ -60,12 +60,48 @@ impl PhysicWorld {
         physic_world
     }
 
+    pub fn get_blob_positions(&self) -> [Vector2<f32>; 2] {
+        self.blob_positions
+    }
+
+    pub fn get_blob_velocities(&self) -> [Vector2<f32>; 2] {
+        self.blob_velocities
+    }
+
     pub fn get_ball_position(&self) -> Vector2<f32> {
         self.ball_position
     }
 
+    pub fn set_ball_position(&mut self, ball_position : Vector2<f32>) {
+        self.ball_position = ball_position;
+    }
+
+    pub fn get_ball_velocity(&self) -> Vector2<f32> {
+        self.ball_velocity
+    }
+
+    pub fn set_ball_velocity(&mut self, ball_velocity : Vector2<f32>) {
+        self.ball_velocity = ball_velocity;
+    }
+
     pub fn get_ball_rotation(&self) -> f32 {
         self.ball_rotation
+    }
+
+    pub fn is_ball_valid(&self) -> bool {
+        self.is_ball_valid
+    }
+
+    pub fn set_ball_validity(&mut self, validity: bool) {
+        self.is_ball_valid = validity;
+    }
+
+    pub fn is_game_running(&self) -> bool {
+        self.is_game_running
+    }
+
+    pub fn set_game_running(&mut self, game_running : bool) {
+        self.is_game_running = game_running;
     }
 
     pub fn get_blob(&self, player: PlayerSide) -> Vector2<f32> {
@@ -88,7 +124,7 @@ impl PhysicWorld {
         if player == LeftPlayer
         {
             self.ball_position = 
-                Vector2::new(LEFT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
+                Vector2::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else if player == RightPlayer
         {
@@ -212,10 +248,6 @@ impl PhysicWorld {
 
     pub fn damp_ball(&mut self) {
         self.ball_velocity = self.ball_velocity.scale(DAMP_BALL_SCALE_FACTOR);
-    }
-
-    pub fn set_ball_validity(&mut self, validity: bool) {
-        self.is_ball_valid = validity;
     }
 
     pub fn blobby_animation_step(&mut self, player : PlayerSide) {
