@@ -226,15 +226,15 @@ impl PhysicWorld {
             self.blobs_animation_states[player_index] = 0.0f32;
         }
 
-        if self.blobs_animation_states[player_index] >= 4.5f32 {
+        if self.blobs_animation_states[player_index] >= 11.5f32 {
             self.blobs_animation_speed[player_index] = -BLOBBY_ANIMATION_SPEED;
         }
 
         self.blobs_animation_states[player_index] += 
             self.blobs_animation_speed[player_index] * TIME_SCALING;
 
-        if self.blobs_animation_states[player_index] >= 5.0f32 {
-            self.blobs_animation_states[player_index] = 4.99f32;
+        if self.blobs_animation_states[player_index] >= 12.0f32 {
+            self.blobs_animation_states[player_index] = 11.99f32;
         }
     }
 

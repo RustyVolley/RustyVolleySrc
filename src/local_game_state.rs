@@ -67,6 +67,7 @@ impl LocalGameState {
             *x == FrameEvent::EventRightBlobbyHit
         ) {
             let _ = game_assets.sounds[0].execute(|sound| {
+                sound.set_volume(10.0f32);
                 let _ = sound.play()?;
                 Ok(())
             });
@@ -77,7 +78,7 @@ impl LocalGameState {
             *x == FrameEvent::EventErrorRight
         ) {
             let _ = game_assets.sounds[2].execute(|sound| {
-                sound.set_volume(50.0f32);
+                sound.set_volume(1.0f32);
                 let _ = sound.play()?;
                 Ok(())
             });
@@ -85,7 +86,7 @@ impl LocalGameState {
 
         if self.frame_number == 0 {
             let _ = game_assets.sounds[2].execute(|sound| {
-                sound.set_volume(50.0f32);
+                sound.set_volume(1.0f32);
                 let _ = sound.play()?;
                 Ok(())
             });
@@ -146,12 +147,12 @@ impl LocalGameState {
              let transform = 
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32, 
-                        DISPLAY_SCALE_FACTOR * 2.4f32
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 );
 
-            game_assets.blobs_images[blob_state].execute(|image| {
+            game_assets.blobs_images_left[blob_state].execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
@@ -176,12 +177,12 @@ impl LocalGameState {
             let transform = 
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32, 
-                        DISPLAY_SCALE_FACTOR * 2.4f32
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 );
 
-            game_assets.blobs_images[blob_state].execute(|image| {
+            game_assets.blobs_images_right[blob_state].execute(|image| {
                 window.draw_ex(
                     &image.area().with_center(
                         (
