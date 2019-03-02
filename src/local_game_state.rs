@@ -134,6 +134,8 @@ impl LocalGameState {
 
         self.frame_number += 1;
 
+        //println!("left pos {}", self.duel_match.get_world().get_blob_positions()[0].x);
+
         if self.frame_events.iter().any( |x| 
             *x == FrameEvent::EventWinLeft
         ) {
@@ -146,6 +148,8 @@ impl LocalGameState {
         } else {
             NoTransition
         }
+
+
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {

@@ -148,10 +148,6 @@ impl SimpleBot {
         }
     }
 
-
-
-
-
     pub fn esimtate_x_at_y(
         &mut self,
         height : f32,
@@ -197,23 +193,23 @@ impl SimpleBot {
         let mut pos_y_out = pos_y;
         let mut vel_y_out = vel_y;
 
-        if vel_y > 0.0f32 && downward {
-            let ot = time + 1.0f32;
+        // if vel_y > 0.0f32 && downward {
+        //     let ot = time + 1.0f32;
 
-            let (pos_x, pos_y, vel_x, vel_y) = 
-                self.simulate(1, pos_x, pos_y, vel_x, vel_y);
+        //     let (pos_x, pos_y, vel_x, vel_y) = 
+        //         self.simulate(1, pos_x, pos_y, vel_x, vel_y);
 
-            let (time, pos_x, pos_y, vel_x, vel_y) = 
-                self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
+        //     let (time, pos_x, pos_y, vel_x, vel_y) = 
+        //         self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
 
-            let time = time + ot;
+        //     let time = time + ot;
 
-            pos_x_out = pos_x;
-            vel_x_out = vel_x;
-            time_out = time;
-            pos_y_out = pos_y;
-            vel_y_out = vel_y;
-        }
+        //     pos_x_out = pos_x;
+        //     vel_x_out = vel_x;
+        //     time_out = time;
+        //     pos_y_out = pos_y;
+        //     vel_y_out = vel_y;
+        // }
 
         return (pos_x_out, vel_x_out, time_out, pos_y_out, vel_y_out);
     }
@@ -269,7 +265,7 @@ impl SimpleBot {
         self.simulated_physic_world.set_ball_validity(false);
         self.simulated_physic_world.set_game_running(true);
 
-        let max_steps : f32 = 75.0f32 * 5.0f32 * 10.0f32;
+        let max_steps : f32 = 75.0f32 * 5.0f32 * 60.0f32;
         let mut steps : f32 = 0.0f32;
 
         while coordinate != ival && steps < max_steps {
@@ -386,35 +382,42 @@ impl SimpleBot {
                     -1.0f32 
                 };
 
+        let delta_y = self.ball_y - (VERTICAL_PLANE_LENGTH - self.get_blob_pos(self.side).y);
+        let delta_x = self.ball_x - self.pos_x();
         if self.estim_impact_low() {
-            let upper_bound = 
-                (ball_dir * 
-                (self.bot_impl.target.unwrap() - self.pos_x()) - 10.0f32
-                );// / BLOBBY_SPEED * TIME_SCALING / 2.0f32;
-
             if 
-                self.bot_impl.estim_ball_speed_x.abs() < 0.35f32 && 
-                self.bot_impl.time_to < 15.0f32 {
-                if self.bot_impl.target.unwrap() > FIELD_MIDDLE / 4.0f32 {
-                    self.right();
-                    self.jump();
-                }
-                else {
-                    self.left();
-                    self.jump();
-                }
+                self.bot_impl.estim_ball_speed_x.abs() < 6.85f32 && 
+                self.ball_velocity_y < 0.0f32 && 
+                delta_x.abs() < 22.0f32 &&
+                delta_y < 285.0f32 {
+                    if ball_dir > 0.0f32 {
+                        self.left();
+                    }
+                    else {
+                        self.right();
+                    }
+                    if delta_y < 270.0f32 {
+                        self.jump();
+                    }
             }
             else {
-                if 
-                    self.bot_impl.time_to > upper_bound ||
-                    self.bot_impl.naive_target >= FIELD_MIDDLE {
-                        self.low_play();
-                    }
-                else if self.bot_impl.naive_target < FIELD_MIDDLE {
+                let upper_bound = 
+                    (ball_dir * 
+                    (self.bot_impl.target.unwrap() - self.pos_x()) - 10.0f32
+                    ) * 8f32; // / BLOBBY_SPEED * TIME_SCALING / 2.0f32;
 
-                    self.low_play();
-                    self.jump();
-                }
+                self.low_play();
+                // if 
+                //     self.bot_impl.time_to > upper_bound ||
+                //     self.bot_impl.naive_target >= FIELD_MIDDLE || true {
+                //         println!("case 1");
+                //         self.low_play();
+                //     }
+                // else if self.bot_impl.naive_target < FIELD_MIDDLE {
+                //     println!("case 2");
+                //     self.low_play();
+                //     self.jump();
+                // }
             }
         }
     }
@@ -443,7 +446,7 @@ impl SimpleBot {
     }
 
     pub fn on_opponent_serve(&mut self) {
-        self.move_to(Some(100.0f32));
+        self.move_to(Some(150.0f32));
     }
 
     pub fn estim_impact(&mut self, dest_y : f32) -> bool {
@@ -451,6 +454,7 @@ impl SimpleBot {
 
         if t == std::f32::INFINITY {
             self.bot_impl.target = None;
+            println!("failure");
             return false;
         }
 
@@ -491,7 +495,7 @@ impl SimpleBot {
 
     pub fn low_play(&mut self) {
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
-            self.move_to(Some(100.0f32)); 
+            self.move_to(Some(200.0f32)); 
         }
         else {
             let target = self.bot_impl.target;
@@ -506,7 +510,7 @@ impl SimpleBot {
 
     pub fn estim_impact_low(&mut self) -> bool {
         //self.estim_impact(BALL_BLOBBY_HEAD)
-        self.estim_impact(330.0f32)
+        self.estim_impact(200.0f32)
     }
 }
 

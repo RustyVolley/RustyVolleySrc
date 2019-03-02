@@ -55,7 +55,8 @@ pub const BALL_INDICATOR_HEIGHT : i32 = 20;
 pub const SCORE_BASELINE_HEIGHT : i32 = 50;
 pub const SCORE_PADDING_X : i32 = 100;
 
-pub const LEFT_SPAWN_POS_X : i32 = 200;
+pub const LEFT_SPAWN_POS_X : i32 = 186;
+pub const BALL_SPAWN_POS_X : i32 = 200;
 pub const RIGHT_SPAWN_POS_X : i32 = 600;
 
 pub const BALL_MIDDLE_SPAWN_X : i32 = 400;

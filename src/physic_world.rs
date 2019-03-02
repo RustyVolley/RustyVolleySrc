@@ -124,7 +124,7 @@ impl PhysicWorld {
         if player == LeftPlayer
         {
             self.ball_position = 
-                Vector2::new(LEFT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
+                Vector2::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else if player == RightPlayer
         {
