@@ -131,13 +131,11 @@ impl SimpleBot {
     pub fn move_to(&mut self, target : Option<f32>) -> bool {
         let target = target.expect("invalid target for move_to");
 
-        let x = self.pos_x();
-
-        if x < target - BLOBBY_SPEED / 2.0f32 {
+        if self.pos_x() < target - BLOBBY_SPEED / 2.0f32 {
             self.right();
             return false;
         }
-        else if x > target + BLOBBY_SPEED / 2.0f32 {
+        else if self.pos_x() > target + BLOBBY_SPEED / 2.0f32 {
             self.left();
             return false;
         }
@@ -352,25 +350,6 @@ impl SimpleBot {
     }
 
     pub fn on_game(&mut self) {
-        // if self.estim_impact_high() {
-        //     if 
-        //         self.bot_impl.naive_target < FIELD_MIDDLE && 
-        //         self.bot_impl.target.unwrap() < FIELD_MIDDLE &&
-        //         (   self.bot_impl.mode_lock || 
-        //             self.bot_impl.time_to > (self.pos_x() - self.high_play_pos()).abs() / 4.5f32 + 26.0f32
-        //         ) // TODO : add touches() < 3
-        //         {
-
-        //             self.bot_impl.mode_lock = self.bot_impl.time_to < 30.0f32;       
-        //             if !self.bot_impl.mode_lock {
-        //                 self.bot_impl.serve_random = None;
-        //             }
-
-        //             self.high_play();
-        //             return;
-
-        //         }
-        // }
 
         self.bot_impl.mode_lock = false;
         self.bot_impl.serve_random = None;
@@ -386,9 +365,9 @@ impl SimpleBot {
         let delta_x = self.ball_x - self.pos_x();
         if self.estim_impact_low() {
             if 
-                self.bot_impl.estim_ball_speed_x.abs() < 6.85f32 && 
+                self.bot_impl.estim_ball_speed_x.abs() < 2.5f32 && 
                 self.ball_velocity_y < 0.0f32 && 
-                delta_x.abs() < 22.0f32 &&
+                delta_x.abs() < 35.0f32 &&
                 delta_y < 285.0f32 {
                     if ball_dir > 0.0f32 {
                         self.left();
@@ -401,23 +380,7 @@ impl SimpleBot {
                     }
             }
             else {
-                let upper_bound = 
-                    (ball_dir * 
-                    (self.bot_impl.target.unwrap() - self.pos_x()) - 10.0f32
-                    ) * 8f32; // / BLOBBY_SPEED * TIME_SCALING / 2.0f32;
-
                 self.low_play();
-                // if 
-                //     self.bot_impl.time_to > upper_bound ||
-                //     self.bot_impl.naive_target >= FIELD_MIDDLE || true {
-                //         println!("case 1");
-                //         self.low_play();
-                //     }
-                // else if self.bot_impl.naive_target < FIELD_MIDDLE {
-                //     println!("case 2");
-                //     self.low_play();
-                //     self.jump();
-                // }
             }
         }
     }
@@ -454,7 +417,6 @@ impl SimpleBot {
 
         if t == std::f32::INFINITY {
             self.bot_impl.target = None;
-            println!("failure");
             return false;
         }
 
@@ -473,29 +435,10 @@ impl SimpleBot {
             return self.bot_impl.target.unwrap() - 50.0f32;
         }
     }
-    
-    // pub fn high_play(&mut self) {
-    //     if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
-    //         self.move_to(Some(100.0f32)); 
-    //     } 
-    //     else {
-    //         let target = Some(self.high_play_pos());
-    //         self.move_to(target);
-    //         if self.bot_impl.serve_random.is_none() {
-    //             self.bot_impl.serve_random = Some(rand::random::<f32>()); 
-    //         }
-
-    //         if 
-    //             self.bot_impl.naive_target < FIELD_MIDDLE && 
-    //             self.bot_impl.time_to < (28.0f32 * TIME_SCALING + self.bot_impl.serve_random.unwrap()) {
-    //                 self.jump();
-    //         }
-    //     }
-    // }
 
     pub fn low_play(&mut self) {
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
-            self.move_to(Some(200.0f32)); 
+            self.move_to(Some(180.0f32)); 
         }
         else {
             let target = self.bot_impl.target;
@@ -503,14 +446,8 @@ impl SimpleBot {
         }
     }
 
-    pub fn estim_impact_high(&mut self) -> bool {
-        //self.estim_impact(BLOBBY_MAX_JUMP() - 25.0f32)
-        self.estim_impact(440.0f32)
-    }
-
     pub fn estim_impact_low(&mut self) -> bool {
-        //self.estim_impact(BALL_BLOBBY_HEAD)
-        self.estim_impact(200.0f32)
+        self.estim_impact(220.0f32)
     }
 }
 
