@@ -250,8 +250,8 @@ impl LocalGameState {
             let transform = 
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32, 
-                        DISPLAY_SCALE_FACTOR * 2.4f32
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 ) *
                 Transform::rotate(
