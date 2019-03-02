@@ -45,24 +45,27 @@ pub trait RustyVollyState {
 impl StateManager {
     fn new() -> StateManager {
 
-        let mut blobs_images : Vec<Asset<Image>> = vec!();
+        let mut blobs_images_left : Vec<Asset<Image>> = vec!();
+        let mut blobs_images_right : Vec<Asset<Image>> = vec!();
 
-        for i in 1..6 {
-            let path = format!("blobbym{:1}.png", i);
-            blobs_images.push(Asset::new(Image::load(path)));
+        for i in 1..12 {
+            let path = format!("blobby_p1_{:04}.png", i);
+            blobs_images_left.push(Asset::new(Image::load(path)));
+            let path = format!("blobby_p2_{:04}.png", i);
+            blobs_images_right.push(Asset::new(Image::load(path)));
         }
 
         let mut sounds : Vec<Asset<Sound>> = vec!();
 
-        sounds.push(Asset::new(Sound::load("bums.wav")));
-        sounds.push(Asset::new(Sound::load("chat.wav")));
-        sounds.push(Asset::new(Sound::load("pfiff.wav")));
+        sounds.push(Asset::new(Sound::load("ball_player.wav")));
+        sounds.push(Asset::new(Sound::load("whistle.wav")));
 
         let game_assets = GamesAssets {
             background_image: Asset::new(Image::load("background.png")),
             ball_image : Asset::new(Image::load("ball.png")),
             ball_indicator : Asset::new(Image::load("ball_indicator.png")),
-            blobs_images: blobs_images,
+            blobs_images_left: blobs_images_left,
+            blobs_images_right: blobs_images_right,
             sounds: sounds,
             font: Rc::new(RefCell::new(Asset::new(Font::load("font8.ttf")))),
             font_style: FontStyle::new(64.0, Color {
@@ -147,6 +150,7 @@ pub struct GamesAssets {
     pub ball_indicator: Asset<Image>,
     pub font: Rc<RefCell<Asset<Font>>>,
     pub font_style: FontStyle,
-    pub blobs_images : Vec<Asset<Image>>,
+    pub blobs_images_left : Vec<Asset<Image>>,
+    pub blobs_images_right : Vec<Asset<Image>>,
     pub sounds : Vec<Asset<Sound>>,
 }
