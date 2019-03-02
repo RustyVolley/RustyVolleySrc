@@ -37,7 +37,7 @@ pub const GROUND_PLANE_HEIGHT_MAX : f32 = 500f32;
 pub const GROUND_PLANE_HEIGHT : f32 = GROUND_PLANE_HEIGHT_MAX - BLOBBY_HEIGHT / 2.0;
 
 // Gamefeeling relevant constants:
-pub const BLOBBY_ANIMATION_SPEED : f32 = 0.5f32;
+pub const BLOBBY_ANIMATION_SPEED : f32 = 0.3f32;
 
 pub const STANDARD_BALL_ANGULAR_VELOCITY : f32 = 0.1f32;
 pub const STANDARD_BALL_HEIGHT : f32 = 269f32 + BALL_RADIUS;
