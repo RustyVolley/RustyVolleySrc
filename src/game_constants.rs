@@ -23,7 +23,7 @@ pub const BLOBBY_JUMP_ACCELERATION : f32 = 15.1f32;
 
 // Ball Settings
 pub const BALL_RADIUS : f32 = 31.5f32;
-pub const BALL_GRAVITATION : f32 = 0.28f32;
+pub const BALL_GRAVITATION : f32 = 0.287f32;
 pub const BALL_COLLISION_VELOCITY : f32 = 13.125f32;
 
 // Volley Ball Net
@@ -85,5 +85,5 @@ pub fn BLOBBY_MAX_JUMP() -> f32 {
     BLOBBY_GROUND_HEIGHT + (BLOBBY_JUMP * BLOBBY_JUMP / BLOBBY_GRAVITY).abs()
 }
 
-pub const DISPLAY_SCALE_FACTOR : f32 = 0.6f32;
+pub const DISPLAY_SCALE_FACTOR : f32 = 0.4166666666666667f32;
 pub const TIME_SCALING : f32 = 0.35f32;

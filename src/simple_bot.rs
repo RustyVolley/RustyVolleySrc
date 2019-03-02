@@ -57,7 +57,8 @@ pub struct SimpleBot {
 
     simulated_physic_world : PhysicWorld,
     current_game_state : CurrentGameState,
-    bot_impl : SimpleBotImpl
+    bot_impl : SimpleBotImpl,
+    frame_index : u64,
 }
 
 impl SimpleBot {
@@ -85,6 +86,8 @@ impl SimpleBot {
             simulated_physic_world : PhysicWorld::new(),
             current_game_state : CurrentGameState::new(),
             bot_impl : SimpleBotImpl::new(),
+
+            frame_index: 0,
         }
     }
 
@@ -191,7 +194,7 @@ impl SimpleBot {
         } else {
             return (std::f32::INFINITY, std::f32::INFINITY)
         }
-        
+
     }
 
     pub fn esimtate_x_at_y(
@@ -242,7 +245,6 @@ impl SimpleBot {
             );
         }
 
-        // TODO : check this
         let (time, pos_x, pos_y, vel_x, vel_y) = 
             self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
 
@@ -324,7 +326,7 @@ impl SimpleBot {
         self.simulated_physic_world.set_ball_validity(false);
         self.simulated_physic_world.set_game_running(true);
 
-        let max_steps : f32 = 75.0f32 * 5.0f32;
+        let max_steps : f32 = 75.0f32 * 5.0f32 * 10.0f32;
         let mut steps : f32 = 0.0f32;
 
         while coordinate != ival && steps < max_steps {
@@ -354,12 +356,13 @@ impl SimpleBot {
         ball_position : Vector2<f32>, 
         ball_velocity : Vector2<f32>
     ) {
+        self.frame_index = self.frame_index + 1;
         self.current_game_state = game_data;
         self.ball_x = ball_position.x;
-        self.ball_y = ball_position.y;
+        self.ball_y = VERTICAL_PLANE_LENGTH - ball_position.y;
 
         self.ball_velocity_x = ball_velocity.x;
-        self.ball_velocity_y = ball_velocity.y;
+        self.ball_velocity_y = - ball_velocity.y;
 
         if self.side == RightPlayer {
             self.ball_x = FIELD_WIDTH - self.ball_x;
@@ -419,7 +422,7 @@ impl SimpleBot {
                 ) // TODO : add touches() < 3
                 {
 
-                    self.bot_impl.mode_lock = self.bot_impl.time_to < 30.0f32;
+                    self.bot_impl.mode_lock = self.bot_impl.time_to < 30.0f32;       
                     if !self.bot_impl.mode_lock {
                         self.bot_impl.serve_random = None;
                     }
@@ -433,7 +436,12 @@ impl SimpleBot {
         self.bot_impl.mode_lock = false;
         self.bot_impl.serve_random = None;
 
-        let ball_dir = if self.bot_impl.estim_ball_speed_x >= 0.0f32 { 1.0f32 } else { -1.0f32 };
+        let ball_dir = 
+            if self.bot_impl.estim_ball_speed_x >= 0.0f32 { 
+                1.0f32 
+                } else { 
+                    -1.0f32 
+                };
 
         if self.estim_impact_low() {
             let upper_bound = (ball_dir * (self.bot_impl.target.unwrap() - self.pos_x()) - 10.0f32) / BLOBBY_SPEED;

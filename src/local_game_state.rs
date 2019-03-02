@@ -73,12 +73,12 @@ impl LocalGameState {
             serving_player : self.duel_match.get_serving_player()
         };
 
-        self.bot_left.step
-        (
-            bot_data, 
-            self.duel_match.get_world().get_ball_position(), 
-            self.duel_match.get_world().get_ball_velocity()
-        );
+        // self.bot_left.step
+        // (
+        //     bot_data, 
+        //     self.duel_match.get_world().get_ball_position(), 
+        //     self.duel_match.get_world().get_ball_velocity()
+        // );
 
         let bot_data = CurrentGameState { 
             blob_positions : self.duel_match.get_world().get_blob_positions(),
@@ -95,8 +95,8 @@ impl LocalGameState {
             self.duel_match.get_world().get_ball_velocity()
         );
 
-        self.duel_match.get_world().set_player_input(LeftPlayer, self.bot_left.compute_input());
-        self.bot_left.reset_input();
+        // self.duel_match.get_world().set_player_input(LeftPlayer, self.bot_left.compute_input());
+        // self.bot_left.reset_input();
 
         self.duel_match.get_world().set_player_input(RightPlayer, self.bot_right.compute_input());
         self.bot_right.reset_input();
@@ -441,9 +441,7 @@ impl LocalGameState {
             }
 
             //self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
-            
-            //self.duel_match.get_world().set_player_input(RightPlayer, self.bot.compute_input());
-            //self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
+            self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
         }
         NoTransition
     }
