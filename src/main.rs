@@ -34,6 +34,7 @@ fn main() {
             draw_rate: 4.0, 
             update_rate: 4.0,
             vsync: true,
+            multisampling: Some(16),
             //fullscreen: true,
             ..Settings::default()
         }
