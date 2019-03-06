@@ -38,7 +38,7 @@ impl WinMenuState {
 
 impl RustyVollyState for WinMenuState {
 
-    fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
+    fn step(&mut self, _game_assets: &mut GamesAssets) -> StateTransition {
         NoTransition
     }
 
@@ -47,11 +47,11 @@ impl RustyVollyState for WinMenuState {
 
         // draw background
         {
-            let transform = 
-                Transform::IDENTITY * 
+            let transform =
+                Transform::IDENTITY *
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR, 
+                        DISPLAY_SCALE_FACTOR,
                         DISPLAY_SCALE_FACTOR
                     )
                 );
@@ -60,12 +60,12 @@ impl RustyVollyState for WinMenuState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR,
                             WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     0.0f32
                 );
                 Ok(())
@@ -74,10 +74,10 @@ impl RustyVollyState for WinMenuState {
 
         // draw text
         {
-            let transform = 
+            let transform =
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 1.6f32, 
+                        DISPLAY_SCALE_FACTOR * 1.6f32,
                         DISPLAY_SCALE_FACTOR * 1.6f32
                     )
                 );
@@ -90,9 +90,9 @@ impl RustyVollyState for WinMenuState {
                 if self.home_menu_text.is_none() {
 
                     let home_menu_text = match self.winning_player {
-                        LeftPlayer => 
+                        LeftPlayer =>
                             a_font.render(&format!("Left Player won!"), &game_assets.font_style).unwrap(),
-                        RightPlayer => 
+                        RightPlayer =>
                             a_font.render(&format!("Right Player won!"), &game_assets.font_style).unwrap(),
                         _ =>
                             a_font.render(&format!("Unkown Player won!"), &game_assets.font_style).unwrap(),
@@ -108,12 +108,12 @@ impl RustyVollyState for WinMenuState {
                         window.draw_ex(
                             &image.area().with_center(
                                 (
-                                    WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                                    WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR,
                                     WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
                                 )
-                            ), 
-                            Img(&image), 
-                            transform, 
+                            ),
+                            Img(&image),
+                            transform,
                             4.0f32
                         );
                     }

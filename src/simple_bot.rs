@@ -82,7 +82,7 @@ impl SimpleBot {
             want_jump : false,
             want_right : false,
             want_left : false,
-            
+
             simulated_physic_world : PhysicWorld::new(),
             current_game_state : CurrentGameState::new(),
             bot_impl : SimpleBotImpl::new(),
@@ -180,29 +180,29 @@ impl SimpleBot {
             None => self.ball_velocity_y
         };
 
-        let downward = match downward {
+        let _downward = match downward {
             Some(a) => a,
             None => true,
         };
 
 
-        let (time, pos_x, pos_y, vel_x, vel_y) = 
+        let (time, pos_x, pos_y, vel_x, vel_y) =
             self.simulate_until(pos_x, pos_y, vel_x, vel_y, Axis::AxisY, height);
 
-        let mut pos_x_out = pos_x;
-        let mut vel_x_out = vel_x;
-        let mut time_out = time;
-        let mut pos_y_out = pos_y;
-        let mut vel_y_out = vel_y;
+        let pos_x_out = pos_x;
+        let vel_x_out = vel_x;
+        let time_out = time;
+        let pos_y_out = pos_y;
+        let vel_y_out = vel_y;
 
         return (pos_x_out, vel_x_out, time_out, pos_y_out, vel_y_out);
     }
 
     pub fn simulate_until(
         &mut self,
-        x : f32, 
-        y : f32, 
-        vx: f32, 
+        x : f32,
+        y : f32,
+        vx: f32,
         vy : f32,
         axis : Axis,
         coordinate : f32
@@ -228,7 +228,7 @@ impl SimpleBot {
             steps = steps + 1.0f32;
             self.simulated_physic_world.step();
             let pos = self.simulated_physic_world.get_ball_position();
-            let v = if axis == Axis::AxisX { pos.x } else { VERTICAL_PLANE_LENGTH - pos.y }; 
+            let v = if axis == Axis::AxisX { pos.x } else { VERTICAL_PLANE_LENGTH - pos.y };
             if (v < coordinate) != init {
                 break;
             }
@@ -246,9 +246,9 @@ impl SimpleBot {
     }
 
     pub fn step(
-        &mut self, 
-        game_data: CurrentGameState, 
-        ball_position : Vector2<f32>, 
+        &mut self,
+        game_data: CurrentGameState,
+        ball_position : Vector2<f32>,
         ball_velocity : Vector2<f32>
     ) {
         self.frame_index = self.frame_index + 1;
@@ -273,7 +273,7 @@ impl SimpleBot {
             self.ball_velocity_y = self.ball_velocity_y + self.error_ball_velocity_y * (self.difficulty as f32);
         }
 
-        if self.last_ball_speed.is_none() { 
+        if self.last_ball_speed.is_none() {
             self.last_ball_speed = Some(original_bvx);
         }
 
@@ -312,19 +312,19 @@ impl SimpleBot {
         self.bot_impl.mode_lock = false;
         self.bot_impl.serve_random = None;
 
-        let ball_dir = 
-            if self.bot_impl.estim_ball_speed_x >= 0.0f32 { 
-                1.0f32 
-                } else { 
-                    -1.0f32 
+        let ball_dir =
+            if self.bot_impl.estim_ball_speed_x >= 0.0f32 {
+                1.0f32
+                } else {
+                    -1.0f32
                 };
 
         let delta_y = self.ball_y - (VERTICAL_PLANE_LENGTH - self.get_blob_pos(self.side).y);
         let delta_x = self.ball_x - self.pos_x();
         if self.estim_impact_low() {
-            if 
-                self.bot_impl.estim_ball_speed_x.abs() < 2.8f32 && 
-                self.ball_velocity_y < 0.0f32 && 
+            if
+                self.bot_impl.estim_ball_speed_x.abs() < 2.8f32 &&
+                self.ball_velocity_y < 0.0f32 &&
                 delta_x.abs() < 35.0f32 &&
                 delta_y < 285.0f32 {
                     if ball_dir > 0.0f32 {
@@ -388,17 +388,17 @@ impl SimpleBot {
         return true;
     }
 
-    pub fn high_play_pos(&mut self) -> f32 {
-        if self.bot_impl.estim_ball_speed_x < 0.0f32 {
-            return self.bot_impl.target.unwrap() - 50.0f32 - self.bot_impl.estim_ball_speed_x / 5.0f32;
-        } else {
-            return self.bot_impl.target.unwrap() - 50.0f32;
-        }
-    }
+    // pub fn high_play_pos(&mut self) -> f32 {
+    //     if self.bot_impl.estim_ball_speed_x < 0.0f32 {
+    //         return self.bot_impl.target.unwrap() - 50.0f32 - self.bot_impl.estim_ball_speed_x / 5.0f32;
+    //     } else {
+    //         return self.bot_impl.target.unwrap() - 50.0f32;
+    //     }
+    // }
 
     pub fn low_play(&mut self) {
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {
-            self.move_to(Some(180.0f32)); 
+            self.move_to(Some(180.0f32));
         }
         else {
             let target = self.bot_impl.target;
