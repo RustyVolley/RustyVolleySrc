@@ -79,3 +79,5 @@ pub const FIELD_MIDDLE : f32 = FIELD_WIDTH / 2.0f32;
 
 pub const DISPLAY_SCALE_FACTOR : f32 = 0.4166666666666667f32;
 pub const TIME_SCALING : f32 = 0.35f32;
+
+pub const SCORE_TO_WIN : i32 = 15

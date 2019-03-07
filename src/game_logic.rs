@@ -55,7 +55,7 @@ impl GameLogic {
             last_error: NoPlayer,
             serving_player: LeftPlayer,
             winning_player: NoPlayer,
-            score_to_win : 15,
+            score_to_win : SCORE_TO_WIN,
         };
 
 
