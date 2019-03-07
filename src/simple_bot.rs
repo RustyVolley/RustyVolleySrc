@@ -242,7 +242,6 @@ impl SimpleBot {
         let vel = self.simulated_physic_world.get_ball_velocity();
 
         (steps, pos.x, pos.y, vel.x, vel.y)
-
     }
 
     pub fn step(
@@ -287,10 +286,6 @@ impl SimpleBot {
             phi = 2.0f32 * std::f32::consts::PI * SimpleBot::get_random();
             self.error_ball_velocity_x = phi.sin() * er;
             self.error_ball_velocity_y = phi.cos() * er;
-
-            // if on_bounce {
-            //     self.on_bounce();
-            // }
         }
 
         if !self.current_game_state.is_game_running {
@@ -387,14 +382,6 @@ impl SimpleBot {
 
         return true;
     }
-
-    // pub fn high_play_pos(&mut self) -> f32 {
-    //     if self.bot_impl.estim_ball_speed_x < 0.0f32 {
-    //         return self.bot_impl.target.unwrap() - 50.0f32 - self.bot_impl.estim_ball_speed_x / 5.0f32;
-    //     } else {
-    //         return self.bot_impl.target.unwrap() - 50.0f32;
-    //     }
-    // }
 
     pub fn low_play(&mut self) {
         if self.bot_impl.target.unwrap() > FIELD_MIDDLE {

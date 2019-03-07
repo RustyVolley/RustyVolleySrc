@@ -65,13 +65,6 @@ impl LocalGameState {
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
 
-        // self.bot_left.step
-        // (
-        //     bot_data,
-        //     self.duel_match.get_world().get_ball_position(),
-        //     self.duel_match.get_world().get_ball_velocity()
-        // );
-
         let bot_data = CurrentGameState {
             blob_positions : self.duel_match.get_world().get_blob_positions(),
             blob_velocities : self.duel_match.get_world().get_blob_velocities(),
@@ -86,9 +79,6 @@ impl LocalGameState {
             self.duel_match.get_world().get_ball_position(),
             self.duel_match.get_world().get_ball_velocity()
         );
-
-        // self.duel_match.get_world().set_player_input(LeftPlayer, self.bot_left.compute_input());
-        // self.bot_left.reset_input();
 
         self.duel_match.get_world().set_player_input(RightPlayer, self.bot_right.compute_input());
         self.bot_right.reset_input();
@@ -139,8 +129,6 @@ impl LocalGameState {
         } else {
             NoTransition
         }
-
-
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
@@ -299,7 +287,6 @@ impl LocalGameState {
 
         // draw the score
         {
-
             let transform =
                     Transform::scale(
                         Vector::new(
@@ -379,7 +366,6 @@ impl LocalGameState {
     }
 
     pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
-
         let mut player_right_input = self.duel_match.get_world().get_player_input(RightPlayer);
         let mut player_left_input = self.duel_match.get_world().get_player_input(LeftPlayer);
 

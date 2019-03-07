@@ -37,7 +37,6 @@ impl WinMenuState {
 }
 
 impl RustyVollyState for WinMenuState {
-
     fn step(&mut self, _game_assets: &mut GamesAssets) -> StateTransition {
         NoTransition
     }
