@@ -23,16 +23,15 @@ use quicksilver::{
 };
 
 fn main() {
-
     run::<StateManager>
     (
-        "RustyVolley", 
+        "RustyVolley",
         Vector::new(
             ((WINDOW_WIDTH as f32) * DISPLAY_SCALE_FACTOR) as u32,
             ((WINDOW_HEIGHT as f32) * DISPLAY_SCALE_FACTOR) as u32
-        ), 
+        ),
         Settings {
-            draw_rate: 4.0, 
+            draw_rate: 4.0,
             update_rate: 4.0,
             vsync: true,
             multisampling: Some(16),

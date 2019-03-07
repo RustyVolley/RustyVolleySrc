@@ -91,7 +91,7 @@ impl StateManager {
             RustyGameState::HomeMenu => self.home_menu_state.clone(),
             RustyGameState::LocalGame => self.local_game_state.clone(),
             RustyGameState::WinMenu => self.win_menu_state.clone(),
-        } 
+        }
     }
 
     fn update_state_if_needed(&mut self, transition : StateTransition) {
@@ -111,7 +111,6 @@ impl StateManager {
 }
 
 impl State for StateManager {
-    
     fn new() -> Result<StateManager> {
         Ok(StateManager::new())
     }

@@ -39,7 +39,7 @@ pub struct LocalGameState {
     frame_number : usize,
     scoring : Scoring,
     bot_right : SimpleBot,
-    bot_left : SimpleBot,
+    //bot_left : SimpleBot,
 }
 
 impl LocalGameState {
@@ -50,7 +50,7 @@ impl LocalGameState {
             frame_events: vec!(),
             frame_number: 0,
             scoring: Scoring::new(),
-            bot_left: SimpleBot::new(LeftPlayer, 0),
+            //bot_left: SimpleBot::new(LeftPlayer, 0),
             bot_right: SimpleBot::new(RightPlayer, 0),
         }
     }
@@ -65,22 +65,7 @@ impl LocalGameState {
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
 
-        let bot_data = CurrentGameState { 
-            blob_positions : self.duel_match.get_world().get_blob_positions(),
-            blob_velocities : self.duel_match.get_world().get_blob_velocities(),
-            is_game_running : self.duel_match.get_world().is_game_running(),
-            is_ball_valid : self.duel_match.get_world().is_ball_valid(),
-            serving_player : self.duel_match.get_serving_player()
-        };
-
-        // self.bot_left.step
-        // (
-        //     bot_data, 
-        //     self.duel_match.get_world().get_ball_position(), 
-        //     self.duel_match.get_world().get_ball_velocity()
-        // );
-
-        let bot_data = CurrentGameState { 
+        let bot_data = CurrentGameState {
             blob_positions : self.duel_match.get_world().get_blob_positions(),
             blob_velocities : self.duel_match.get_world().get_blob_velocities(),
             is_game_running : self.duel_match.get_world().is_game_running(),
@@ -90,20 +75,17 @@ impl LocalGameState {
 
         self.bot_right.step
         (
-            bot_data, 
-            self.duel_match.get_world().get_ball_position(), 
+            bot_data,
+            self.duel_match.get_world().get_ball_position(),
             self.duel_match.get_world().get_ball_velocity()
         );
-
-        // self.duel_match.get_world().set_player_input(LeftPlayer, self.bot_left.compute_input());
-        // self.bot_left.reset_input();
 
         self.duel_match.get_world().set_player_input(RightPlayer, self.bot_right.compute_input());
         self.bot_right.reset_input();
 
         self.duel_match.step(&mut self.frame_events);
 
-        if self.frame_events.iter().any( |x| 
+        if self.frame_events.iter().any( |x|
             *x == FrameEvent::EventLeftBlobbyHit ||
             *x == FrameEvent::EventRightBlobbyHit
         ) {
@@ -114,7 +96,7 @@ impl LocalGameState {
             });
         }
 
-        if self.frame_events.iter().any( |x| 
+        if self.frame_events.iter().any( |x|
             *x == FrameEvent::EventErrorLeft ||
             *x == FrameEvent::EventErrorRight
         ) {
@@ -134,21 +116,19 @@ impl LocalGameState {
         }
 
         self.frame_number += 1;
-        
-        if self.frame_events.iter().any( |x| 
+
+        if self.frame_events.iter().any( |x|
             *x == FrameEvent::EventWinLeft
         ) {
             StateTransition::WinStateTransition(LeftPlayer)
         }
-        else if self.frame_events.iter().any( |x| 
+        else if self.frame_events.iter().any( |x|
             *x == FrameEvent::EventWinRight
         ) {
             StateTransition::WinStateTransition(RightPlayer)
         } else {
             NoTransition
         }
-
-
     }
 
     pub fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()> {
@@ -157,11 +137,11 @@ impl LocalGameState {
 
         // draw background
         {
-            let transform = 
-                Transform::IDENTITY * 
+            let transform =
+                Transform::IDENTITY *
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR, 
+                        DISPLAY_SCALE_FACTOR,
                         DISPLAY_SCALE_FACTOR
                     )
                 );
@@ -170,12 +150,12 @@ impl LocalGameState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR,
                             WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     0.0f32
                 );
                 Ok(())
@@ -186,10 +166,10 @@ impl LocalGameState {
         {
             let blob_pos = self.duel_match.get_blob_position(LeftPlayer);
             let blob_state = (self.duel_match.get_world().get_blob_state(LeftPlayer) as usize) % (BLOBBY_ANIMATION_FRAMES) ;
-             let transform = 
+             let transform =
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32,
                         DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 );
@@ -198,12 +178,12 @@ impl LocalGameState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32,
                             blob_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     2.0f32
                 );
 
@@ -215,10 +195,10 @@ impl LocalGameState {
         {
             let blob_pos = self.duel_match.get_blob_position(RightPlayer);
             let blob_state = (self.duel_match.get_world().get_blob_state(RightPlayer) as usize) % (BLOBBY_ANIMATION_FRAMES);
-            let transform = 
+            let transform =
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32,
                         DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 );
@@ -227,12 +207,12 @@ impl LocalGameState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            blob_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32,
                             blob_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     3.0f32
                 );
 
@@ -245,10 +225,10 @@ impl LocalGameState {
             let ball_pos = self.duel_match.get_ball_position();
             let ball_rot = self.duel_match.get_world().get_ball_rotation();
 
-            let transform = 
+            let transform =
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32, 
+                        DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32,
                         DISPLAY_SCALE_FACTOR * 2.4f32 * 0.5f32
                     )
                 ) *
@@ -260,12 +240,12 @@ impl LocalGameState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                            ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32,
                             ball_pos.y * DISPLAY_SCALE_FACTOR * 2.4f32
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     1.0f32
                 );
 
@@ -279,24 +259,24 @@ impl LocalGameState {
 
             if ball_pos.y < (0.0f32 - BALL_RADIUS) {
 
-                let transform = 
+                let transform =
                     Transform::scale(
                         Vector::new(
-                            DISPLAY_SCALE_FACTOR * 2.0f32, 
+                            DISPLAY_SCALE_FACTOR * 2.0f32,
                             DISPLAY_SCALE_FACTOR * 2.0f32
                         )
                     );
-                    
+
                 game_assets.ball_indicator.execute(|image| {
                     window.draw_ex(
                         &image.area().with_center(
                             (
-                                ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32, 
+                                ball_pos.x * DISPLAY_SCALE_FACTOR * 2.4f32,
                                 BALL_INDICATOR_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR * 2.0f32
                             )
-                        ), 
-                        Img(&image), 
-                        transform, 
+                        ),
+                        Img(&image),
+                        transform,
                         5.0f32
                     );
 
@@ -307,11 +287,10 @@ impl LocalGameState {
 
         // draw the score
         {
-
-            let transform = 
+            let transform =
                     Transform::scale(
                         Vector::new(
-                            DISPLAY_SCALE_FACTOR * 1.6f32, 
+                            DISPLAY_SCALE_FACTOR * 1.6f32,
                             DISPLAY_SCALE_FACTOR * 1.6f32
                         )
                     );
@@ -327,17 +306,17 @@ impl LocalGameState {
             let cloned_font_ref = game_assets.font.clone();
 
             cloned_font_ref.borrow_mut().execute(|a_font| {
-                
+
                 if should_recreate_texture {
 
-                    let score1_texture = 
+                    let score1_texture =
                         a_font.render(&format!("{:02}", score1), &game_assets.font_style)
                         .unwrap();
 
                     self.scoring.score1 = score1;
                     self.scoring.score1_texture = Some(score1_texture);
-                    
-                   let score2_texture = 
+
+                   let score2_texture =
                        a_font.render(&format!("{:02}", score2), &game_assets.font_style)
                        .unwrap();
 
@@ -351,12 +330,12 @@ impl LocalGameState {
                         window.draw_ex(
                             &image.area().with_center(
                                 (
-                                    SCORE_PADDING_X as f32 * DISPLAY_SCALE_FACTOR, 
+                                    SCORE_PADDING_X as f32 * DISPLAY_SCALE_FACTOR,
                                     SCORE_BASELINE_HEIGHT as f32 * DISPLAY_SCALE_FACTOR
                                 )
-                            ), 
-                            Img(&image), 
-                            transform, 
+                            ),
+                            Img(&image),
+                            transform,
                             4.0f32
                         );
                     }
@@ -368,12 +347,12 @@ impl LocalGameState {
                         window.draw_ex(
                             &image.area().with_center(
                                 (
-                                    (WINDOW_WIDTH - SCORE_PADDING_X) as f32 * DISPLAY_SCALE_FACTOR, 
+                                    (WINDOW_WIDTH - SCORE_PADDING_X) as f32 * DISPLAY_SCALE_FACTOR,
                                     SCORE_BASELINE_HEIGHT as f32 * DISPLAY_SCALE_FACTOR
                                 )
-                            ), 
-                            Img(&image), 
-                            transform, 
+                            ),
+                            Img(&image),
+                            transform,
                             4.0f32
                         );
                     }
@@ -387,7 +366,6 @@ impl LocalGameState {
     }
 
     pub fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
-
         let mut player_right_input = self.duel_match.get_world().get_player_input(RightPlayer);
         let mut player_left_input = self.duel_match.get_world().get_player_input(LeftPlayer);
 
@@ -441,7 +419,6 @@ impl LocalGameState {
                 }
             }
 
-            //self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
             self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
         }
         NoTransition

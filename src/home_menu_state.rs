@@ -29,7 +29,7 @@ impl HomeMenuState {
 
 impl RustyVollyState for HomeMenuState {
 
-    fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
+    fn step(&mut self, _game_assets: &mut GamesAssets) -> StateTransition {
         NoTransition
     }
 
@@ -38,11 +38,11 @@ impl RustyVollyState for HomeMenuState {
 
         // draw background
         {
-            let transform = 
-                Transform::IDENTITY * 
+            let transform =
+                Transform::IDENTITY *
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR, 
+                        DISPLAY_SCALE_FACTOR,
                         DISPLAY_SCALE_FACTOR
                     )
                 );
@@ -51,12 +51,12 @@ impl RustyVollyState for HomeMenuState {
                 window.draw_ex(
                     &image.area().with_center(
                         (
-                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                            WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR,
                             WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
                         )
-                    ), 
-                    Img(&image), 
-                    transform, 
+                    ),
+                    Img(&image),
+                    transform,
                     0.0f32
                 );
                 Ok(())
@@ -65,10 +65,10 @@ impl RustyVollyState for HomeMenuState {
 
         // draw text
         {
-            let transform = 
+            let transform =
                 Transform::scale(
                     Vector::new(
-                        DISPLAY_SCALE_FACTOR * 1.6f32, 
+                        DISPLAY_SCALE_FACTOR * 1.6f32,
                         DISPLAY_SCALE_FACTOR * 1.6f32
                     )
                 );
@@ -79,10 +79,10 @@ impl RustyVollyState for HomeMenuState {
             cloned_font_ref.borrow_mut().execute(|a_font| {
 
                 if self.home_menu_text.is_none() {
-                    let home_menu_text = 
+                    let home_menu_text =
                         a_font.render(&format!("Click to start!"), &game_assets.font_style)
                         .unwrap();
-                    
+
                     self.home_menu_text = Some(home_menu_text);
                 }
 
@@ -92,12 +92,12 @@ impl RustyVollyState for HomeMenuState {
                         window.draw_ex(
                             &image.area().with_center(
                                 (
-                                    WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR, 
+                                    WINDOW_WIDTH as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR,
                                     WINDOW_HEIGHT as f32 / 2.0f32 * DISPLAY_SCALE_FACTOR
                                 )
-                            ), 
-                            Img(&image), 
-                            transform, 
+                            ),
+                            Img(&image),
+                            transform,
                             4.0f32
                         );
                     }

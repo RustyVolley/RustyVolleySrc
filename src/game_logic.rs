@@ -55,7 +55,7 @@ impl GameLogic {
             last_error: NoPlayer,
             serving_player: LeftPlayer,
             winning_player: NoPlayer,
-            score_to_win : 15,
+            score_to_win : SCORE_TO_WIN,
         };
 
 
@@ -94,7 +94,7 @@ impl GameLogic {
         self.squish[0] = 0;
         self.squish[1] = 0;
 
-        self.scores[side_to_index(other_side(side))] = 
+        self.scores[side_to_index(other_side(side))] =
             self.scores[side_to_index(other_side(side))] + 1;
 
         self.serving_player = other_side(side);
@@ -109,14 +109,14 @@ impl GameLogic {
         if !self.is_collision_valid(side) {
             return false;
         }
-        
+
         // otherwise, set the squish value
         self.squish[side_to_index(side)] = SQUISH_TOLERANCE;
-        
+
         // count the touches
         self.touches_ball_count[side_to_index(other_side(side))] = 0;
 
-        self.touches_ball_count[side_to_index(side)] = 
+        self.touches_ball_count[side_to_index(side)] =
             self.touches_ball_count[side_to_index(side)] + 1;
 
         if self.touches_ball_count[side_to_index(side)] > MAX_BALL_TOUCH_COUNT
@@ -131,6 +131,4 @@ impl GameLogic {
     pub fn get_scores(&self) -> (i32, i32) {
         (self.scores[0], self.scores[1])
     }
-
-
 }
