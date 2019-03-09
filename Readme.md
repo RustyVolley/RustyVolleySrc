@@ -6,7 +6,7 @@
 
 A rewrite of [Blobby Volley 2](https://sourceforge.net/projects/blobby/) written in [Rust](https://www.rust-lang.org/), a blazingly fast, memory safe, thread safe language. This project can be compiled to native application and also [Web Assembly](https://webassembly.org/), a binary instruction format for a stack-based virtual machine.
 
-> That is too much buzzwords for me, show me code already!
+> That is too much buzzwords for me, show me some stuff already!
 
 [Here you go!](https://rustyvolley.github.io/WebDemo/)
 
