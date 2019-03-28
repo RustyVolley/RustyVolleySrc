@@ -11,7 +11,6 @@ use quicksilver::input::*;
 
 use state_manager::{
     *,
-    RustyGameState::*,
     StateTransition::*
 };
 
@@ -32,7 +31,6 @@ fn switch_conf(player_kind : &PlayerKind) -> PlayerKind {
 
 impl fmt::Display for PlayerKind {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // Customize so only `x` and `y` are denoted.
         match self {
             Human => write!(f, "Human"),
             Computer => write!(f, "Computer")
@@ -41,9 +39,10 @@ impl fmt::Display for PlayerKind {
     }
 }
 
-pub struct Configuration {
-    player1_configuration : PlayerKind,
-    player2_configuration : PlayerKind,
+#[derive(Clone)]
+pub struct GameConfiguration {
+    pub player1_configuration : PlayerKind,
+    pub player2_configuration : PlayerKind,
 }
 
 use new_game_menu_state::PlayerKind::*;
@@ -54,7 +53,7 @@ pub struct NewGameMenuState {
     conf_line_2 : Option<Image>,
     player2_configuration : PlayerKind,
     line_start : Option<Image>,
-    configuration : Configuration,
+    configuration : GameConfiguration,
 }
 
 impl NewGameMenuState {
@@ -66,11 +65,11 @@ impl NewGameMenuState {
             line_start : None,
 
             player1_configuration : Human,
-            player2_configuration : Human,
+            player2_configuration : Computer,
 
-            configuration: Configuration {
+            configuration: GameConfiguration {
                 player1_configuration : Human,
-                player2_configuration : Human,
+                player2_configuration : Computer,
             }
         }
     }
@@ -257,7 +256,7 @@ impl RustyVollyState for NewGameMenuState {
                         mouse_pos.x >= 165f32 && mouse_pos.x <= 675f32 &&
                         mouse_pos.y >= 435f32 && mouse_pos.y <= 480f32
                     {
-                        StateTransition::StateLessTransition(LocalGame)
+                        StateTransition::StartGameTransition(self.configuration.clone())
                     } 
                     else 
                     {

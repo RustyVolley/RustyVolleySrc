@@ -12,6 +12,7 @@ use local_game_state::LocalGameState;
 use home_menu_state::HomeMenuState;
 use win_menu_state::WinMenuState;
 use new_game_menu_state::NewGameMenuState;
+use new_game_menu_state::GameConfiguration;
 use game_constants::BLOBBY_ANIMATION_FRAMES;
 
 use global::PlayerSide;
@@ -34,7 +35,8 @@ pub struct StateManager {
 
 pub enum StateTransition {
     NoTransition,
-    StateLessTransition(RustyGameState),
+    StateLessTransition(RustyGameState), // new state
+    StartGameTransition(GameConfiguration), 
     WinStateTransition(PlayerSide), // winningPlayer
 }
 
@@ -86,7 +88,7 @@ impl StateManager {
             win_menu_state : Rc::new(RefCell::new(WinMenuState::new())),
             new_game_menu_state : Rc::new(RefCell::new(NewGameMenuState::new())),
             game_assets : game_assets,
-            current_state : RustyGameState::HomeMenu,
+            current_state : RustyGameState::NewGameMenu,
         }
     }
 
@@ -102,7 +104,10 @@ impl StateManager {
     fn update_state_if_needed(&mut self, transition : StateTransition) {
         match transition {
             StateTransition::NoTransition => (),
-            StateTransition::StateLessTransition(state) => self.current_state = state,
+            StateTransition::StateLessTransition(state) =>  {
+                self.current_state = state;
+            },
+
             StateTransition::WinStateTransition(player_side) => {
                 self.current_state = RustyGameState::WinMenu;
                 let mut win_menu_state_mutable = self.win_menu_state.borrow_mut();
@@ -110,6 +115,12 @@ impl StateManager {
 
                 let mut local_game_state_mutable = self.local_game_state.borrow_mut();
                 local_game_state_mutable.reset();
+            },
+
+            StateTransition::StartGameTransition(config) => {
+                let mut local_game_state_mutable = self.local_game_state.borrow_mut();
+                local_game_state_mutable.set_config(config);
+                self.current_state = RustyGameState::LocalGame;
             },
         }
     }

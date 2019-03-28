@@ -90,11 +90,11 @@ impl RustyVollyState for WinMenuState {
 
                     let home_menu_text = match self.winning_player {
                         LeftPlayer =>
-                            a_font.render(&format!("Left Player won!"), &game_assets.font_style).unwrap(),
+                            a_font.render(&format!("Player 1 won!"), &game_assets.font_style).unwrap(),
                         RightPlayer =>
-                            a_font.render(&format!("Right Player won!"), &game_assets.font_style).unwrap(),
+                            a_font.render(&format!("Player 2 won!"), &game_assets.font_style).unwrap(),
                         _ =>
-                            a_font.render(&format!("Unkown Player won!"), &game_assets.font_style).unwrap(),
+                            a_font.render(&format!("Unknown Player won!"), &game_assets.font_style).unwrap(),
 
                     };
 
@@ -128,9 +128,9 @@ impl RustyVollyState for WinMenuState {
 
     fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
         let transition = match *event {
-            Event::Key(Key::Space, ButtonState::Pressed) =>  StateTransition::StateLessTransition(HomeMenu),
-            Event::Key(Key::Return, ButtonState::Pressed) => StateTransition::StateLessTransition(HomeMenu),
-            Event::MouseButton(MouseButton::Left, ButtonState::Pressed) => StateTransition::StateLessTransition(HomeMenu),
+            Event::Key(Key::Space, ButtonState::Pressed) =>  StateTransition::StateLessTransition(NewGameMenu),
+            Event::Key(Key::Return, ButtonState::Pressed) => StateTransition::StateLessTransition(NewGameMenu),
+            Event::MouseButton(MouseButton::Left, ButtonState::Pressed) => StateTransition::StateLessTransition(NewGameMenu),
             _ => NoTransition,
         };
 

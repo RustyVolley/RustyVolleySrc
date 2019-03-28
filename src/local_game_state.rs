@@ -3,6 +3,8 @@ use duel_match::FrameEvent;
 use global::PlayerSide::*;
 use game_constants::*;
 use simple_bot::*;
+use new_game_menu_state::GameConfiguration;
+use new_game_menu_state::PlayerKind::Computer;
 
 use quicksilver::{
     Result,
@@ -39,7 +41,9 @@ pub struct LocalGameState {
     frame_number : usize,
     scoring : Scoring,
     bot_right : SimpleBot,
-    //bot_left : SimpleBot,
+    bot_left : SimpleBot,
+    use_bot_right : bool,
+    use_bot_left : bool,
 }
 
 impl LocalGameState {
@@ -50,8 +54,10 @@ impl LocalGameState {
             frame_events: vec!(),
             frame_number: 0,
             scoring: Scoring::new(),
-            //bot_left: SimpleBot::new(LeftPlayer, 0),
+            bot_left: SimpleBot::new(LeftPlayer, 0),
             bot_right: SimpleBot::new(RightPlayer, 0),
+            use_bot_right : false,
+            use_bot_left : false,
         }
     }
 
@@ -62,26 +68,63 @@ impl LocalGameState {
         self.scoring = Scoring::new();
     }
 
+    pub fn set_config(&mut self, config: GameConfiguration) {
+        self.use_bot_left = config.player1_configuration == Computer;
+        self.use_bot_right = config.player2_configuration == Computer;
+    }
+
     pub fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition {
         self.frame_events.clear();
 
-        let bot_data = CurrentGameState {
-            blob_positions : self.duel_match.get_world().get_blob_positions(),
-            blob_velocities : self.duel_match.get_world().get_blob_velocities(),
-            is_game_running : self.duel_match.get_world().is_game_running(),
-            is_ball_valid : self.duel_match.get_world().is_ball_valid(),
-            serving_player : self.duel_match.get_serving_player()
-        };
+        if self.use_bot_right {
 
-        self.bot_right.step
-        (
-            bot_data,
-            self.duel_match.get_world().get_ball_position(),
-            self.duel_match.get_world().get_ball_velocity()
-        );
+            let bot_data = CurrentGameState {
+                blob_positions : self.duel_match.get_world().get_blob_positions(),
+                blob_velocities : self.duel_match.get_world().get_blob_velocities(),
+                is_game_running : self.duel_match.get_world().is_game_running(),
+                is_ball_valid : self.duel_match.get_world().is_ball_valid(),
+                serving_player : self.duel_match.get_serving_player()
+            };
 
-        self.duel_match.get_world().set_player_input(RightPlayer, self.bot_right.compute_input());
-        self.bot_right.reset_input();
+            self.bot_right.step
+            (
+                bot_data,
+                self.duel_match.get_world().get_ball_position(),
+                self.duel_match.get_world().get_ball_velocity()
+            );
+
+            self.duel_match.get_world().set_player_input(
+                RightPlayer, 
+                self.bot_right.compute_input()
+            );
+
+            self.bot_right.reset_input();
+        }
+
+        if self.use_bot_left {
+
+            let bot_data = CurrentGameState {
+                blob_positions : self.duel_match.get_world().get_blob_positions(),
+                blob_velocities : self.duel_match.get_world().get_blob_velocities(),
+                is_game_running : self.duel_match.get_world().is_game_running(),
+                is_ball_valid : self.duel_match.get_world().is_ball_valid(),
+                serving_player : self.duel_match.get_serving_player()
+            };
+
+            self.bot_left.step
+            (
+                bot_data,
+                self.duel_match.get_world().get_ball_position(),
+                self.duel_match.get_world().get_ball_velocity()
+            );
+
+            self.duel_match.get_world().set_player_input(
+                LeftPlayer, 
+                self.bot_left.compute_input()
+            );
+
+            self.bot_left.reset_input();
+        }
 
         self.duel_match.step(&mut self.frame_events);
 

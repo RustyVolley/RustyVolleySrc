@@ -87,7 +87,6 @@ impl DuelMatch {
         match winning_player {
             NoPlayer => (),
             player_side @ _ => {
-                dbg!(winning_player);
                 match player_side {
                     LeftPlayer => events.push(FrameEvent::EventWinLeft),
                     RightPlayer => events.push(FrameEvent::EventWinRight),
