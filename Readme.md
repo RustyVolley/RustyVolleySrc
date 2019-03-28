@@ -10,6 +10,10 @@ A rewrite of [Blobby Volley 2](https://sourceforge.net/projects/blobby/) written
 
 [Here you go!](https://rustyvolley.github.io/WebDemo/)
 
+# How to play?
+
+Use the mouse in the menu. To control player 1, use W, A and D. To control player 2, use the arrow keys.
+
 # Compiling and running it
 
 
