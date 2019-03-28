@@ -113,9 +113,9 @@ impl RustyVollyState for HomeMenuState {
 
     fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition {
         match *event {
-            Event::Key(Key::Space, ButtonState::Pressed) =>  StateTransition::StateLessTransition(LocalGame),
-            Event::Key(Key::Return, ButtonState::Pressed) => StateTransition::StateLessTransition(LocalGame),
-            Event::MouseButton(MouseButton::Left, ButtonState::Pressed) => StateTransition::StateLessTransition(LocalGame),
+            Event::Key(Key::Space, ButtonState::Pressed) =>  StateTransition::StateLessTransition(NewGameMenu),
+            Event::Key(Key::Return, ButtonState::Pressed) => StateTransition::StateLessTransition(NewGameMenu),
+            Event::MouseButton(MouseButton::Left, ButtonState::Pressed) => StateTransition::StateLessTransition(NewGameMenu),
             _ => NoTransition,
         }
     }

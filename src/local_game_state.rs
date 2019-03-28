@@ -300,7 +300,7 @@ impl LocalGameState {
             let should_recreate_texture =
                 self.scoring.score1 != score1 ||
                 self.scoring.score2 != score2 ||
-                self.scoring.score1_texture.is_none();
+                self.scoring.score1_texture.is_none() ||
                 self.scoring.score2_texture.is_none();
 
             let cloned_font_ref = game_assets.font.clone();

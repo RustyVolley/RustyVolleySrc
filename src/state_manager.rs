@@ -11,12 +11,14 @@ use std::cell::RefCell;
 use local_game_state::LocalGameState;
 use home_menu_state::HomeMenuState;
 use win_menu_state::WinMenuState;
+use new_game_menu_state::NewGameMenuState;
 use game_constants::BLOBBY_ANIMATION_FRAMES;
 
 use global::PlayerSide;
 
 pub enum RustyGameState {
     HomeMenu,
+    NewGameMenu,
     LocalGame,
     WinMenu,
 }
@@ -25,6 +27,7 @@ pub struct StateManager {
     local_game_state: Rc<RefCell<LocalGameState>>,
     home_menu_state : Rc<RefCell<HomeMenuState>>,
     win_menu_state : Rc<RefCell<WinMenuState>>,
+    new_game_menu_state : Rc<RefCell<NewGameMenuState>>,
     game_assets: GamesAssets,
     current_state: RustyGameState,
 }
@@ -81,6 +84,7 @@ impl StateManager {
             local_game_state : Rc::new(RefCell::new(LocalGameState::new())),
             home_menu_state : Rc::new(RefCell::new(HomeMenuState::new())),
             win_menu_state : Rc::new(RefCell::new(WinMenuState::new())),
+            new_game_menu_state : Rc::new(RefCell::new(NewGameMenuState::new())),
             game_assets : game_assets,
             current_state : RustyGameState::HomeMenu,
         }
@@ -91,6 +95,7 @@ impl StateManager {
             RustyGameState::HomeMenu => self.home_menu_state.clone(),
             RustyGameState::LocalGame => self.local_game_state.clone(),
             RustyGameState::WinMenu => self.win_menu_state.clone(),
+            RustyGameState::NewGameMenu => self.new_game_menu_state.clone(),
         }
     }
 

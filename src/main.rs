@@ -1,5 +1,6 @@
 extern crate quicksilver;
 
+mod new_game_menu_state;
 mod local_game_state;
 mod home_menu_state;
 mod win_menu_state;
