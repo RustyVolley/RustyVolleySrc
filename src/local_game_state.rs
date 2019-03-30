@@ -462,6 +462,7 @@ impl LocalGameState {
                 }
             }
 
+            self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
             self.duel_match.get_world().set_player_input(LeftPlayer, player_left_input);
             self.duel_match.get_world().set_player_input(RightPlayer, player_right_input);
         }
