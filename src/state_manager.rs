@@ -92,7 +92,7 @@ impl StateManager {
         }
     }
 
-    fn get_current_state(&mut self) -> Rc<RefCell<RustyVollyState>> {
+    fn get_current_state(&mut self) -> Rc<RefCell<dyn RustyVollyState>> {
         match self.current_state {
             RustyGameState::HomeMenu => self.home_menu_state.clone(),
             RustyGameState::LocalGame => self.local_game_state.clone(),

@@ -22,8 +22,8 @@ Use the mouse in the menu. To control player 1, use W, A and D. To control playe
 You need Rust nightly to compile this beauty:
 
 ```sh
-rustup toolchain install nightly-2019-01-15
-rustup default nightly-2019-01-15
+rustup toolchain install nightly-2019-12-20
+rustup default nightly-2019-12-20
 ```
 
 
@@ -51,11 +51,3 @@ Also, you can run it in a desktop window with:
 ```sh
 cargo run --release
 ```
-
-### Libraries used
-
-[nalgebra](https://github.com/rustsim/nalgebra)
-
-[Quicksilver](https://github.com/ryanisaacg/quicksilver)
-
-[num-traits](https://github.com/rust-num/num-traits)

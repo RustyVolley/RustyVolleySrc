@@ -1,17 +1,16 @@
 extern crate rand;
-extern crate nalgebra;
 
 use player_input::*;
 use physic_world::PhysicWorld;
 use game_constants::*;
 use global::PlayerSide;
-use physic_world::nalgebra::base::Vector2;
+use vector::Vector2f;
 use game_logic::side_to_index;
 use global::PlayerSide::*;
 
 pub struct CurrentGameState {
-    pub blob_positions : [Vector2<f32>; 2],
-    pub blob_velocities : [Vector2<f32>; 2],
+    pub blob_positions : [Vector2f; 2],
+    pub blob_velocities : [Vector2f; 2],
     pub is_game_running : bool,
     pub is_ball_valid : bool,
     pub serving_player : PlayerSide,
@@ -20,8 +19,8 @@ pub struct CurrentGameState {
 impl CurrentGameState {
     fn new() -> CurrentGameState {
         CurrentGameState {
-            blob_positions : [Vector2::new(0.0f32, 0.0f32); 2],
-            blob_velocities : [Vector2::new(0.0f32, 0.0f32); 2],
+            blob_positions : [Vector2f::new(0.0f32, 0.0f32); 2],
+            blob_velocities : [Vector2f::new(0.0f32, 0.0f32); 2],
             is_game_running : false,
             is_ball_valid : false,
             serving_player : LeftPlayer,
@@ -101,7 +100,7 @@ impl SimpleBot {
         self.want_right = false;
     }
 
-    pub fn get_blob_pos(&self, side : PlayerSide) -> Vector2<f32> {
+    pub fn get_blob_pos(&self, side : PlayerSide) -> Vector2f {
         match side {
             LeftPlayer => self.current_game_state.blob_positions[side_to_index(side)],
             RightPlayer =>  self.current_game_state.blob_positions[side_to_index(side)],
@@ -212,8 +211,8 @@ impl SimpleBot {
 
         let init = ival < coordinate;
 
-        self.simulated_physic_world.set_ball_position(Vector2::new(x, VERTICAL_PLANE_LENGTH - y));
-        self.simulated_physic_world.set_ball_velocity(Vector2::new(vx, -vy));
+        self.simulated_physic_world.set_ball_position(Vector2f::new(x, VERTICAL_PLANE_LENGTH - y));
+        self.simulated_physic_world.set_ball_velocity(Vector2f::new(vx, -vy));
 
         self.simulated_physic_world.set_player_input(LeftPlayer, PlayerInput::new());
         self.simulated_physic_world.set_player_input(RightPlayer, PlayerInput::new());
@@ -247,8 +246,8 @@ impl SimpleBot {
     pub fn step(
         &mut self,
         game_data: CurrentGameState,
-        ball_position : Vector2<f32>,
-        ball_velocity : Vector2<f32>
+        ball_position : Vector2f,
+        ball_velocity : Vector2f
     ) {
         self.frame_index = self.frame_index + 1;
         self.current_game_state = game_data;

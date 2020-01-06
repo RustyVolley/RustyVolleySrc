@@ -1,20 +1,16 @@
-pub extern crate nalgebra;
-
 use global::PlayerSide;
 use global::PlayerSide::*;
 use game_constants::*;
 use player_input::PlayerInput;
 
-use physic_world::nalgebra::base::Vector2;
-use vector::VectorOP;
-
+use vector::Vector2f;
 
 pub struct PhysicWorld {
     ball_hit_by_blobs : [bool; 2],
-    blob_positions : [Vector2<f32>; 2],
-    ball_position : Vector2<f32>,
-    blob_velocities : [Vector2<f32>; 2],
-    ball_velocity : Vector2<f32>,
+    blob_positions : [Vector2f; 2],
+    ball_position : Vector2f,
+    blob_velocities : [Vector2f; 2],
+    ball_velocity : Vector2f,
 
     ball_rotation : f32,
     ball_angular_velocity : f32,
@@ -33,10 +29,10 @@ impl PhysicWorld {
     pub fn new() -> PhysicWorld {
         let mut physic_world = PhysicWorld {
             ball_hit_by_blobs : [false; 2],
-            blob_positions : [Vector2::new(0.0f32, 0.0f32); 2],
-            ball_position : Vector2::new(0.0f32, 0.0f32),
-            blob_velocities : [Vector2::new(0.0f32, 0.0f32); 2],
-            ball_velocity : Vector2::new(0.0f32, 0.0f32),
+            blob_positions : [Vector2f::new(0.0f32, 0.0f32); 2],
+            ball_position : Vector2f::new(0.0f32, 0.0f32),
+            blob_velocities : [Vector2f::new(0.0f32, 0.0f32); 2],
+            ball_velocity : Vector2f::new(0.0f32, 0.0f32),
 
             ball_rotation : 0.0f32,
             ball_angular_velocity : 0.0f32,
@@ -59,27 +55,27 @@ impl PhysicWorld {
         physic_world
     }
 
-    pub fn get_blob_positions(&self) -> [Vector2<f32>; 2] {
+    pub fn get_blob_positions(&self) -> [Vector2f; 2] {
         self.blob_positions
     }
 
-    pub fn get_blob_velocities(&self) -> [Vector2<f32>; 2] {
+    pub fn get_blob_velocities(&self) -> [Vector2f; 2] {
         self.blob_velocities
     }
 
-    pub fn get_ball_position(&self) -> Vector2<f32> {
+    pub fn get_ball_position(&self) -> Vector2f {
         self.ball_position
     }
 
-    pub fn set_ball_position(&mut self, ball_position : Vector2<f32>) {
+    pub fn set_ball_position(&mut self, ball_position : Vector2f) {
         self.ball_position = ball_position;
     }
 
-    pub fn get_ball_velocity(&self) -> Vector2<f32> {
+    pub fn get_ball_velocity(&self) -> Vector2f {
         self.ball_velocity
     }
 
-    pub fn set_ball_velocity(&mut self, ball_velocity : Vector2<f32>) {
+    pub fn set_ball_velocity(&mut self, ball_velocity : Vector2f) {
         self.ball_velocity = ball_velocity;
     }
 
@@ -103,7 +99,7 @@ impl PhysicWorld {
         self.is_game_running = game_running;
     }
 
-    pub fn get_blob(&self, player: PlayerSide) -> Vector2<f32> {
+    pub fn get_blob(&self, player: PlayerSide) -> Vector2f {
         self.blob_positions[player as usize]
     }
 
@@ -113,27 +109,27 @@ impl PhysicWorld {
 
     pub fn reset_player(&mut self) {
         self.blob_positions[LeftPlayer as usize] =
-            Vector2::new(LEFT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
+            Vector2f::new(LEFT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
 
         self.blob_positions[RightPlayer as usize] =
-            Vector2::new(RIGHT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
+            Vector2f::new(RIGHT_SPAWN_POS_X as f32, GROUND_PLANE_HEIGHT);
     }
 
     pub fn reset(&mut self, player: PlayerSide) {
         if player == LeftPlayer
         {
             self.ball_position =
-                Vector2::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
+                Vector2f::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else if player == RightPlayer
         {
             self.ball_position =
-                Vector2::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
+                Vector2f::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
         }
         else
         {
             self.ball_position =
-                Vector2::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32);
+                Vector2f::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32);
         }
 
         self.ball_velocity.clear();
@@ -158,7 +154,7 @@ impl PhysicWorld {
         let player_index = player as usize;
 
         let pos =
-            Vector2::new
+            Vector2f::new
             (
                 self.blob_positions[player_index].x,
                 self.blob_positions[player_index].y + BLOBBY_LOWER_SPHERE
@@ -175,7 +171,7 @@ impl PhysicWorld {
         let player_index = player as usize;
 
         let pos =
-            Vector2::new
+            Vector2f::new
             (
                 self.blob_positions[player_index].x,
                 self.blob_positions[player_index].y - BLOBBY_UPPER_SPHERE
@@ -198,8 +194,8 @@ impl PhysicWorld {
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2<f32> =
-                Vector2::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
+            let circle_pos : Vector2f =
+                Vector2f::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
 
             self.ball_velocity = -(circle_pos - self.ball_position);
             self.ball_velocity = self.ball_velocity.normalized();
@@ -213,8 +209,8 @@ impl PhysicWorld {
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2<f32> =
-                 Vector2::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
+            let circle_pos : Vector2f =
+                 Vector2f::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
 
             self.ball_velocity = -(circle_pos - self.ball_position);
             self.ball_velocity = self.ball_velocity.normalized();
@@ -447,14 +443,14 @@ impl PhysicWorld {
             // Net Collisions
 
             let ball_net_vec =
-                Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
+                Vector2f::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
 
             let ball_net_distance = ball_net_vec.length();
 
             if ball_net_distance < NET_RADIUS + BALL_RADIUS
             {
                 let vec =
-                    Vector2::new(NET_POSITION_X, NET_SPHERE_POSITION) -
+                    Vector2f::new(NET_POSITION_X, NET_SPHERE_POSITION) -
                     self.ball_position;
                 // calculate
                 let normal = vec.normalized();
@@ -488,7 +484,7 @@ impl PhysicWorld {
 
                 // pushes the ball out of the net
                 self.ball_position =
-                    Vector2::new
+                    Vector2f::new
                     (
                         NET_POSITION_X,
                         NET_SPHERE_POSITION

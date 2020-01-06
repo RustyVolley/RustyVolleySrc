@@ -1,11 +1,9 @@
-extern crate nalgebra;
-
 use game_logic::GameLogic;
 use physic_world::PhysicWorld;
 use global::PlayerSide::*;
 use global::PlayerSide;
 
-use duel_match::nalgebra::base::Vector2;
+use vector::Vector2f;
 
 pub struct DuelMatch {
     game_logic : GameLogic,
@@ -117,11 +115,11 @@ impl DuelMatch {
         self.game_logic.get_serving_player()
     }
 
-    pub fn get_ball_position(&self) -> Vector2<f32> {
+    pub fn get_ball_position(&self) -> Vector2f {
         self.physic_world.get_ball_position()
     }
 
-    pub fn get_blob_position(&self, player: PlayerSide) -> Vector2<f32> {
+    pub fn get_blob_position(&self, player: PlayerSide) -> Vector2f {
         if player == LeftPlayer
         {
 		    return self.physic_world.get_blob(LeftPlayer);
@@ -132,7 +130,7 @@ impl DuelMatch {
         }
         else
         {
-            return Vector2::new(0.0f32, 0.0f32);
+            return Vector2f::new(0.0f32, 0.0f32);
         }
     }
 
