@@ -62,7 +62,7 @@ impl Vector2f {
         if length > 0f32 {
             let result =
                 Vector2f::new(self.x / length, self.y / length);
-                return result;
+            return result;
         } else {
             let result = self.clone();
             return result;
