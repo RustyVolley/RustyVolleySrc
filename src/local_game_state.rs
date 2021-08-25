@@ -129,8 +129,8 @@ impl LocalGameState {
         self.duel_match.step(&mut self.frame_events);
 
         if self.frame_events.iter().any( |x|
-            *x == FrameEvent::EventLeftBlobbyHit ||
-            *x == FrameEvent::EventRightBlobbyHit
+            *x == FrameEvent::EventBlobbyHit(LeftPlayer) ||
+            *x == FrameEvent::EventBlobbyHit(RightPlayer)
         ) {
             let _ = game_assets.sounds[0].execute(|sound| {
                 sound.set_volume(10.0f32);
@@ -140,8 +140,8 @@ impl LocalGameState {
         }
 
         if self.frame_events.iter().any( |x|
-            *x == FrameEvent::EventErrorLeft ||
-            *x == FrameEvent::EventErrorRight
+            *x == FrameEvent::EventError(LeftPlayer) ||
+            *x == FrameEvent::EventError(RightPlayer)
         ) {
             let _ = game_assets.sounds[1].execute(|sound| {
                 sound.set_volume(1.0f32);
@@ -161,12 +161,12 @@ impl LocalGameState {
         self.frame_number += 1;
 
         if self.frame_events.iter().any( |x|
-            *x == FrameEvent::EventWinLeft
+            *x == FrameEvent::EventWin(LeftPlayer)
         ) {
             StateTransition::WinStateTransition(LeftPlayer)
         }
         else if self.frame_events.iter().any( |x|
-            *x == FrameEvent::EventWinRight
+            *x == FrameEvent::EventWin(RightPlayer)
         ) {
             StateTransition::WinStateTransition(RightPlayer)
         } else {
