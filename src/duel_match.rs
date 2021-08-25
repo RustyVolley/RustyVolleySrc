@@ -12,14 +12,10 @@ pub struct DuelMatch {
 
 #[derive(PartialEq, Eq)]
 pub enum FrameEvent {
-    EventLeftBlobbyHit,
-    EventRightBlobbyHit,
-    EventBallHitLeftGround,
-    EventBallHitRightGround,
-    EventErrorLeft,
-    EventErrorRight,
-    EventWinLeft,
-    EventWinRight,
+    EventBlobbyHit(PlayerSide),
+    EventBallHitGround(PlayerSide),
+    EventError(PlayerSide),
+    EventWin(PlayerSide),
     EventReset,
 }
 
@@ -33,26 +29,26 @@ impl DuelMatch {
         if self.physic_world.ball_hit_left_player() {
             let valid_hit = self.game_logic.on_ball_hits_player(LeftPlayer);
             if valid_hit {
-                events.push(FrameEvent::EventLeftBlobbyHit);
+                events.push(FrameEvent::EventBlobbyHit(LeftPlayer));
             }
         }
 
         if self.physic_world.ball_hit_right_player() {
             let valid_hit = self.game_logic.on_ball_hits_player(RightPlayer);
             if valid_hit {
-                events.push(FrameEvent::EventRightBlobbyHit);   
+                events.push(FrameEvent::EventBlobbyHit(RightPlayer));   
             }
         }
 
         if self.physic_world.ball_hit_left_ground() {
             has_ball_hit_ground = true;
             self.game_logic.on_ball_hits_ground(LeftPlayer);
-            events.push(FrameEvent::EventBallHitLeftGround);    
+            events.push(FrameEvent::EventBallHitGround(LeftPlayer));    
         }
 
         if self.physic_world.ball_hit_right_ground() {
             has_ball_hit_ground = true;
-            events.push(FrameEvent::EventBallHitRightGround);
+            events.push(FrameEvent::EventBallHitGround(RightPlayer));
             self.game_logic.on_ball_hits_ground(RightPlayer);
         }
 
@@ -60,17 +56,12 @@ impl DuelMatch {
 
         match last_error {
             NoPlayer => (),
-            player_side @ _ => {
+            _ => {
                 if !has_ball_hit_ground {
                     self.physic_world.damp_ball();
                 }
 
-                match player_side {
-                    LeftPlayer => events.push(FrameEvent::EventErrorLeft),
-                    RightPlayer => events.push(FrameEvent::EventErrorRight),
-                    _ => ()
-                }
-                
+                events.push(FrameEvent::EventError(last_error));
                 self.physic_world.set_ball_validity(false);
             },
         }
@@ -84,12 +75,8 @@ impl DuelMatch {
 
         match winning_player {
             NoPlayer => (),
-            player_side @ _ => {
-                match player_side {
-                    LeftPlayer => events.push(FrameEvent::EventWinLeft),
-                    RightPlayer => events.push(FrameEvent::EventWinRight),
-                    _ => ()
-                }
+            _ => {
+                events.push(FrameEvent::EventWin(winning_player));
             },
         }
 
