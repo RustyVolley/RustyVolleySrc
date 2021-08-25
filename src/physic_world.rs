@@ -116,21 +116,19 @@ impl PhysicWorld {
     }
 
     pub fn reset(&mut self, player: PlayerSide) {
-        if player == LeftPlayer
-        {
-            self.ball_position =
-                Vector2f::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
+        match player {
+            PlayerSide::LeftPlayer =>
+                self.ball_position =
+                    Vector2f::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT),
+            PlayerSide::RightPlayer =>
+                self.ball_position =
+                    Vector2f::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT),
+            PlayerSide::NoPlayer =>
+                self.ball_position =
+                    Vector2f::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32),
         }
-        else if player == RightPlayer
-        {
-            self.ball_position =
-                Vector2f::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT);
-        }
-        else
-        {
-            self.ball_position =
-                Vector2f::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32);
-        }
+
+        self.reset_player();
 
         self.ball_velocity.clear();
 
