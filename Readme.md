@@ -30,7 +30,7 @@ rustup default nightly-2019-12-20
 Also, you will need cargo-web if you want to run it in your web browser:
 
 ```sh
-cargo install cargo-web
+cargo install cargo-web --version 0.6.26 --locked
 ```
 
 ## 2. Compile and run the game
