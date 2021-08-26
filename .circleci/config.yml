@@ -29,6 +29,6 @@ jobs:
             rustup default nightly-2019-12-20
             rustup run nightly-2019-12-20 rustc --version --verbose
             rustup run nightly-2019-12-20 cargo --version --verbose
-            rustup run nightly-2019-12-20 cargo install cargo-web
+            rustup run nightly-2019-12-20 cargo install cargo-web --version 0.6.26 --locked
             rustup run nightly-2019-12-20 cargo web deploy
             rustup run nightly-2019-12-20 cargo web deploy --release
