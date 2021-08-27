@@ -2,16 +2,13 @@ use std::ops;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vector2f {
-    pub x : f32,
-    pub y : f32
+    pub x: f32,
+    pub y: f32,
 }
 
 impl Vector2f {
-    pub fn new(x : f32, y : f32) -> Vector2f {
-        Vector2f {
-            x : x,
-            y : y
-        }
+    pub fn new(x: f32, y: f32) -> Vector2f {
+        Vector2f { x: x, y: y }
     }
 
     pub fn clear(&mut self) {
@@ -19,17 +16,17 @@ impl Vector2f {
         self.y = 0f32;
     }
 
-    pub fn cross_product(&self, vector : &Vector2f) -> f32 {
+    pub fn cross_product(&self, vector: &Vector2f) -> f32 {
         self.x * vector.y - self.y * vector.x
     }
 
-    pub fn dot_product(&self, vector : &Vector2f) -> f32 {
+    pub fn dot_product(&self, vector: &Vector2f) -> f32 {
         self.x * vector.x + self.y * vector.y
     }
 
     pub fn reflect(&self, normal: &Vector2f) -> Vector2f {
         let delta = self.dot_product(normal) * 2.0f32;
-        let diff : Vector2f = Vector2f::new(normal.x * delta, normal.y * delta);
+        let diff: Vector2f = Vector2f::new(normal.x * delta, normal.y * delta);
         Vector2f::new(self.x - diff.x, self.y - diff.y)
     }
 
@@ -41,15 +38,15 @@ impl Vector2f {
         Vector2f::new(self.x, -self.y)
     }
 
-    pub fn scale(&self, factor : f32) -> Vector2f {
+    pub fn scale(&self, factor: f32) -> Vector2f {
         Vector2f::new(self.x * factor, self.y * factor)
     }
 
-    pub fn scale_x(&self, scale_x : f32) -> Vector2f {
+    pub fn scale_x(&self, scale_x: f32) -> Vector2f {
         Vector2f::new(self.x * scale_x, self.y)
     }
 
-    pub fn scale_y(&self, scale_y : f32) -> Vector2f {
+    pub fn scale_y(&self, scale_y: f32) -> Vector2f {
         Vector2f::new(self.x, self.y * scale_y)
     }
 
@@ -60,8 +57,7 @@ impl Vector2f {
     pub fn normalized(&self) -> Vector2f {
         let length = self.length();
         if length > 0f32 {
-            let result =
-                Vector2f::new(self.x / length, self.y / length);
+            let result = Vector2f::new(self.x / length, self.y / length);
             return result;
         } else {
             let result = self.clone();

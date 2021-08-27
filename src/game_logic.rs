@@ -1,12 +1,12 @@
+use game_constants::*;
 use global::PlayerSide;
 use global::PlayerSide::*;
-use game_constants::*;
 
 pub struct GameLogic {
     // this array contains the scores
     scores: [i32; 2],
     // in this array the number of touches are counted
-    touches_ball_count : [i32; 2],
+    touches_ball_count: [i32; 2],
     // this is an helper array to prevent counting hits that happen too fast twice
     squish: [i32; 2],
     // last side that made an error
@@ -16,14 +16,14 @@ pub struct GameLogic {
     // player that has won the game
     winning_player: PlayerSide,
     // config parameter: score to win
-    score_to_win : i32
+    score_to_win: i32,
 }
 
-pub fn side_to_index(side : PlayerSide) -> usize {
+pub fn side_to_index(side: PlayerSide) -> usize {
     side as usize
 }
 
-pub fn other_side(side : PlayerSide) -> PlayerSide {
+pub fn other_side(side: PlayerSide) -> PlayerSide {
     match side {
         LeftPlayer => RightPlayer,
         RightPlayer => LeftPlayer,
@@ -50,20 +50,19 @@ impl GameLogic {
     pub fn new() -> GameLogic {
         let mut game_logic = GameLogic {
             scores: [0i32; 2],
-            touches_ball_count : [0i32; 2],
+            touches_ball_count: [0i32; 2],
             squish: [0i32; 2],
             last_error: NoPlayer,
             serving_player: LeftPlayer,
             winning_player: NoPlayer,
-            score_to_win : SCORE_TO_WIN,
+            score_to_win: SCORE_TO_WIN,
         };
-
 
         game_logic.reset();
         game_logic
     }
 
-    pub fn is_collision_valid(&self, side : PlayerSide) -> bool {
+    pub fn is_collision_valid(&self, side: PlayerSide) -> bool {
         self.squish[side as usize] < 0
     }
 
@@ -82,11 +81,11 @@ impl GameLogic {
         self.serving_player
     }
 
-    pub fn on_ball_hits_ground(&mut self, side : PlayerSide) {
+    pub fn on_ball_hits_ground(&mut self, side: PlayerSide) {
         self.on_error(side);
     }
 
-    pub fn on_error(&mut self, side : PlayerSide) {
+    pub fn on_error(&mut self, side: PlayerSide) {
         self.last_error = side;
 
         self.touches_ball_count[0] = 0;
@@ -104,8 +103,7 @@ impl GameLogic {
         }
     }
 
-    pub fn on_ball_hits_player(&mut self, side : PlayerSide) -> bool {
-
+    pub fn on_ball_hits_player(&mut self, side: PlayerSide) -> bool {
         if !self.is_collision_valid(side) {
             return false;
         }
@@ -119,8 +117,7 @@ impl GameLogic {
         self.touches_ball_count[side_to_index(side)] =
             self.touches_ball_count[side_to_index(side)] + 1;
 
-        if self.touches_ball_count[side_to_index(side)] > MAX_BALL_TOUCH_COUNT
-        {
+        if self.touches_ball_count[side_to_index(side)] > MAX_BALL_TOUCH_COUNT {
             // if a player hits a forth time, it is an error
             self.on_error(side);
         }

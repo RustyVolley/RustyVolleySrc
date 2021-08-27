@@ -1,13 +1,13 @@
 use game_logic::GameLogic;
-use physic_world::PhysicWorld;
-use global::PlayerSide::*;
 use global::PlayerSide;
+use global::PlayerSide::*;
+use physic_world::PhysicWorld;
 
 use vector::Vector2f;
 
 pub struct DuelMatch {
-    game_logic : GameLogic,
-    physic_world : PhysicWorld,
+    game_logic: GameLogic,
+    physic_world: PhysicWorld,
 }
 
 #[derive(PartialEq, Eq)]
@@ -20,7 +20,7 @@ pub enum FrameEvent {
 }
 
 impl DuelMatch {
-    pub fn step(&mut self, events : &mut Vec<FrameEvent>) {
+    pub fn step(&mut self, events: &mut Vec<FrameEvent>) {
         self.physic_world.step();
         self.game_logic.step();
 
@@ -36,14 +36,14 @@ impl DuelMatch {
         if self.physic_world.ball_hit_right_player() {
             let valid_hit = self.game_logic.on_ball_hits_player(RightPlayer);
             if valid_hit {
-                events.push(FrameEvent::EventBlobbyHit(RightPlayer));   
+                events.push(FrameEvent::EventBlobbyHit(RightPlayer));
             }
         }
 
         if self.physic_world.ball_hit_left_ground() {
             has_ball_hit_ground = true;
             self.game_logic.on_ball_hits_ground(LeftPlayer);
-            events.push(FrameEvent::EventBallHitGround(LeftPlayer));    
+            events.push(FrameEvent::EventBallHitGround(LeftPlayer));
         }
 
         if self.physic_world.ball_hit_right_ground() {
@@ -63,12 +63,13 @@ impl DuelMatch {
 
                 events.push(FrameEvent::EventError(last_error));
                 self.physic_world.set_ball_validity(false);
-            },
+            }
         }
 
         if self.physic_world.is_round_finished() {
-            events.push(FrameEvent::EventReset); 
-            self.physic_world.reset(self.game_logic.get_serving_player());
+            events.push(FrameEvent::EventReset);
+            self.physic_world
+                .reset(self.game_logic.get_serving_player());
         }
 
         let winning_player = self.game_logic.get_winning_player();
@@ -77,9 +78,8 @@ impl DuelMatch {
             NoPlayer => (),
             _ => {
                 events.push(FrameEvent::EventWin(winning_player));
-            },
+            }
         }
-
     }
 
     pub fn new() -> DuelMatch {
@@ -89,7 +89,7 @@ impl DuelMatch {
         physic_world.step();
 
         DuelMatch {
-            physic_world : physic_world,
+            physic_world: physic_world,
             game_logic: GameLogic::new(),
         }
     }
@@ -107,16 +107,11 @@ impl DuelMatch {
     }
 
     pub fn get_blob_position(&self, player: PlayerSide) -> Vector2f {
-        if player == LeftPlayer
-        {
-	    return self.physic_world.get_blob(LeftPlayer);
-        }
-        else if player == RightPlayer
-        {
+        if player == LeftPlayer {
+            return self.physic_world.get_blob(LeftPlayer);
+        } else if player == RightPlayer {
             return self.physic_world.get_blob(RightPlayer);
-        }
-        else
-        {
+        } else {
             return Vector2f::new(0.0f32, 0.0f32);
         }
     }

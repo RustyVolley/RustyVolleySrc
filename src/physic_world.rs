@@ -1,26 +1,26 @@
+use game_constants::*;
 use global::PlayerSide;
 use global::PlayerSide::*;
-use game_constants::*;
 use player_input::PlayerInput;
 
 use vector::Vector2f;
 
 pub struct PhysicWorld {
-    ball_hit_by_blobs : [bool; 2],
-    blob_positions : [Vector2f; 2],
-    ball_position : Vector2f,
-    blob_velocities : [Vector2f; 2],
-    ball_velocity : Vector2f,
+    ball_hit_by_blobs: [bool; 2],
+    blob_positions: [Vector2f; 2],
+    ball_position: Vector2f,
+    blob_velocities: [Vector2f; 2],
+    ball_velocity: Vector2f,
 
-    ball_rotation : f32,
-    ball_angular_velocity : f32,
-    blobs_animation_states : [f32; 2],
-    blobs_animation_speed : [f32; 2],
+    ball_rotation: f32,
+    ball_angular_velocity: f32,
+    blobs_animation_states: [f32; 2],
+    blobs_animation_speed: [f32; 2],
 
-    player_inputs : [PlayerInput; 2],
+    player_inputs: [PlayerInput; 2],
 
-    is_game_running : bool,
-    is_ball_valid : bool,
+    is_game_running: bool,
+    is_ball_valid: bool,
     last_hit_intensity: f32,
     time_since_ball_out: f32,
 }
@@ -28,21 +28,21 @@ pub struct PhysicWorld {
 impl PhysicWorld {
     pub fn new() -> PhysicWorld {
         let mut physic_world = PhysicWorld {
-            ball_hit_by_blobs : [false; 2],
-            blob_positions : [Vector2f::new(0.0f32, 0.0f32); 2],
-            ball_position : Vector2f::new(0.0f32, 0.0f32),
-            blob_velocities : [Vector2f::new(0.0f32, 0.0f32); 2],
-            ball_velocity : Vector2f::new(0.0f32, 0.0f32),
+            ball_hit_by_blobs: [false; 2],
+            blob_positions: [Vector2f::new(0.0f32, 0.0f32); 2],
+            ball_position: Vector2f::new(0.0f32, 0.0f32),
+            blob_velocities: [Vector2f::new(0.0f32, 0.0f32); 2],
+            ball_velocity: Vector2f::new(0.0f32, 0.0f32),
 
-            ball_rotation : 0.0f32,
-            ball_angular_velocity : 0.0f32,
-            blobs_animation_states : [0.0f32; 2],
-            blobs_animation_speed : [0.0f32; 2],
+            ball_rotation: 0.0f32,
+            ball_angular_velocity: 0.0f32,
+            blobs_animation_states: [0.0f32; 2],
+            blobs_animation_speed: [0.0f32; 2],
 
-            player_inputs : [PlayerInput::new() ; 2],
+            player_inputs: [PlayerInput::new(); 2],
 
-            is_game_running : false,
-            is_ball_valid : false,
+            is_game_running: false,
+            is_ball_valid: false,
             last_hit_intensity: 0.0f32,
             time_since_ball_out: 0.0f32,
         };
@@ -67,7 +67,7 @@ impl PhysicWorld {
         self.ball_position
     }
 
-    pub fn set_ball_position(&mut self, ball_position : Vector2f) {
+    pub fn set_ball_position(&mut self, ball_position: Vector2f) {
         self.ball_position = ball_position;
     }
 
@@ -75,7 +75,7 @@ impl PhysicWorld {
         self.ball_velocity
     }
 
-    pub fn set_ball_velocity(&mut self, ball_velocity : Vector2f) {
+    pub fn set_ball_velocity(&mut self, ball_velocity: Vector2f) {
         self.ball_velocity = ball_velocity;
     }
 
@@ -95,7 +95,7 @@ impl PhysicWorld {
         self.is_game_running
     }
 
-    pub fn set_game_running(&mut self, game_running : bool) {
+    pub fn set_game_running(&mut self, game_running: bool) {
         self.is_game_running = game_running;
     }
 
@@ -117,15 +117,16 @@ impl PhysicWorld {
 
     pub fn reset(&mut self, player: PlayerSide) {
         match player {
-            LeftPlayer =>
+            LeftPlayer => {
+                self.ball_position = Vector2f::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT)
+            }
+            RightPlayer => {
+                self.ball_position = Vector2f::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT)
+            }
+            NoPlayer => {
                 self.ball_position =
-                    Vector2f::new(BALL_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT),
-            RightPlayer =>
-                self.ball_position =
-                    Vector2f::new(RIGHT_SPAWN_POS_X as f32, STANDARD_BALL_HEIGHT),
-            NoPlayer =>
-                self.ball_position =
-                    Vector2f::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32),
+                    Vector2f::new(BALL_MIDDLE_SPAWN_X as f32, BALL_MIDDLE_SPAWN_Y as f32)
+            }
         }
 
         self.reset_player();
@@ -148,42 +149,36 @@ impl PhysicWorld {
         self.ball_velocity.length()
     }
 
-    fn player_bottom_ball_collision(&mut self, player : PlayerSide) -> bool {
+    fn player_bottom_ball_collision(&mut self, player: PlayerSide) -> bool {
         let player_index = player as usize;
 
-        let pos =
-            Vector2f::new
-            (
-                self.blob_positions[player_index].x,
-                self.blob_positions[player_index].y + BLOBBY_LOWER_SPHERE
-            );
+        let pos = Vector2f::new(
+            self.blob_positions[player_index].x,
+            self.blob_positions[player_index].y + BLOBBY_LOWER_SPHERE,
+        );
 
-        if (pos - self.ball_position).length() <= BALL_RADIUS + BLOBBY_LOWER_RADIUS
-        {
+        if (pos - self.ball_position).length() <= BALL_RADIUS + BLOBBY_LOWER_RADIUS {
             return true;
         }
         false
     }
 
-    fn player_top_ball_collision(&mut self, player : PlayerSide) -> bool {
+    fn player_top_ball_collision(&mut self, player: PlayerSide) -> bool {
         let player_index = player as usize;
 
-        let pos =
-            Vector2f::new
-            (
-                self.blob_positions[player_index].x,
-                self.blob_positions[player_index].y - BLOBBY_UPPER_SPHERE
-            );
+        let pos = Vector2f::new(
+            self.blob_positions[player_index].x,
+            self.blob_positions[player_index].y - BLOBBY_UPPER_SPHERE,
+        );
 
-        if (pos - self.ball_position).length() <= BALL_RADIUS + BLOBBY_UPPER_RADIUS
-        {
-		    return true;
+        if (pos - self.ball_position).length() <= BALL_RADIUS + BLOBBY_UPPER_RADIUS {
+            return true;
         }
 
         false
     }
 
-    pub fn check_blobby_ball_collision(&mut self, player : PlayerSide) {
+    pub fn check_blobby_ball_collision(&mut self, player: PlayerSide) {
         let player_index = player as usize;
 
         // Check for bottom circles
@@ -192,23 +187,19 @@ impl PhysicWorld {
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2f =
-                Vector2f::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
+            let circle_pos: Vector2f = Vector2f::new(blob_pos.x, blob_pos.y + BLOBBY_LOWER_SPHERE);
 
             self.ball_velocity = -(circle_pos - self.ball_position);
             self.ball_velocity = self.ball_velocity.normalized();
             self.ball_velocity = self.ball_velocity.scale(BALL_COLLISION_VELOCITY);
             self.ball_position += self.ball_velocity;
             self.ball_hit_by_blobs[player_index] = true;
-
-        }
-        else if self.player_top_ball_collision(player) {
+        } else if self.player_top_ball_collision(player) {
             self.last_hit_intensity =
                 (self.ball_velocity - self.blob_velocities[player_index]).length();
 
             let blob_pos = self.blob_positions[player_index];
-            let circle_pos : Vector2f =
-                 Vector2f::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
+            let circle_pos: Vector2f = Vector2f::new(blob_pos.x, blob_pos.y - BLOBBY_UPPER_SPHERE);
 
             self.ball_velocity = -(circle_pos - self.ball_position);
             self.ball_velocity = self.ball_velocity.normalized();
@@ -216,17 +207,16 @@ impl PhysicWorld {
             self.ball_position += self.ball_velocity;
             self.ball_hit_by_blobs[player_index] = true;
         }
-
     }
 
-    fn blobby_hit_ground(&self, player : PlayerSide) -> bool {
+    fn blobby_hit_ground(&self, player: PlayerSide) -> bool {
         match player {
             NoPlayer => return false,
             _ => self.get_blob(player).y >= GROUND_PLANE_HEIGHT,
         }
     }
 
-    fn blobby_start_animation(&mut self, player : PlayerSide) {
+    fn blobby_start_animation(&mut self, player: PlayerSide) {
         let player_index = player as usize;
 
         if self.blobs_animation_speed[player_index] == 0.0f32 {
@@ -238,7 +228,7 @@ impl PhysicWorld {
         self.ball_velocity = self.ball_velocity.scale(DAMP_BALL_SCALE_FACTOR);
     }
 
-    fn blobby_animation_step(&mut self, player : PlayerSide) {
+    fn blobby_animation_step(&mut self, player: PlayerSide) {
         let player_index = player as usize;
 
         if self.blobs_animation_states[player_index] < 0.0f32 {
@@ -266,35 +256,40 @@ impl PhysicWorld {
         self.player_inputs[player as usize] = input;
     }
 
-    fn handle_blob(&mut self, player : PlayerSide) {
+    fn handle_blob(&mut self, player: PlayerSide) {
         let player_index = player as usize;
 
         self.ball_hit_by_blobs[player_index] = false;
 
         if self.player_inputs[player_index].up {
             if self.blobby_hit_ground(player) {
-                self.blob_velocities[player_index].y = - BLOBBY_JUMP_ACCELERATION;
+                self.blob_velocities[player_index].y = -BLOBBY_JUMP_ACCELERATION;
                 self.blobby_start_animation(player);
             }
             self.blob_velocities[player_index].y -= BLOBBY_JUMP_BUFFER * TIME_SCALING;
         }
 
-        if
-            (self.player_inputs[player_index].left || self.player_inputs[player_index].right) &&
-            self.blobby_hit_ground(player) {
-                self.blobby_start_animation(player);
-            }
+        if (self.player_inputs[player_index].left || self.player_inputs[player_index].right)
+            && self.blobby_hit_ground(player)
+        {
+            self.blobby_start_animation(player);
+        }
 
-        self.blob_velocities[player_index].x =
-            if self.player_inputs[player_index].right { BLOBBY_SPEED } else { 0.0f32 } -
-            if self.player_inputs[player_index].left { BLOBBY_SPEED } else { 0.0f32 };
+        self.blob_velocities[player_index].x = if self.player_inputs[player_index].right {
+            BLOBBY_SPEED
+        } else {
+            0.0f32
+        } - if self.player_inputs[player_index].left {
+            BLOBBY_SPEED
+        } else {
+            0.0f32
+        };
 
         // Acceleration Integration
         self.blob_velocities[player_index].y += BLOBBY_GRAVITATION * TIME_SCALING;
 
         // Compute new position
-        self.blob_positions[player_index] +=
-            self.blob_velocities[player_index] * TIME_SCALING;
+        self.blob_positions[player_index] += self.blob_velocities[player_index] * TIME_SCALING;
 
         if self.blobby_hit_ground(player) {
             if self.blob_velocities[player_index].y > 3.5f32 {
@@ -303,7 +298,6 @@ impl PhysicWorld {
 
             self.blob_positions[player_index].y = GROUND_PLANE_HEIGHT;
             self.blob_velocities[player_index].y = 0.0f32;
-
         }
 
         self.blobby_animation_step(player);
@@ -319,10 +313,8 @@ impl PhysicWorld {
 
     pub fn ball_hit_right_ground(&self) -> bool {
         if self.is_ball_valid {
-            if
-                self.ball_position.y > GROUND_PLANE_HEIGHT &&
-                self.ball_position.x > NET_POSITION_X {
-                    return true;
+            if self.ball_position.y > GROUND_PLANE_HEIGHT && self.ball_position.x > NET_POSITION_X {
+                return true;
             }
         }
         false
@@ -330,10 +322,8 @@ impl PhysicWorld {
 
     pub fn ball_hit_left_ground(&self) -> bool {
         if self.is_ball_valid {
-            if
-                self.ball_position.y > GROUND_PLANE_HEIGHT &&
-                self.ball_position.x < NET_POSITION_X {
-                    return true;
+            if self.ball_position.y > GROUND_PLANE_HEIGHT && self.ball_position.x < NET_POSITION_X {
+                return true;
             }
         }
         false
@@ -350,11 +340,11 @@ impl PhysicWorld {
     pub fn is_round_finished(&self) -> bool {
         if self.reset_area_clear() {
             if !self.is_ball_valid {
-                if
-                    self.ball_velocity.y < 1.5f32 &&
-                    self.ball_velocity.y > -1.5f32 &&
-                    self.ball_position.y > 430f32 {
-                        return true;
+                if self.ball_velocity.y < 1.5f32
+                    && self.ball_velocity.y > -1.5f32
+                    && self.ball_position.y > 430f32
+                {
+                    return true;
                 }
             }
         }
@@ -363,19 +353,17 @@ impl PhysicWorld {
     }
 
     fn ball_move_on_the_ground(&mut self) {
-        self.ball_velocity =
-        self.ball_velocity
-        .reflect_y()
-        .scale_y(SPEED_SCALE_ON_GROUND_BOUNCE_Y);
+        self.ball_velocity = self
+            .ball_velocity
+            .reflect_y()
+            .scale_y(SPEED_SCALE_ON_GROUND_BOUNCE_Y);
 
-        self.ball_velocity =
-            self.ball_velocity.scale_x(SPEED_SCALE_ON_GROUND_BOUNCE_X);
+        self.ball_velocity = self.ball_velocity.scale_x(SPEED_SCALE_ON_GROUND_BOUNCE_X);
 
         self.ball_position.y = GROUND_PLANE_HEIGHT_MAX - BALL_RADIUS;
     }
 
     pub fn step(&mut self) {
-
         if self.is_game_running {
             self.ball_velocity.y += BALL_GRAVITATION * TIME_SCALING;
         }
@@ -400,41 +388,27 @@ impl PhysicWorld {
         }
 
         // Border Collision
-        if
-            self.ball_position.x - BALL_RADIUS <= LEFT_PLANE &&
-            self.ball_velocity.x < 0.0
-        {
+        if self.ball_position.x - BALL_RADIUS <= LEFT_PLANE && self.ball_velocity.x < 0.0 {
             self.ball_velocity = self.ball_velocity.reflect_x();
             // set the ball's position
             self.ball_position.x = LEFT_PLANE + BALL_RADIUS;
-        }
-        else if
-            self.ball_position.x + BALL_RADIUS >= RIGHT_PLANE &&
-            self.ball_velocity.x > 0.0
-        {
+        } else if self.ball_position.x + BALL_RADIUS >= RIGHT_PLANE && self.ball_velocity.x > 0.0 {
             self.ball_velocity = self.ball_velocity.reflect_x();
             // set the ball's position
             self.ball_position.x = RIGHT_PLANE - BALL_RADIUS;
-        }
-        else if
-
-            self.ball_position.y > NET_SPHERE_POSITION &&
-            (self.ball_position.x - NET_POSITION_X).abs() < BALL_RADIUS + NET_RADIUS
+        } else if self.ball_position.y > NET_SPHERE_POSITION
+            && (self.ball_position.x - NET_POSITION_X).abs() < BALL_RADIUS + NET_RADIUS
         {
             self.ball_velocity = self.ball_velocity.reflect_x();
             // set the ball's position so that it touches the net
-            let delta =
-                if self.ball_position.x - NET_POSITION_X > 0.0f32 {
-                    BALL_RADIUS + NET_RADIUS
-                }
-                else {
-                    -BALL_RADIUS - NET_RADIUS
-                };
+            let delta = if self.ball_position.x - NET_POSITION_X > 0.0f32 {
+                BALL_RADIUS + NET_RADIUS
+            } else {
+                -BALL_RADIUS - NET_RADIUS
+            };
 
-            self.ball_position.x =  NET_POSITION_X + delta;
-        }
-        else
-        {
+            self.ball_position.x = NET_POSITION_X + delta;
+        } else {
             // Net Collisions
 
             let ball_net_vec =
@@ -442,63 +416,51 @@ impl PhysicWorld {
 
             let ball_net_distance = ball_net_vec.length();
 
-            if ball_net_distance < NET_RADIUS + BALL_RADIUS
-            {
-                let vec =
-                    Vector2f::new(NET_POSITION_X, NET_SPHERE_POSITION) -
-                    self.ball_position;
+            if ball_net_distance < NET_RADIUS + BALL_RADIUS {
+                let vec = Vector2f::new(NET_POSITION_X, NET_SPHERE_POSITION) - self.ball_position;
                 // calculate
                 let normal = vec.normalized();
 
                 // normal component of kinetic energy
-                let mut perpendicular_kinematic_energy =
-                    normal.dot_product(&self.ball_velocity);
+                let mut perpendicular_kinematic_energy = normal.dot_product(&self.ball_velocity);
 
                 perpendicular_kinematic_energy *= perpendicular_kinematic_energy;
                 // parallel component of kinetic energy
-                let mut parallel_kinematic_energy =
-                    self.ball_velocity.length() * self.ball_velocity.length() -
-                    perpendicular_kinematic_energy;
+                let mut parallel_kinematic_energy = self.ball_velocity.length()
+                    * self.ball_velocity.length()
+                    - perpendicular_kinematic_energy;
 
                 // the normal component is damped stronger than the parallel component
                 // the values are ~ 0.85² and ca. 0.95², because speed is sqrt(ekin)
-                perpendicular_kinematic_energy *=
-                    PERPENDICULAR_KINEMATIC_ENERGY_DAMPING_FACTOR;
+                perpendicular_kinematic_energy *= PERPENDICULAR_KINEMATIC_ENERGY_DAMPING_FACTOR;
 
-                parallel_kinematic_energy *=
-                    PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR;
+                parallel_kinematic_energy *= PARALLEL_KINEMATIC_ENERGY_DAMPING_FACTOR;
 
-                let n_speed =
-                    (perpendicular_kinematic_energy + parallel_kinematic_energy).sqrt();
+                let n_speed = (perpendicular_kinematic_energy + parallel_kinematic_energy).sqrt();
 
-                self.ball_velocity =
-                    self.ball_velocity
+                self.ball_velocity = self
+                    .ball_velocity
                     .reflect(&normal)
                     .normalized()
                     .scale(n_speed);
 
                 // pushes the ball out of the net
-                self.ball_position =
-                    Vector2f::new
-                    (
-                        NET_POSITION_X,
-                        NET_SPHERE_POSITION
-                    ) - normal * (NET_RADIUS + BALL_RADIUS);
+                self.ball_position = Vector2f::new(NET_POSITION_X, NET_SPHERE_POSITION)
+                    - normal * (NET_RADIUS + BALL_RADIUS);
             }
         }
 
         // Collision between blobby and the net
-        if
-            self.blob_positions[LeftPlayer as usize].x + BLOBBY_LOWER_RADIUS >
-            NET_POSITION_X - NET_RADIUS // Collision with the net
+        if self.blob_positions[LeftPlayer as usize].x + BLOBBY_LOWER_RADIUS
+            > NET_POSITION_X - NET_RADIUS
+        // Collision with the net
         {
-		    self.blob_positions[LeftPlayer as usize].x =
+            self.blob_positions[LeftPlayer as usize].x =
                 NET_POSITION_X - NET_RADIUS - BLOBBY_LOWER_RADIUS;
         }
 
-        if
-            self.blob_positions[RightPlayer as usize].x - BLOBBY_LOWER_RADIUS <
-            NET_POSITION_X + NET_RADIUS
+        if self.blob_positions[RightPlayer as usize].x - BLOBBY_LOWER_RADIUS
+            < NET_POSITION_X + NET_RADIUS
         {
             self.blob_positions[RightPlayer as usize].x =
                 NET_POSITION_X + NET_RADIUS + BLOBBY_LOWER_RADIUS;
@@ -515,42 +477,37 @@ impl PhysicWorld {
 
         // Velocity Integration
         if self.ball_velocity.x > 0.0 {
-            self.ball_rotation +=
-                self.ball_angular_velocity * TIME_SCALING *
-                    (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
-        }
-        else if self.ball_velocity.x < 0.0 {
-            self.ball_rotation -=
-                self.ball_angular_velocity * TIME_SCALING *
-                    (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
-        }
-        else {
-            self.ball_rotation -=
-                self.ball_angular_velocity * TIME_SCALING;
+            self.ball_rotation += self.ball_angular_velocity
+                * TIME_SCALING
+                * (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
+        } else if self.ball_velocity.x < 0.0 {
+            self.ball_rotation -= self.ball_angular_velocity
+                * TIME_SCALING
+                * (self.get_ball_speed() / BALL_ANGULAR_VELOCITY_SCALE_FACTOR);
+        } else {
+            self.ball_rotation -= self.ball_angular_velocity * TIME_SCALING;
         }
 
         // Overflow-Protection
         if self.ball_rotation <= 0.0f32 {
             self.ball_rotation = 6.25f32 + self.ball_rotation;
-        }
-        else if self.ball_rotation >= 6.25f32 {
+        } else if self.ball_rotation >= 6.25f32 {
             self.ball_rotation = self.ball_rotation - 6.25f32;
         }
 
         // More Overflow-Protection
         if self.ball_rotation <= 0.0f32 {
             self.ball_rotation = 6.25f32;
-        }
-        else if self.ball_rotation >= 6.25f32 {
+        } else if self.ball_rotation >= 6.25f32 {
             self.ball_rotation = 6.25f32;
         }
 
         assert!(self.ball_rotation >= 0.0f32);
 
-        self.time_since_ball_out =
-            if self.is_ball_valid
-            { 0.0 }
-            else
-            { self.time_since_ball_out + 1.0f32 / 60f32 }
+        self.time_since_ball_out = if self.is_ball_valid {
+            0.0
+        } else {
+            self.time_since_ball_out + 1.0f32 / 60f32
+        }
     }
 }

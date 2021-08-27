@@ -1,19 +1,19 @@
 use quicksilver::{
-    Result,
-    lifecycle::{Asset, State, Window, Event},
-    graphics::{Image, Font, FontStyle, Color},
+    graphics::{Color, Font, FontStyle, Image},
+    lifecycle::{Asset, Event, State, Window},
     sound::Sound,
+    Result,
 };
 
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
-use local_game_state::LocalGameState;
-use home_menu_state::HomeMenuState;
-use win_menu_state::WinMenuState;
-use new_game_menu_state::NewGameMenuState;
-use new_game_menu_state::GameConfiguration;
 use game_constants::BLOBBY_ANIMATION_FRAMES;
+use home_menu_state::HomeMenuState;
+use local_game_state::LocalGameState;
+use new_game_menu_state::GameConfiguration;
+use new_game_menu_state::NewGameMenuState;
+use win_menu_state::WinMenuState;
 
 use global::PlayerSide;
 
@@ -26,9 +26,9 @@ pub enum RustyGameState {
 
 pub struct StateManager {
     local_game_state: Rc<RefCell<LocalGameState>>,
-    home_menu_state : Rc<RefCell<HomeMenuState>>,
-    win_menu_state : Rc<RefCell<WinMenuState>>,
-    new_game_menu_state : Rc<RefCell<NewGameMenuState>>,
+    home_menu_state: Rc<RefCell<HomeMenuState>>,
+    win_menu_state: Rc<RefCell<WinMenuState>>,
+    new_game_menu_state: Rc<RefCell<NewGameMenuState>>,
     game_assets: GamesAssets,
     current_state: RustyGameState,
 }
@@ -36,23 +36,26 @@ pub struct StateManager {
 pub enum StateTransition {
     NoTransition,
     StateLessTransition(RustyGameState), // new state
-    StartGameTransition(GameConfiguration), 
+    StartGameTransition(GameConfiguration),
     WinStateTransition(PlayerSide), // winningPlayer
 }
 
 pub trait RustyVollyState {
     fn step(&mut self, game_assets: &mut GamesAssets) -> StateTransition;
 
-    fn draw_window_content(&mut self, window: &mut Window, game_assets: &mut GamesAssets) -> Result<()>;
+    fn draw_window_content(
+        &mut self,
+        window: &mut Window,
+        game_assets: &mut GamesAssets,
+    ) -> Result<()>;
 
     fn handle_event(&mut self, event: &Event, _window: &mut Window) -> StateTransition;
 }
 
 impl StateManager {
     fn new() -> StateManager {
-
-        let mut blobs_images_left : Vec<Asset<Image>> = vec!();
-        let mut blobs_images_right : Vec<Asset<Image>> = vec!();
+        let mut blobs_images_left: Vec<Asset<Image>> = vec![];
+        let mut blobs_images_right: Vec<Asset<Image>> = vec![];
 
         for i in 1..BLOBBY_ANIMATION_FRAMES + 1 {
             let path = format!("blobby_p1_{:04}.png", i);
@@ -61,34 +64,37 @@ impl StateManager {
             blobs_images_right.push(Asset::new(Image::load(path)));
         }
 
-        let mut sounds : Vec<Asset<Sound>> = vec!();
+        let mut sounds: Vec<Asset<Sound>> = vec![];
 
         sounds.push(Asset::new(Sound::load("ball_player.wav")));
         sounds.push(Asset::new(Sound::load("whistle.wav")));
 
         let game_assets = GamesAssets {
             background_image: Asset::new(Image::load("background.png")),
-            ball_image : Asset::new(Image::load("ball.png")),
-            ball_indicator : Asset::new(Image::load("ball_indicator.png")),
+            ball_image: Asset::new(Image::load("ball.png")),
+            ball_indicator: Asset::new(Image::load("ball_indicator.png")),
             blobs_images_left: blobs_images_left,
             blobs_images_right: blobs_images_right,
             sounds: sounds,
             font: Rc::new(RefCell::new(Asset::new(Font::load("font8.ttf")))),
-            font_style: FontStyle::new(64.0, Color {
-                r: 0.0f32,
-                g: 0.5f32,
-                b: 0.4f32,
-                a: 1.0f32,
-            }),
+            font_style: FontStyle::new(
+                64.0,
+                Color {
+                    r: 0.0f32,
+                    g: 0.5f32,
+                    b: 0.4f32,
+                    a: 1.0f32,
+                },
+            ),
         };
 
         StateManager {
-            local_game_state : Rc::new(RefCell::new(LocalGameState::new())),
-            home_menu_state : Rc::new(RefCell::new(HomeMenuState::new())),
-            win_menu_state : Rc::new(RefCell::new(WinMenuState::new())),
-            new_game_menu_state : Rc::new(RefCell::new(NewGameMenuState::new())),
-            game_assets : game_assets,
-            current_state : RustyGameState::NewGameMenu,
+            local_game_state: Rc::new(RefCell::new(LocalGameState::new())),
+            home_menu_state: Rc::new(RefCell::new(HomeMenuState::new())),
+            win_menu_state: Rc::new(RefCell::new(WinMenuState::new())),
+            new_game_menu_state: Rc::new(RefCell::new(NewGameMenuState::new())),
+            game_assets: game_assets,
+            current_state: RustyGameState::NewGameMenu,
         }
     }
 
@@ -101,12 +107,12 @@ impl StateManager {
         }
     }
 
-    fn update_state_if_needed(&mut self, transition : StateTransition) {
+    fn update_state_if_needed(&mut self, transition: StateTransition) {
         match transition {
             StateTransition::NoTransition => (),
-            StateTransition::StateLessTransition(state) =>  {
+            StateTransition::StateLessTransition(state) => {
                 self.current_state = state;
-            },
+            }
 
             StateTransition::WinStateTransition(player_side) => {
                 self.current_state = RustyGameState::WinMenu;
@@ -115,13 +121,13 @@ impl StateManager {
 
                 let mut local_game_state_mutable = self.local_game_state.borrow_mut();
                 local_game_state_mutable.reset();
-            },
+            }
 
             StateTransition::StartGameTransition(config) => {
                 let mut local_game_state_mutable = self.local_game_state.borrow_mut();
                 local_game_state_mutable.set_config(config);
                 self.current_state = RustyGameState::LocalGame;
-            },
+            }
         }
     }
 }
@@ -166,7 +172,7 @@ pub struct GamesAssets {
     pub ball_indicator: Asset<Image>,
     pub font: Rc<RefCell<Asset<Font>>>,
     pub font_style: FontStyle,
-    pub blobs_images_left : Vec<Asset<Image>>,
-    pub blobs_images_right : Vec<Asset<Image>>,
-    pub sounds : Vec<Asset<Sound>>,
+    pub blobs_images_left: Vec<Asset<Image>>,
+    pub blobs_images_right: Vec<Asset<Image>>,
+    pub sounds: Vec<Asset<Sound>>,
 }
