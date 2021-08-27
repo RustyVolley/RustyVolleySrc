@@ -109,7 +109,7 @@ impl DuelMatch {
     pub fn get_blob_position(&self, player: PlayerSide) -> Vector2f {
         if player == LeftPlayer
         {
-		    return self.physic_world.get_blob(LeftPlayer);
+	    return self.physic_world.get_blob(LeftPlayer);
         }
         else if player == RightPlayer
         {
